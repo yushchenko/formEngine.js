@@ -1,0 +1,29 @@
+# formEngine.js Project
+
+* Features
+
+** Declarative extendable description
+   JavaScript based DSL
+
+** Form Initialization
+   client side markup generation (templates) and form initialization
+
+** Data Binding
+   two way data binding
+
+** Validation
+   declarative validataion, error notification
+
+** Context
+   context dependent properties (hidden, readonly)
+
+** Events
+   events, dependencies
+
+** Change Tracking
+   undo/redo, changes highlight
+
+** Localization
+   ability to change locale without page reloading
+
+* ToDo
