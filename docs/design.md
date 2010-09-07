@@ -3,6 +3,7 @@
 ### Metadata Structure
 
     element
+        id: element id
         typeName: form|container|control|string|number|date|entity|list
         controlName: textBox|comboBox|datePicker|...
         
@@ -21,16 +22,16 @@
 
 ### Form Engine Interface
 
-    var form = formEngine({ container: id, form: metadata, ... });
+    formEngine.controls[...]
+    formEngine.validators[...]
+
+    var form = formEngine({ containerId: id, form: metadata, ... });
     form.bindData(data);
     form.show();
 
     form.model.request.setValue('step', '02');
 
     form.validate();
-
-    formEngine.controls[...]
-    formEngine.validators[...]
 
 ### Element Interface
 

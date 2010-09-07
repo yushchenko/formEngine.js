@@ -1,48 +1,96 @@
 //TODO: add file header
 
-;(function (window, undefined) {
+;(function (window, document, undefined) {
 
     var formEngine;
 
     window.formEngine = formEngine = function formEngine(opts) {
 
-        var that = {};
-
-        that.bindData = function bindData(data) {
-            that.data = data;
-        };
+        var that = {},
+            form,
+            model,
+            containerNode;
 
         function init() {
-            that.form = formEngine.element(that, opts.form);
-            var markup = that.form.control.getMarkup();
-            // add markup to page
-            that.form.control.initialize();
+
+            form = formEngine.element(that, opts.form);
+
+            var markup = form.control.getMarkup();
+
+            containerNode = document.getElementById(opts.containerId);
+            //TODO: investigate other ways to add markup to the page
+            containerNode.innerHTML = markup;
+
+            form.control.initialize();
         }
+
+        function bindData(data) {
+            model = data;
+        };
+
+        function show() {
+            //TODO: remove display:none from containerNode
+        };
 
         init();
 
+        that.bindData = bindData;
+        that.show = show;
+
         return that;
     };
 
-    formEngine.element = function element(engine, metadata) {
+
+    formEngine.event = function event() {
 
         var that = {};
 
-        that.control = formEngine.controlBase(engine, that);
+        function bind(handler) {
+            
+        }
+
+        function trigger() {
+            
+        }
+
+        that.bind = bind;
+        that.trigger = trigger;
 
         return that;
     };
+      
+
+    formEngine.element = function element(engine, metadata) {
+
+        var that = {},
+            childrenMetadata = metadata.elements || [];
+
+        that.control = formEngine.controlBase(engine, that);
+
+        that.elements = [];
+
+        for ( var i = 0; i < childrenMetadata.length; i += 1 ) {
+            that.elements.push(formEngine.element(engine, childrenMetadata[i]));
+        }
+
+        return that;
+    };
+
 
     formEngine.controlBase = function controlBase(engine, element) {
 
         var that = {};
 
-        that.getMarkup = function getMarkup() {
+        function getMarkup() {
+            return '<span>control base</span>';
         };
 
-        that.initialize = function initialize() {
+        function initialize() {
             
         };
+
+        that.getMarkup = getMarkup;
+        that.initialize = initialize;
 
         return that;
     };
@@ -50,4 +98,4 @@
     formEngine.controls = {};
     formEngine.validators = {};
 
-})(window);
+})(window, document);
