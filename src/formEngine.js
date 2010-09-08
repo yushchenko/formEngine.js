@@ -63,15 +63,16 @@
     formEngine.element = function element(engine, metadata) {
 
         var that = {},
-            childrenMetadata = metadata.elements || [];
-
-        that.control = formEngine.controlBase(engine, that);
+            childrenMetadata = metadata.elements || [],
+            controlConstructor = formEngine.controls[metadata.controlName] || formEngine.controlBase;
 
         that.elements = [];
 
         for ( var i = 0; i < childrenMetadata.length; i += 1 ) {
             that.elements.push(formEngine.element(engine, childrenMetadata[i]));
         }
+
+        that.control = controlConstructor(engine, that);
 
         return that;
     };

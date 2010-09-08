@@ -1,3 +1,13 @@
-.red {
-    color: red;
+.fe-hidden {
+    display: none;
+}
+
+.fe-form {
+    border: 1px solid black;
+    width: 600px;
+    margin: auto;
+}
+
+.fe-control {
+
 }
