@@ -2,7 +2,8 @@
 
    var model = {
            firstName: 'John',
-           lastName: 'Smith'
+           lastName: 'Smith',
+           occupation: 'Software Developer'
        },
 
        form =
@@ -16,12 +17,26 @@
                {
                    id: 'firstName',
                    typeName: 'text',
-                   controlName: 'textBox'
+                   controlName: 'textBox',
+                   controlProperties: {
+                       label: 'First Name'
+                   }
                },
                {
                    id: 'lastName',
                    typeName: 'text',
-                   controlName: 'textBox'
+                   controlName: 'textBox',
+                   controlProperties: {
+                       label: 'Last Name'
+                   }
+               },
+               {
+                   id: 'occupation',
+                   typeName: 'text',
+                   controlName: 'textBox',
+                   controlProperties: {
+                       label: 'Occupation'
+                   }
                }
            ]
        },

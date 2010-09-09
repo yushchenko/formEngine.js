@@ -1,5 +1,26 @@
-;(function(formEngine) {
+;(function(formEngine, undefined) {
 
+
+    formEngine.event = function event() {
+
+        var that = {};
+
+        function bind(handler) {
+            
+        }
+
+        function trigger() {
+            
+        }
+
+        that.bind = bind;
+        that.trigger = trigger;
+
+        return that;
+    };
+      
+
+    // -------------------------------------------------------------------------
     // The following template code is taken from Underscore.js (c) 2010 Jeremy Ashkenas, DocumentCloud Inc.
     // This code destibuted under MIT licence
 
@@ -37,6 +58,6 @@
         return data ? fn(data) : fn;
     };
 
-    // End of Underscore.js code
+    // End of Underscore.js code -----------------------------------------------
 
 })(formEngine);

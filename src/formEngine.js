@@ -40,70 +40,22 @@
         return that;
     };
 
-
-    formEngine.event = function event() {
-
-        var that = {};
-
-        function bind(handler) {
-            
-        }
-
-        function trigger() {
-            
-        }
-
-        that.bind = bind;
-        that.trigger = trigger;
-
-        return that;
-    };
-      
-
     formEngine.element = function element(engine, metadata) {
 
         var that = {},
-            childrenMetadata = metadata.elements || [],
-            controlConstructor = formEngine.controls[metadata.controlName] || formEngine.controlBase;
+            childrenMetadata = metadata.elements || [];
 
+        that.id = metadata.id;
         that.elements = [];
 
         for ( var i = 0; i < childrenMetadata.length; i += 1 ) {
             that.elements.push(formEngine.element(engine, childrenMetadata[i]));
         }
 
-        that.control = controlConstructor(engine, that);
+        var controlConstructor = formEngine.controls[metadata.controlName] || formEngine.controlBase,
+            controlProperties = metadata.controlProperties || {};
 
-        return that;
-    };
-
-
-    formEngine.controlBase = function controlBase(engine, element) {
-
-        var that = {};
-
-        function getMarkup() {
-            return getChildMarkup();
-        };
-
-        function getChildMarkup() {
-
-            var childMarkup = '';
-
-            for (var i = 0; i < element.elements.length; i += 1) {
-                childMarkup += element.elements[i].control.getMarkup();
-            }
-
-            return childMarkup;
-        };
-
-        function initialize() {
-            
-        };
-
-        that.getMarkup = getMarkup;
-        that.getChildMarkup = getChildMarkup;
-        that.initialize = initialize;
+        that.control = controlConstructor(controlProperties, that, engine);
 
         return that;
     };

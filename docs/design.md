@@ -6,14 +6,13 @@
         id: element id
         typeName: form|container|control|string|number|date|entity|list
         controlName: textBox|comboBox|datePicker|...
-        
+        controlProperties: {...}
+
         valueExp: binding expression
         hiddenExp: binding expression
         readonlyExp: binding expression
         
         elements: []
-
-        properties: {...}
 
         validationRules: [
             validatorName: required|maxLength|minLength|...
@@ -45,7 +44,7 @@
 
 ### Control Interface
 
-    control(element, engine): formEngine.controlBase
+    control(properties, element, engine): formEngine.controlBase
 
         getMarkup()
         initialize() ???
