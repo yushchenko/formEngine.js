@@ -83,7 +83,18 @@
         var that = {};
 
         function getMarkup() {
-            return '<span>control base</span>';
+            return getChildMarkup();
+        };
+
+        function getChildMarkup() {
+
+            var childMarkup = '';
+
+            for (var i = 0; i < element.elements.length; i += 1) {
+                childMarkup += element.elements[i].control.getMarkup();
+            }
+
+            return childMarkup;
         };
 
         function initialize() {
@@ -91,6 +102,7 @@
         };
 
         that.getMarkup = getMarkup;
+        that.getChildMarkup = getChildMarkup;
         that.initialize = initialize;
 
         return that;
