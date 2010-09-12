@@ -1,16 +1,21 @@
 ;(function(formEngine, undefined) {
 
 
+    // Simple event
     formEngine.event = function event() {
 
-        var that = {};
+        var that = {},
+            handlers = [];
 
         function bind(handler) {
-            
+            handlers.push(handler);
         }
 
         function trigger() {
-            
+
+            for (var i = 0; i < handlers.length; i += 1) {
+                handlers[i].apply({}, arguments);
+            }
         }
 
         that.bind = bind;
@@ -19,6 +24,41 @@
         return that;
     };
       
+    // Naive measurement of function's execution time
+    // TODO: find out and consider other (more precise) ways
+    formEngine.measureExecutionTime = function measureExecutionTime(fn) {
+
+      var startTime, endTime;
+      startTime = (new Date()).getTime();
+
+      fn();
+
+      endTime = (new Date()).getTime();
+      return endTime - startTime;
+    };
+
+    //
+    formEngine.getByPath = function getByPath(obj, path) {
+
+        var parts = path.split('.'), result = obj;
+
+        for (var i = 0; i < parts.length; i += 1) {
+            result = result[parts[i]];
+        }
+
+        return result;
+    };
+
+    formEngine.setByPath = function setByPath(obj, path, value) {
+
+        var parts = path.split('.'), target = obj;
+
+        for (var i = 0; i < parts.length - 1; i += 1) {
+            target = target[parts[i]];
+        }
+
+        target[parts[parts.length - 1]] = value;
+    };
 
     // -------------------------------------------------------------------------
     // The following template code is taken from Underscore.js (c) 2010 Jeremy Ashkenas, DocumentCloud Inc.
@@ -60,17 +100,5 @@
 
     // End of Underscore.js code -----------------------------------------------
 
-    // Naive measurement of function's execution time
-    // TODO: find out and consider other (more precise) ways
-    formEngine.measureExecutionTime = function measureExecutionTime(fn) {
-
-      var startTime, endTime;
-      startTime = (new Date()).getTime();
-
-      fn();
-
-      endTime = (new Date()).getTime();
-      return endTime - startTime;
-    };
 
 })(formEngine);

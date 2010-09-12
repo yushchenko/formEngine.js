@@ -7,17 +7,21 @@
     window.formEngine = formEngine = function formEngine(opts) {
 
         var that = {},
-            form,
             model,
+            form,
+            bindings = [], // {binding, target, property}
             containerNode;
 
         function init() {
 
+            that.bindings = bindings;
             form = formEngine.element(that, opts.form);
+            that.bindings = undefined; // Bindings can be added only during element tree initialization
 
             var markup = form.control.getMarkup();
 
             containerNode = document.getElementById(opts.containerId);
+
             //TODO: investigate other ways to add markup to the page
             containerNode.innerHTML = markup;
 
@@ -25,7 +29,15 @@
         }
 
         function bindData(data) {
-            model = data;
+
+            that.model = model = data;
+
+            var value;
+            for (var i = 0; i < bindings.length; i += 1) {
+
+                value = formEngine.getByPath(model, bindings[i].binding);
+                bindings[i].target.control.setValue(value);
+            }
         };
 
         function show() {
@@ -48,6 +60,11 @@
         that.id = metadata.id;
         that.elements = [];
 
+        if (metadata.valueExp) { //TODO: add readonlyExp, hiddenExp
+            //TODO: add parser for complex expressions
+            engine.bindings.push({ binding: metadata.valueExp, target: that, property: 'value' });
+        }
+
         for ( var i = 0; i < childrenMetadata.length; i += 1 ) {
             that.elements.push(formEngine.element(engine, childrenMetadata[i]));
         }
@@ -56,6 +73,12 @@
             controlProperties = metadata.controlProperties || {};
 
         that.control = controlConstructor(controlProperties, that, engine);
+
+        that.control.onValueChanged.bind(function (newValue) {
+            if (metadata.valueExp) {
+                formEngine.setByPath(engine.model, metadata.valueExp, newValue);
+            }
+        });
 
         return that;
     };

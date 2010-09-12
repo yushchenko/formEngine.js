@@ -12,9 +12,9 @@
 
             var childMarkup = '';
 
-            for (var i = 0; i < element.elements.length; i += 1) {
-                childMarkup += element.elements[i].control.getMarkup();
-            }
+            forEachChildControl(function (child) {
+                childMarkup += child.getMarkup();
+            });
 
             return childMarkup;
         };
@@ -27,12 +27,23 @@
             
         };
 
+        function forEachChildControl(fn) {
+
+            for (var i = 0; i < element.elements.length; i += 1) {
+                fn(element.elements[i].control);
+            }
+        };
+
         that.element = element;
         that.getMarkup = getMarkup;
         that.getChildMarkup = getChildMarkup;
         that.initialize = initialize;
-        that.setValue = setValue;
 
+        that.setValue = setValue;
+        that.onValueChanged = formEngine.event();
+
+        that.forEachChildControl = forEachChildControl;
+        
         return that;
     };
 

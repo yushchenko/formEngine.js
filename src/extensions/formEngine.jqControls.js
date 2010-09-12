@@ -11,6 +11,12 @@
             return formTemplate({content: that.getChildMarkup()});
         };
 
+        that.initialize = function initialize() {
+            that.forEachChildControl(function (child) {
+                child.initialize();
+            });
+        };
+
         return that;
     };
 
@@ -24,14 +30,24 @@
 
     formEngine.controls.textBox = function textBox(properties, element, engine) {
 
-        var that = formEngine.controlBase.apply(formEngine, arguments);
+        var that = formEngine.controlBase.apply(formEngine, arguments),
+            $textBox;
 
         that.getMarkup = function getMarkup() {
             return textBoxTemplate({id: element.id, label: properties.label});
         };
 
         that.initialize = function initialize() {
-            
+
+            $textBox = $('#' + element.id);
+
+            $textBox.change(function() {
+                that.onValueChanged.trigger($textBox.val());
+            });
+        };
+
+        that.setValue = function setValue(value) {
+            $textBox.val(value);
         };
 
         return that;

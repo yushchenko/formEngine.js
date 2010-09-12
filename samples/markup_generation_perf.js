@@ -18,11 +18,18 @@
 
        fName = 'text ' + i;
        fValue = 'field value ' + i;
-       fid = 'id ' + i;
+       fid = 'id' + i;
        fLabel = 'Text Field # ' + i;
 
        model[fName] = fValue;
-       form.elements.push({ id: fid, typeName: 'text', controlName: 'textBox', controlProperties: { label: fLabel } });
+       
+       form.elements.push({
+           id: fid,
+           typeName: 'text',
+           valueExp: fName,
+           controlName: 'textBox',
+           controlProperties: { label: fLabel }
+       });
    }
 
 
