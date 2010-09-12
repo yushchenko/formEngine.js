@@ -60,4 +60,17 @@
 
     // End of Underscore.js code -----------------------------------------------
 
+    // Naive measurement of function's execution time
+    // TODO: find out and consider other (more precise) ways
+    formEngine.measureExecutionTime = function measureExecutionTime(fn) {
+
+      var startTime, endTime;
+      startTime = (new Date()).getTime();
+
+      fn();
+
+      endTime = (new Date()).getTime();
+      return endTime - startTime;
+    };
+
 })(formEngine);

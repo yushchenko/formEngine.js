@@ -25,3 +25,10 @@
     width: 380px;
     border: 1px solid gray;
 }
+
+.fe-kpi {
+    border-left: 1px dotted red;
+    width: 590px;
+    margin: 0 auto 20px auto;
+    padding: 5px;
+}
