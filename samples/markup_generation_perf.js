@@ -33,20 +33,17 @@
    }
 
 
-   var engine;
-   var creationTime = formEngine.measureExecutionTime(function () {
+   var engine = formEngine({ containerId: 'formContainer', form: form }),
+       msg = '';
 
-           engine = formEngine({ containerId: 'formContainer', form: form });
-       }),
-       bindTime  = formEngine.measureExecutionTime(function () {
+   engine.bindData(model);
 
-           engine.bindData(model);
-       }),
-       showTime  = formEngine.measureExecutionTime(function () {
+   engine.show();
 
-           engine.show();
-       });
+   for (var n in engine.KPI) {
+       msg += n + ': ' + engine.KPI[n].toString() + 'ms<br /> ';
+   }
                                                                
-   $('.fe-kpi').text('formEngine({}): ' + creationTime + 'ms, bindData(): ' + bindTime + 'ms, show(): ' + showTime + 'ms.');
+   $('.fe-kpi').html(msg);
 
 })(formEngine);

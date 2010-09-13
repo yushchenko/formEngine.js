@@ -12,36 +12,65 @@
             bindings = [], // {binding, target, property}
             containerNode;
 
+        that.KPI = {
+            elementInitialization: undefined,
+            markupGeneration: undefined,
+            markupInsertion: undefined,
+            controlInitialization: undefined,
+            bindData: undefined
+        };
+
+        function trace (kpi, fn) {
+            that.KPI[kpi] = formEngine.measureExecutionTime(fn);
+        }
+
         function init() {
 
-            that.bindings = bindings;
-            form = formEngine.element(that, opts.form);
-            that.bindings = undefined; // Bindings can be added only during element tree initialization
+            var markup;
 
-            var markup = form.control.getMarkup();
+            trace('elementInitialization', function () {
 
-            containerNode = document.getElementById(opts.containerId);
+                that.bindings = bindings;
+                form = formEngine.element(that, opts.form);
+                that.bindings = undefined; // bindings can be added only during element tree initialization
+            });
 
-            //TODO: investigate other ways to add markup to the page
-            containerNode.innerHTML = markup;
+            trace('markupGeneration', function () {
+                markup = form.control.getMarkup();            
+            });
 
-            form.control.initialize();
+
+            trace('markupInsertion', function () {
+                containerNode = document.getElementById(opts.containerId);
+    
+                //TODO: investigate other ways to add markup to the page
+                containerNode.innerHTML = markup;
+            });
+
+            trace('controlInitialization', function () {
+                form.control.initialize();
+            });
         }
 
         function bindData(data) {
 
-            that.model = model = data;
+            trace('bindData', function () {
 
-            var value;
-            for (var i = 0; i < bindings.length; i += 1) {
-
-                value = formEngine.getByPath(model, bindings[i].binding);
-                bindings[i].target.control.setValue(value);
-            }
+                that.model = model = data;
+    
+                var value;
+                for (var i = 0; i < bindings.length; i += 1) {
+    
+                    value = formEngine.getByPath(model, bindings[i].binding);
+                    bindings[i].target.control.setValue(value);
+                }
+            });
         };
 
         function show() {
-            //TODO: remove display:none from containerNode
+            trace('show', function() {
+                      //TODO: remove display:none from containerNode
+            });
         };
 
         init();
