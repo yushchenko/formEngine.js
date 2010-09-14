@@ -21,4 +21,11 @@
    ability to change locale without page reloading
 
 
-* ToDo
+* Next Steps
+
+  - simple events to control + getElementById() method
+  - comboBox control (binding to list)
+  - tool bar & button controls (for validation)
+  - formDebugger control or an easy way to debug form
+  - build: JSLint + Closure Compiler validation
+  - 

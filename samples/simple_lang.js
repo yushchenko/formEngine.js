@@ -3,7 +3,8 @@
    var model = {
            firstName: 'John',
            lastName: 'Smith',
-           occupation: 'Software Developer'
+           occupation: 'Software Developer',
+           loveJavaScript: true
        },
 
        form = formEngine.form('test')
@@ -17,13 +18,16 @@
                .label('Last Name').value('lastName')
           .end()
 
-          .text().textBox()
+          .textBox()
                .label('Occupation').value('occupation')
+          .end()
+
+          .checkBox().id('loveJavaScript')
+               .label('Love JavaScript').value('loveJavaScript')
           .end()
 
        .end(),
 
-   
        engine = formEngine({
            containerId: 'formContainer',
            form: form

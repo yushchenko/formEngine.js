@@ -11,18 +11,26 @@
 .fe-control {
     padding: 0 5px 0 5px;
     margin: 5px 0 5px 0;
+    height: 20px;
 }
 
-.fe-control label {
+.fe-control .fe-control-label {
     display: block;
     width: 200px;
     float: left;
 }
 
-.fe-control input {
+.fe-control .fe-control-input {
     display: block;
     margin-left: 210px;
     width: 380px;
+    border: 1px solid gray;
+}
+
+.fe-control .fe-control-checkbox {
+    display: block;
+    margin-left: 210px;
+    height: 20px;
     border: 1px solid gray;
 }
 

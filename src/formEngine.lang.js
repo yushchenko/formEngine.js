@@ -59,32 +59,64 @@
             return this;
         },
 
+        id: function(id) {      //TODO: add check if id's unique
+            this.id = id;
+            return this;
+        },
+
         property: function(name, value) {
             this.currentElement.controlProperties[name] = value;
             return this;
         },
 
-        label: function(text) {
-            this.property('label', text);
+        value: function(exp) {
+            this.currentElement.valueExp = exp;
             return this;
         },
 
-        value: function(valueExp) {
-            this.currentElement.valueExp = valueExp;
+        readonly: function(exp) {
+            this.currentElement.readonlyExp = exp;
+            return this;
+        },
+        
+        hidden: function(exp) {
+            this.currentElement.hiddenExp = exp;
             return this;
         },
 
-        text: function(typeName) {
-            return this.element('text', typeName || 'textBox');
+        //TODO: add method to determine type's default control
+
+        text: function(controlName) {
+            return this.element('text', controlName || 'textBox');
         },
 
-        textBox: function() {
-            this.currentElement.controlName = 'textBox';
-            return this;
+        bool: function(controlName) {
+            return this.element('bool', controlName || 'checkBox');
+        },
+
+        number: function(controlName) {
+            return this.element('number', controlName || 'textBox');
+        },
+
+        date: function(controlName) {
+            return this.element('date', controlName || 'textBox');
         }
     };
 
     form.fn.init.prototype = form.fn;
+
+    // simple way to extend DSL with own functions
+    form.extend = function(obj) {
+
+        for (var name in obj) {
+
+            if (!obj.hasOwnProperty(name) || typeof obj[name] !== 'function') {
+                continue;
+            }
+
+            form.fn[name] = obj[name];
+        }
+    };
 
     formEngine.form = form;
 

@@ -3,7 +3,8 @@
    var model = {
            firstName: 'John',
            lastName: 'Smith',
-           occupation: 'Software Developer'
+           occupation: 'Software Developer',
+           loveJavaScript: true
        },
 
        form =
@@ -39,6 +40,15 @@
                    controlName: 'textBox',
                    controlProperties: {
                        label: 'Occupation'
+                   }
+               },
+               {
+                   id: 'loveJavaScript',
+                   typeName: 'bool',
+                   valueExp: 'loveJavaScript',
+                   controlName: 'checkBox',
+                   controlProperties: {
+                       label: 'Love JavaScript'
                    }
                }
            ]

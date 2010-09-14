@@ -4,7 +4,7 @@
 
     element
         id: element id
-        typeName: form|container|control|string|number|date|entity|list
+        typeName: form|container|control|text|number|date|entity|list
         controlName: textBox|comboBox|datePicker|...
         controlProperties: {...}
 
