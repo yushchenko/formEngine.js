@@ -59,6 +59,10 @@
            form: form
        });
 
+   engine.getElementById('loveJavaScript').control.onClick.bind(function() {
+       alert('checkBox clicked');
+   });
+
    engine.bindData(model);
 
    engine.show();

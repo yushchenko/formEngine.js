@@ -92,12 +92,15 @@
 
             $ctrl.change(function() {
                 that.onValueChanged.trigger($ctrl.attr('checked'));
+                that.onClick.trigger();
             });
         };
 
         that.setValue = function setValue(value) {
             $ctrl.attr('checked', value);
         };
+
+        that.onClick = formEngine.event();
 
         return that;
     };

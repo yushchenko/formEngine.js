@@ -23,9 +23,8 @@
 
 * Next Steps
 
-  - simple events to control + getElementById() method
-  - comboBox control (binding to list)
-  - tool bar & button controls (for validation)
-  - formDebugger control or an easy way to debug form
+  - comboBox control (binding to list of entities)
+  - toolBar & button controls (a way to run validation)
+  - ? formDebugger control or an easy way to debug form
   - build: JSLint + Closure Compiler validation
   - 

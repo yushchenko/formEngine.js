@@ -73,13 +73,49 @@
             });
         };
 
+        // Utils
+
+        function eachElement(fn, element) {
+
+            var current = element || form;
+
+            fn(current); // a parent goes before its children
+
+            for (var i = 1; i < current.elements.length; i += 1) {
+                eachElement(fn, current.elements[i]);
+            }
+        }
+
+        function getElementById(id) {
+
+            var result;
+
+            eachElement(function (element) {
+                if (element.id === id) {
+                    result = element;
+                };
+            });
+
+            return result;
+        }
+
+
         init();
 
         that.bindData = bindData;
         that.show = show;
 
+        that.eachElement = eachElement;
+        that.getElementById = getElementById;
+
         return that;
     };
+
+
+
+    /*
+     *  Element
+     */
 
     formEngine.element = function element(engine, metadata) {
 

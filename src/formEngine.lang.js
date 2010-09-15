@@ -60,7 +60,7 @@
         },
 
         id: function(id) {      //TODO: add check if id's unique
-            this.id = id;
+            this.currentElement.id = id;
             return this;
         },
 
