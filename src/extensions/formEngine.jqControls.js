@@ -27,7 +27,9 @@
         }
     });
 
-    // Text Box Control
+
+    /* textBox Control
+     ***************************************************************************/
 
     var textBoxTemplate = t(
         '<div class="fe-control">' +
@@ -68,7 +70,8 @@
         }
     });
 
-    // Check Box Control
+    /* checkBox Control
+     ***************************************************************************/
 
     var checkBoxTemplate = t(
         '<div class="fe-control">' +
@@ -109,6 +112,57 @@
 
         checkBox: function() {
             return this.element('bool', 'checkBox');
+        }
+    });
+
+    
+    /* comboBox Control
+     ***************************************************************************/
+
+    var comboBoxTemplate = t(
+        '<div class="fe-control">' +
+            '<label for="<%=id%>" class="fe-control-label"><%=label%></label>' +
+            '<select id="<%=id%>" class="fe-control-input"></select>' +
+        '</div>'
+    );
+
+    formEngine.controls.comboBox = function comboBox(properties, element, engine) {
+
+        var that = formEngine.controlBase.apply(formEngine, arguments),
+            $ctrl;
+
+        that.getMarkup = function getMarkup() {
+            return comboBoxTemplate({id: element.id, label: properties.label});
+        };
+
+        that.initialize = function initialize() {
+
+            $ctrl = $('#' + element.id);
+
+            $ctrl.change(function() {
+                that.onValueChanged.trigger({});
+            });
+        };
+
+        that.setValue = function setValue(value) {
+            $ctrl.val(value);
+        };
+
+        return that;
+    };
+
+    formEngine.form && formEngine.form.extend({
+
+        comboBox: function() {
+            return this.element('entity', 'comboBox');
+        },
+
+        entityList: function(listName) {
+            return this.property('entityList', listName);
+        },
+
+        entityListId: function(fieldName) {
+            return this.property('entityListId', fieldName);
         }
     });
 
