@@ -34,6 +34,10 @@
     border: 1px solid gray;
 }
 
+.fe-control .fe-control-input option {
+    border 1px solid gray;
+}
+
 .fe-kpi {
     border-left: 1px dotted red;
     width: 590px;

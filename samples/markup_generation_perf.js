@@ -33,10 +33,8 @@
    }
 
 
-   var engine = formEngine({ containerId: 'formContainer', form: form }),
+   var engine = formEngine({ containerId: 'formContainer', form: form, model: model }),
        msg = '';
-
-   engine.bindData(model);
 
    engine.show();
 

@@ -26,6 +26,10 @@
 
         function init() {
 
+            trace('modelExtension', function () {
+                that.model = model = extendModel(opts.model);
+            });
+
             var markup;
 
             trace('elementInitialization', function () {
@@ -39,7 +43,6 @@
                 markup = form.control.getMarkup();            
             });
 
-
             trace('markupInsertion', function () {
                 containerNode = document.getElementById(opts.containerId);
     
@@ -50,22 +53,25 @@
             trace('controlInitialization', function () {
                 form.control.initialize();
             });
-        }
-
-        function bindData(data) {
 
             trace('bindData', function () {
 
-                that.model = model = data;
-    
                 var value;
+
                 for (var i = 0; i < bindings.length; i += 1) {
     
                     value = formEngine.getByPath(model, bindings[i].binding);
                     bindings[i].target.control.setValue(value);
                 }
             });
-        };
+        }
+
+        function extendModel(model) {
+
+            //TODO: add setProperty methods
+
+            return model;
+        }
 
         function show() {
             trace('show', function() {
@@ -99,10 +105,8 @@
             return result;
         }
 
-
         init();
 
-        that.bindData = bindData;
         that.show = show;
 
         that.eachElement = eachElement;

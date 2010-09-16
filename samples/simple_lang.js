@@ -7,13 +7,13 @@
                lastName: 'Smith',
                occupation: 'Software Developer',
                loveJavaScript: true,
-               country: { id: 3, name: 'Great Britain' }
+               country: { id: 2, name: 'Canada' }
            },
 
            countries: [
                { id: 1, name: 'USA' },
                { id: 2, name: 'Canada' },
-               { id: 3, name: 'Great Britain' }               
+               { id: 3, name: 'England' }
            ]
        },
 
@@ -45,15 +45,14 @@
 
        engine = formEngine({
            containerId: 'formContainer',
-           form: form
+           form: form,
+           model: model
        });
 
 
    engine.getElementById('loveJavaScript').control.onClick.bind(function() {
        alert('model.person.loveJavaScript: ' + model.person.loveJavaScript);
    });
-
-   engine.bindData(model);
 
    engine.show();
 

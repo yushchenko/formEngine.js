@@ -56,14 +56,13 @@
    
        engine = formEngine({
            containerId: 'formContainer',
-           form: form
+           form: form,
+           model: model
        });
 
    engine.getElementById('loveJavaScript').control.onClick.bind(function() {
        alert('checkBox clicked');
    });
-
-   engine.bindData(model);
 
    engine.show();
 

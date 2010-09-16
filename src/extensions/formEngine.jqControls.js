@@ -129,23 +129,62 @@
     formEngine.controls.comboBox = function comboBox(properties, element, engine) {
 
         var that = formEngine.controlBase.apply(formEngine, arguments),
-            $ctrl;
+            $ctrl, list, currentValue,
+            key = properties.entityListKey || 'id',
+            formatter = properties.entityListFormatter || function (i) { return i.name; };
 
         that.getMarkup = function getMarkup() {
             return comboBoxTemplate({id: element.id, label: properties.label});
         };
 
+        function fillSelect() {
+
+            var node = document.getElementById(element.id),
+                option;
+
+            for (var i = 0; i < list.length; i += 1) {
+
+                option = document.createElement('option');
+
+                option.value = list[i][key];
+                option.text = formatter(list[i]);
+
+                $.browser.msie ? node.add(option) : node.add(option, null);
+            }
+        }
+
+        function getByKey(id) {
+
+            for (var i = 0; i < list.length; i += 1) {
+                if (list[i][key] === id) {
+                    return list[i];
+                }
+            }
+            return {};
+        }
+
         that.initialize = function initialize() {
+
+            //TODO: make data binding fill the list
+            that.setList(formEngine.getByPath(engine.model, properties.entityList));
 
             $ctrl = $('#' + element.id);
 
             $ctrl.change(function() {
-                that.onValueChanged.trigger({});
+                currentValue = getByKey($ctrl.val());
+                that.onValueChanged.trigger(currentValue);
             });
         };
 
         that.setValue = function setValue(value) {
-            $ctrl.val(value);
+            $ctrl.val(value[key]);
+            currentValue = value;
+        };
+
+        that.setList = function setList(newList) {
+            list = newList;
+            fillSelect();
+            currentValue && that.setValue(currentValue); // preserve selected value
         };
 
         return that;
@@ -161,8 +200,12 @@
             return this.property('entityList', listName);
         },
 
-        entityListId: function(fieldName) {
-            return this.property('entityListId', fieldName);
+        entityListKey: function(fieldName) {
+            return this.property('entityListKey', fieldName);
+        },
+
+        entityListFormatter: function(fieldName) {
+            return this.property('entityListFormatter', fieldName);
         }
     });
 
