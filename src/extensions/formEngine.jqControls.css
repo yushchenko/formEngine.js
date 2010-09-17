@@ -27,6 +27,12 @@
     border: 1px solid gray;
 }
 
+.fe-control .fe-control-span {
+    display: block;
+    margin-left: 210px;
+    width: 380px;
+}
+
 .fe-control .fe-control-checkbox {
     display: block;
     margin-left: 210px;

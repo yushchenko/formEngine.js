@@ -7,17 +7,37 @@
                lastName: 'Smith',
                occupation: 'Software Developer',
                loveJavaScript: true,
-               country: { id: 2, name: 'Canada' }
+               country: { id: 3 },
+               city: { code: 2}
            },
 
            countries: [
-               { id: 1, name: 'USA' },
-               { id: 2, name: 'Canada' },
-               { id: 3, name: 'England' }
-           ]
-       },
+               { id: 1, name: 'USA', language: 'English' },
+               { id: 2, name: 'Canada', language: 'English' },
+               { id: 3, name: 'England', language: 'English' }
+           ],
 
-       form = formEngine.form('test')
+           cities: [
+               { code: 1, name: 'New York', countryId: 1 },
+               { code: 2, name: 'London', countryId: 3 }
+           ],
+
+           citiesInPersonCountry: function () {
+               var result = [];
+
+               for (var i = 0; i < this.cities.length; i += 1) {
+                   if (this.person.country.id === this.cities[i].countryId) {
+                       result.push(this.cities[i]);
+                   }
+               }
+
+               return result;
+           }
+       };
+
+    model.citiesInPersonCountry.dependsOn = ['person.country', 'cities'];
+
+    var form = formEngine.form('test')
 
           .element('text', 'textBox')
                .property('label', 'First Name')
@@ -26,6 +46,10 @@
 
           .text('textBox')
                .label('Last Name').value('person.lastName')
+          .end()
+
+          .textLabel()
+               .label('Full Name').value('person.firstName') 
           .end()
 
           .textBox()
@@ -39,21 +63,22 @@
           .comboBox()
                .label('Country').value('person.country')
                .entityList('countries')
+               .entityListFormatter(function(e) { return e.name + ' (' + e.language +')'; })
           .end()
 
-       .end(),
+          .comboBox()
+               .label('City').value('person.city')
+               .entityList('citiesInPersonCountry').entityListKey('code')
+          .end()
 
-       engine = formEngine({
-           containerId: 'formContainer',
-           form: form,
-           model: model
-       });
+       .end();
 
+    var engine = formEngine({ containerId: 'formContainer', form: form, model: model });
 
-   engine.getElementById('loveJavaScript').control.onClick.bind(function() {
-       alert('model.person.loveJavaScript: ' + model.person.loveJavaScript);
-   });
+    // engine.getElementById('loveJavaScript').control.onClick.bind(function() {
+    //     alert('model.person.loveJavaScript: ' + model.person.loveJavaScript);
+    // });
 
-   engine.show();
+    engine.show();
 
 })(formEngine);

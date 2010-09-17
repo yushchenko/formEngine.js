@@ -41,7 +41,7 @@
     formEngine.controls.textBox = function textBox(properties, element, engine) {
 
         var that = formEngine.controlBase.apply(formEngine, arguments),
-            $textBox;
+            $ctrl;
 
         that.getMarkup = function getMarkup() {
             return textBoxTemplate({id: element.id, label: properties.label});
@@ -49,15 +49,15 @@
 
         that.initialize = function initialize() {
 
-            $textBox = $('#' + element.id);
+            $ctrl = $('#' + element.id);
 
-            $textBox.change(function() {
-                that.onValueChanged.trigger($textBox.val());
+            $ctrl.change(function() {
+                that.onValueChanged.trigger($ctrl.val());
             });
         };
 
         that.setValue = function setValue(value) {
-            $textBox.val(value);
+            $ctrl.val(value);
         };
 
         return that;
@@ -67,6 +67,43 @@
 
         textBox: function() {
             return this.element('text', 'textBox');
+        }
+    });
+
+    /* label control
+     ***************************************************************************/
+    var textLabelTemplate = t(
+        '<div class="fe-control">' +
+            '<label class="fe-control-label"><%=label%></label>' +
+            '<span id="<%=id%>" class="fe-control-span"></span>' +
+        '</div>'
+    );
+
+    formEngine.controls.textLabel = function textLabel(properties, element, engine) {
+
+        var that = formEngine.controlBase.apply(formEngine, arguments),
+            $ctrl;
+
+        that.getMarkup = function getMarkup() {
+            return textLabelTemplate({id: element.id, label: properties.label});
+        };
+
+        that.initialize = function initialize() {
+
+            $ctrl = $('#' + element.id);
+        };
+
+        that.setValue = function setValue(value) {
+            $ctrl.text(value);
+        };
+
+        return that;
+    };
+
+    formEngine.form && formEngine.form.extend({
+
+        textLabel: function() {
+            return this.element('text', 'textLabel');
         }
     });
 
@@ -129,7 +166,7 @@
     formEngine.controls.comboBox = function comboBox(properties, element, engine) {
 
         var that = formEngine.controlBase.apply(formEngine, arguments),
-            $ctrl, list, currentValue,
+            $ctrl, list, selectedItem,
             key = properties.entityListKey || 'id',
             formatter = properties.entityListFormatter || function (i) { return i.name; };
 
@@ -166,25 +203,26 @@
         that.initialize = function initialize() {
 
             //TODO: make data binding fill the list
-            that.setList(formEngine.getByPath(engine.model, properties.entityList));
+            var lst = formEngine.getByPath(engine.model, properties.entityList);
+            that.setList((typeof lst === 'function') ? lst.apply(engine.model) : lst);
 
             $ctrl = $('#' + element.id);
 
             $ctrl.change(function() {
-                currentValue = getByKey($ctrl.val());
-                that.onValueChanged.trigger(currentValue);
+                selectedItem = getByKey($ctrl.val());
+                that.onValueChanged.trigger(selectedItem);
             });
         };
 
         that.setValue = function setValue(value) {
             $ctrl.val(value[key]);
-            currentValue = value;
+            selectedItem = value;
         };
 
         that.setList = function setList(newList) {
             list = newList;
             fillSelect();
-            currentValue && that.setValue(currentValue); // preserve selected value
+            selectedItem && that.setValue(selectedItem); // preserve selected value
         };
 
         return that;
