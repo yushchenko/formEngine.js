@@ -55,15 +55,26 @@
             });
 
             trace('bindData', function () {
-
-                var value;
-
-                for (var i = 0; i < bindings.length; i += 1) {
-    
-                    value = formEngine.getByPath(model, bindings[i].binding);
-                    bindings[i].target.control.setValue(value);
-                }
+                pushData();
             });
+        }
+
+        function pushData(filter) {
+
+            var value, b;
+
+            for (var i = 0; i < bindings.length; i += 1) {
+
+                b = bindings[i];
+
+                if (filter && b.binding !== filter) {
+                    continue;
+                }
+
+                value = formEngine.getByPath(model, b.binding);
+
+                b.target[b.method](value);
+            }
         }
 
         function extendModel(model) {
@@ -129,11 +140,6 @@
         that.id = metadata.id;
         that.elements = [];
 
-        if (metadata.valueExp) { //TODO: add readonlyExp, hiddenExp
-            //TODO: add parser for complex expressions
-            engine.bindings.push({ binding: metadata.valueExp, target: that, property: 'value' });
-        }
-
         for ( var i = 0; i < childrenMetadata.length; i += 1 ) {
             that.elements.push(formEngine.element(engine, childrenMetadata[i]));
         }
@@ -143,10 +149,15 @@
 
         that.control = controlConstructor(controlProperties, that, engine);
 
-        that.control.onValueChanged.bind(function (newValue) {
-            if (metadata.valueExp) {
-                formEngine.setByPath(engine.model, metadata.valueExp, newValue);
-            }
+        var binding;
+        for (var j = 0; j < metadata.bindings.length; j += 1) {
+            binding = metadata.bindings[j];
+            engine.bindings.push({ binding: binding.binding, target: that.control, method: binding.method });
+        }
+
+        var valueBinding = metadata.valueExp;
+        valueBinding && that.control.onValueChanged.bind(function (newValue) {
+            formEngine.setByPath(engine.model, valueBinding, newValue);
         });
 
         return that;

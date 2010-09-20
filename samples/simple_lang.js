@@ -20,22 +20,22 @@
            cities: [
                { code: 1, name: 'New York', countryId: 1 },
                { code: 2, name: 'London', countryId: 3 }
-           ],
+           ]
 
-           citiesInPersonCountry: function () {
-               var result = [];
+           // citiesInPersonCountry: function () {
+           //     var result = [];
 
-               for (var i = 0; i < this.cities.length; i += 1) {
-                   if (this.person.country.id === this.cities[i].countryId) {
-                       result.push(this.cities[i]);
-                   }
-               }
+           //     for (var i = 0; i < this.cities.length; i += 1) {
+           //         if (this.person.country.id === this.cities[i].countryId) {
+           //             result.push(this.cities[i]);
+           //         }
+           //     }
 
-               return result;
-           }
+           //     return result;
+           // }
        };
 
-    model.citiesInPersonCountry.dependsOn = ['person.country', 'cities'];
+    // model.citiesInPersonCountry.dependsOn = ['person.country', 'cities'];
 
     var form = formEngine.form('test')
 
@@ -68,7 +68,9 @@
 
           .comboBox()
                .label('City').value('person.city')
-               .entityList('citiesInPersonCountry').entityListKey('code')
+               .entityList('cities').entityListKey('code')
+               .entityListFilter(function(entity, model) { return entity.countryId === model.person.country.id; })
+               .entityListDependsOn('person.country')
           .end()
 
        .end();

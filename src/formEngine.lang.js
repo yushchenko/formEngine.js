@@ -21,6 +21,7 @@
             controlProperties: {},
 
             elements: [],
+            bindings: [],
 
             validationRules: []
         };
@@ -70,7 +71,8 @@
         },
 
         value: function(exp) {
-            this.currentElement.valueExp = exp;
+            this.currentElement.valueExp = exp; 
+            this.currentElement.bindings.push({ binding: exp, method: 'setValue'}); // consider simple expression as binding
             return this;
         },
 

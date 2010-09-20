@@ -168,7 +168,8 @@
         var that = formEngine.controlBase.apply(formEngine, arguments),
             $ctrl, list, selectedItem,
             key = properties.entityListKey || 'id',
-            formatter = properties.entityListFormatter || function (i) { return i.name; };
+            formatter = properties.entityListFormatter || function (i) { return i.name; },
+            filter = properties.entityListFilter || function () { return true;};
 
         that.getMarkup = function getMarkup() {
             return comboBoxTemplate({id: element.id, label: properties.label});
@@ -180,6 +181,10 @@
                 option;
 
             for (var i = 0; i < list.length; i += 1) {
+
+                if (!filter(list[i], engine.model)) {
+                    continue;
+                }
 
                 option = document.createElement('option');
 
@@ -201,10 +206,6 @@
         }
 
         that.initialize = function initialize() {
-
-            //TODO: make data binding fill the list
-            var lst = formEngine.getByPath(engine.model, properties.entityList);
-            that.setList((typeof lst === 'function') ? lst.apply(engine.model) : lst);
 
             $ctrl = $('#' + element.id);
 
@@ -234,17 +235,30 @@
             return this.element('entity', 'comboBox');
         },
 
-        entityList: function(listName) {
-            return this.property('entityList', listName);
+        entityList: function(binding) {
+            this.currentElement.bindings.push({binding: binding, method: 'setList'});
+            return this.property('entityList', binding);
         },
 
         entityListKey: function(fieldName) {
             return this.property('entityListKey', fieldName);
         },
 
-        entityListFormatter: function(fieldName) {
-            return this.property('entityListFormatter', fieldName);
-        }
+        entityListFormatter: function(fn) {
+            return this.property('entityListFormatter', fn);
+        },
+
+        entityListFilter: function(fn) {
+            return this.property('entityListFilter', fn);
+        },
+        entityListDependsOn: function() {
+
+            for (var i = 0; i < arguments.length; i += 1) {
+                this.currentElement.bindings.push({binding: arguments[i], method: 'setList'});
+            }
+
+            return this;
+        } 
     });
 
 })(formEngine);
