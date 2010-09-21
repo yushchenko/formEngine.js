@@ -21,21 +21,7 @@
                { code: 1, name: 'New York', countryId: 1 },
                { code: 2, name: 'London', countryId: 3 }
            ]
-
-           // citiesInPersonCountry: function () {
-           //     var result = [];
-
-           //     for (var i = 0; i < this.cities.length; i += 1) {
-           //         if (this.person.country.id === this.cities[i].countryId) {
-           //             result.push(this.cities[i]);
-           //         }
-           //     }
-
-           //     return result;
-           // }
        };
-
-    // model.citiesInPersonCountry.dependsOn = ['person.country', 'cities'];
 
     var form = formEngine.form('test')
 
@@ -63,7 +49,7 @@
           .comboBox()
                .label('Country').value('person.country')
                .entityList('countries')
-               .entityListFormatter(function(e) { return e.name + ' (' + e.language +')'; })
+               .entityListFormatter(function(entity) { return entity.name + ' (' + entity.language +')'; })
           .end()
 
           .comboBox()

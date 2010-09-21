@@ -59,7 +59,7 @@
             });
         }
 
-        function pushData(filter) {
+        function pushData(filter, source) {
 
             var value, b;
 
@@ -67,11 +67,15 @@
 
                 b = bindings[i];
 
-                if (filter && b.binding !== filter) {
+                if (filter && b.binding !== filter && b.value !== filter) {
                     continue;
                 }
 
-                value = formEngine.getByPath(model, b.binding);
+                if (source && b.target === source) { // need method check?
+                    continue;
+                }
+
+                value = formEngine.getByPath(model, b.value || b.binding);
 
                 b.target[b.method](value);
             }
@@ -119,6 +123,7 @@
         init();
 
         that.show = show;
+        that.pushData = pushData;
 
         that.eachElement = eachElement;
         that.getElementById = getElementById;
@@ -152,12 +157,14 @@
         var binding;
         for (var j = 0; j < metadata.bindings.length; j += 1) {
             binding = metadata.bindings[j];
-            engine.bindings.push({ binding: binding.binding, target: that.control, method: binding.method });
+            engine.bindings.push({ binding: binding.binding, value: binding.value,
+                                   target: that.control, method: binding.method });
         }
 
         var valueBinding = metadata.valueExp;
         valueBinding && that.control.onValueChanged.bind(function (newValue) {
             formEngine.setByPath(engine.model, valueBinding, newValue);
+            engine.pushData(valueBinding, that.control);
         });
 
         return that;

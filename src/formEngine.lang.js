@@ -71,8 +71,13 @@
         },
 
         value: function(exp) {
-            this.currentElement.valueExp = exp; 
-            this.currentElement.bindings.push({ binding: exp, method: 'setValue'}); // consider simple expression as binding
+
+            this.currentElement.valueExp = exp;
+
+            if (typeof exp === 'string') { // consider simple expression as binding
+                this.currentElement.bindings.push({ binding: exp, method: 'setValue'}); 
+            }
+
             return this;
         },
 

@@ -180,6 +180,8 @@
             var node = document.getElementById(element.id),
                 option;
 
+            node.innerHTML = ''; // clean opitons if not empty
+
             for (var i = 0; i < list.length; i += 1) {
 
                 if (!filter(list[i], engine.model)) {
@@ -198,7 +200,7 @@
         function getByKey(id) {
 
             for (var i = 0; i < list.length; i += 1) {
-                if (list[i][key] === id) {
+                if (String(list[i][key]) === String(id)) {
                     return list[i];
                 }
             }
@@ -251,10 +253,13 @@
         entityListFilter: function(fn) {
             return this.property('entityListFilter', fn);
         },
-        entityListDependsOn: function() {
+
+        entityListDependsOn: function() { // should be afte entityList
+
+            var val = this.currentElement.controlProperties.entityList;
 
             for (var i = 0; i < arguments.length; i += 1) {
-                this.currentElement.bindings.push({binding: arguments[i], method: 'setList'});
+                this.currentElement.bindings.push({binding: arguments[i], value: val, method: 'setList'});
             }
 
             return this;
