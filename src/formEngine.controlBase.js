@@ -4,6 +4,8 @@
 
         var that = {};
 
+        that.id = element.id; // 
+
         function getMarkup() {
             return getChildMarkup();
         };
@@ -19,13 +21,10 @@
             return childMarkup;
         };
 
-        function initialize() {
-            
-        };
-
-        function setValue(value) {
-            
-        };
+        function initialize() {}
+        function setValue(value) {}
+        function setHidden(hidden) {}
+        function setReadonly(readonly) {}
 
         function forEachChildControl(fn) {
 
@@ -40,6 +39,9 @@
         that.initialize = initialize;
 
         that.setValue = setValue;
+        that.setHidden = setHidden;
+        that.setReadonly = setReadonly;
+
         that.onValueChanged = formEngine.event();
 
         that.forEachChildControl = forEachChildControl;

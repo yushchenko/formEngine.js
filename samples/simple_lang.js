@@ -5,21 +5,26 @@
            person: {
                firstName: 'John',
                lastName: 'Smith',
-               occupation: 'Software Developer',
+               occupation: 'JavaScript Developer',
                loveJavaScript: true,
-               country: { id: 3 },
-               city: { code: 2}
+               whyNotLoveJavaScript: '',
+               country: { id: 2, name: 'Canada', language: 'English' },
+               city: { code: 3, name: 'Toronto'}
            },
 
            countries: [
-               { id: 1, name: 'USA', language: 'English' },
+               { id: 1, name: 'USA', language: 'US English' },
                { id: 2, name: 'Canada', language: 'English' },
-               { id: 3, name: 'England', language: 'English' }
+               { id: 3, name: 'England', language: 'British English' },
+               { id: 4, name: 'France', language: 'French' }               
            ],
 
            cities: [
                { code: 1, name: 'New York', countryId: 1 },
-               { code: 2, name: 'London', countryId: 3 }
+               { code: 2, name: 'Boston', countryId: 1 },
+               { code: 3, name: 'Toronto', countryId: 2 },
+               { code: 4, name: 'London', countryId: 3 },
+               { code: 5, name: 'Paris', countryId: 4 }
            ]
        };
 
@@ -34,18 +39,20 @@
                .label('Last Name').value('person.lastName')
           .end()
 
-          .textLabel()
-               .label('Full Name').value('person.firstName') 
+          .checkBox().id('loveJavaScript')
+               .label('Love JavaScript').value('person.loveJavaScript')
+          .end()
+
+          .textBox()
+               .label('Why not love JavaScript?').value('person.whyNotLoveJavaScript')
+               .hidden('person.loveJavaScript')
           .end()
 
           .textBox()
                .label('Occupation').value('person.occupation')
+               .readonly('person.loveJavaScript')
           .end()
 
-          .checkBox().id('loveJavaScript')
-               .label('Love JavaScript').value('person.loveJavaScript')
-          .end()
-          
           .comboBox()
                .label('Country').value('person.country')
                .entityList('countries')
@@ -57,6 +64,15 @@
                .entityList('cities').entityListKey('code')
                .entityListFilter(function(entity, model) { return entity.countryId === model.person.country.id; })
                .entityListDependsOn('person.country')
+          .end()
+
+          .textLabel()
+              .label('Summary')
+              .value(function(m) {
+                         return m.person.firstName + ' ' + m.person.lastName +
+                                ' from ' + m.person.city.name + ', ' + m.person.country.name +
+                                ' speaks ' + m.person.country.language;
+                     },'person.firstName', 'person.lastName', 'person.country.name', 'person.city.name')
           .end()
 
        .end();

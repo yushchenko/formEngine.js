@@ -27,6 +27,24 @@
         };
     }
 
+    function addBinding(element, args, propertyName, methodName) {
+
+        var exp = args[0];
+
+        element[propertyName] = exp;
+
+        if (typeof exp === 'string') { // direct binding
+            element.bindings.push({ binding: exp, method: methodName });
+        }
+
+        if (typeof exp === 'function') { // calculated value
+
+            for (var i = 1; i < args.length; i += 1) {
+                element.bindings.push({ binding: args[i], method: methodName, argument: exp });
+            }
+        }
+    }
+
     form.fn = form.prototype = {
 
         metadata: undefined,
@@ -71,26 +89,20 @@
         },
 
         value: function(exp) {
+            addBinding(this.currentElement, arguments, 'valueExp', 'setValue');
+            return this;
+        },
 
-            this.currentElement.valueExp = exp;
-
-            if (typeof exp === 'string') { // consider simple expression as binding
-                this.currentElement.bindings.push({ binding: exp, method: 'setValue'}); 
-            }
-
+        hidden: function(exp) {
+            addBinding(this.currentElement, arguments, 'hiddenExp', 'setHidden');
             return this;
         },
 
         readonly: function(exp) {
-            this.currentElement.readonlyExp = exp;
+            addBinding(this.currentElement, arguments, 'readonlyExp', 'setReadonly');
             return this;
         },
         
-        hidden: function(exp) {
-            this.currentElement.hiddenExp = exp;
-            return this;
-        },
-
         //TODO: add method to determine type's default control
 
         text: function(controlName) {

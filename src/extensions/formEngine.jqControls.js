@@ -1,11 +1,32 @@
 ;(function(formEngine, undefined){
 
+    formEngine.jqControlBase = function jqControlBasee(properties, element, engine) {
+
+        var that = formEngine.controlBase.apply(formEngine, arguments);
+        
+        that.setHidden = function setHidden(hidden) {
+            var $container = $('#' + that.id).parent();
+            $container[hidden ? 'addClass' : 'removeClass']('fe-hidden');
+        };
+
+        that.setReadonly = function setReadonly(readonly) {
+            var $input = $('#' + that.id);
+            $input.attr('disabled', readonly);
+        };
+
+        return that;
+    };
+
+
+    /* form Control
+     ***************************************************************************/
+
     var t = formEngine.template,
         formTemplate = t('<div class="fe-form"><%=content%></div>');
 
     formEngine.controls.form = function form(properties, element, engine) {
 
-        var that = formEngine.controlBase.apply(formEngine, arguments);
+        var that = formEngine.jqControlBase.apply(formEngine, arguments);
 
         that.getMarkup = function getMarkup() {
             return formTemplate({content: that.getChildMarkup()});
@@ -40,16 +61,16 @@
 
     formEngine.controls.textBox = function textBox(properties, element, engine) {
 
-        var that = formEngine.controlBase.apply(formEngine, arguments),
+        var that = formEngine.jqControlBase.apply(formEngine, arguments),
             $ctrl;
 
         that.getMarkup = function getMarkup() {
-            return textBoxTemplate({id: element.id, label: properties.label});
+            return textBoxTemplate({id: that.id, label: properties.label});
         };
 
         that.initialize = function initialize() {
 
-            $ctrl = $('#' + element.id);
+            $ctrl = $('#' + that.id);
 
             $ctrl.change(function() {
                 that.onValueChanged.trigger($ctrl.val());
@@ -81,16 +102,16 @@
 
     formEngine.controls.textLabel = function textLabel(properties, element, engine) {
 
-        var that = formEngine.controlBase.apply(formEngine, arguments),
+        var that = formEngine.jqControlBase.apply(formEngine, arguments),
             $ctrl;
 
         that.getMarkup = function getMarkup() {
-            return textLabelTemplate({id: element.id, label: properties.label});
+            return textLabelTemplate({id: that.id, label: properties.label});
         };
 
         that.initialize = function initialize() {
 
-            $ctrl = $('#' + element.id);
+            $ctrl = $('#' + that.id);
         };
 
         that.setValue = function setValue(value) {
@@ -119,16 +140,16 @@
 
     formEngine.controls.checkBox = function checkBox(properties, element, engine) {
 
-        var that = formEngine.controlBase.apply(formEngine, arguments),
+        var that = formEngine.jqControlBase.apply(formEngine, arguments),
             $ctrl;
 
         that.getMarkup = function getMarkup() {
-            return checkBoxTemplate({id: element.id, label: properties.label});
+            return checkBoxTemplate({id: that.id, label: properties.label});
         };
 
         that.initialize = function initialize() {
 
-            $ctrl = $('#' + element.id);
+            $ctrl = $('#' + that.id);
 
             $ctrl.change(function() {
                 that.onValueChanged.trigger($ctrl.attr('checked'));
@@ -165,28 +186,31 @@
 
     formEngine.controls.comboBox = function comboBox(properties, element, engine) {
 
-        var that = formEngine.controlBase.apply(formEngine, arguments),
-            $ctrl, list, selectedItem,
+        var that = formEngine.jqControlBase.apply(formEngine, arguments),
+            $ctrl, list, filteredList, selectedItemKey,
             key = properties.entityListKey || 'id',
             formatter = properties.entityListFormatter || function (i) { return i.name; },
             filter = properties.entityListFilter || function () { return true;};
 
         that.getMarkup = function getMarkup() {
-            return comboBoxTemplate({id: element.id, label: properties.label});
+            return comboBoxTemplate({id: that.id, label: properties.label});
         };
 
         function fillSelect() {
 
-            var node = document.getElementById(element.id),
+            var node = document.getElementById(that.id),
                 option;
 
             node.innerHTML = ''; // clean opitons if not empty
+            filteredList = [];
 
             for (var i = 0; i < list.length; i += 1) {
 
                 if (!filter(list[i], engine.model)) {
                     continue;
                 }
+
+                filteredList.push(list[i]);
 
                 option = document.createElement('option');
 
@@ -199,33 +223,44 @@
 
         function getByKey(id) {
 
-            for (var i = 0; i < list.length; i += 1) {
-                if (String(list[i][key]) === String(id)) {
-                    return list[i];
+            for (var i = 0; i < filteredList.length; i += 1) {
+                if (String(filteredList[i][key]) === String(id)) {
+                    return filteredList[i];
                 }
             }
-            return {};
+            return undefined;
         }
 
         that.initialize = function initialize() {
 
-            $ctrl = $('#' + element.id);
+            $ctrl = $('#' + that.id);
 
             $ctrl.change(function() {
-                selectedItem = getByKey($ctrl.val());
-                that.onValueChanged.trigger(selectedItem);
+                selectedItemKey = $ctrl.val();
+                that.onValueChanged.trigger(getByKey(selectedItemKey));
             });
         };
 
         that.setValue = function setValue(value) {
-            $ctrl.val(value[key]);
-            selectedItem = value;
+            selectedItemKey = value[key];
+            $ctrl.val(selectedItemKey);
         };
 
         that.setList = function setList(newList) {
+
             list = newList;
             fillSelect();
-            selectedItem && that.setValue(selectedItem); // preserve selected value
+
+            var selectedItem = getByKey(selectedItemKey);
+
+            if (selectedItem) { // selected value hasn't changed
+                that.setValue(selectedItem); 
+            }
+            else { // old selected item gone, actually value has changed
+                var newSelectedItem = filteredList[0];
+                that.setValue(newSelectedItem);
+                that.onValueChanged.trigger(newSelectedItem);
+            }
         };
 
         return that;
@@ -254,12 +289,12 @@
             return this.property('entityListFilter', fn);
         },
 
-        entityListDependsOn: function() { // should be afte entityList
+        entityListDependsOn: function() { // should be after entityList
 
-            var val = this.currentElement.controlProperties.entityList;
+            var arg = this.currentElement.controlProperties.entityList;
 
             for (var i = 0; i < arguments.length; i += 1) {
-                this.currentElement.bindings.push({binding: arguments[i], value: val, method: 'setList'});
+                this.currentElement.bindings.push({binding: arguments[i], method: 'setList', argument: arg});
             }
 
             return this;

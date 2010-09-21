@@ -9,7 +9,7 @@
         var that = {},
             model,
             form,
-            bindings = [], // {binding, target, property}
+            bindings = [], // {binding, target, method, argument}
             containerNode;
 
         that.KPI = {
@@ -61,23 +61,25 @@
 
         function pushData(filter, source) {
 
-            var value, b;
+            var binding, arg;
 
             for (var i = 0; i < bindings.length; i += 1) {
 
-                b = bindings[i];
+                binding = bindings[i];
 
-                if (filter && b.binding !== filter && b.value !== filter) {
+                if (filter && binding.binding.indexOf(filter) !== 0) { // 'startWith' filter
                     continue;
                 }
 
-                if (source && b.target === source) { // need method check?
+                if (source && binding.target === source) { // need method check?
                     continue;
                 }
 
-                value = formEngine.getByPath(model, b.value || b.binding);
+                arg = (typeof binding.argument === 'function')
+                          ? binding.argument(model)
+                          : formEngine.getByPath(model, binding.argument || binding.binding);
 
-                b.target[b.method](value);
+                binding.target[binding.method](arg);
             }
         }
 
@@ -157,8 +159,8 @@
         var binding;
         for (var j = 0; j < metadata.bindings.length; j += 1) {
             binding = metadata.bindings[j];
-            engine.bindings.push({ binding: binding.binding, value: binding.value,
-                                   target: that.control, method: binding.method });
+            binding.target = that.control;
+            engine.bindings.push(binding);
         }
 
         var valueBinding = metadata.valueExp;
