@@ -23,7 +23,6 @@
 
 * Next Steps
 
-  - comboBox control (binding to list of entities)
   - toolBar & button controls (a way to run validation)
   - panel control
   - ? formDebugger control or an easy way to debug form

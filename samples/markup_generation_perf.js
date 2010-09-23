@@ -9,7 +9,8 @@
            id: 'testForm',
            typeName: 'form',
            controlName: 'form',
-           elements: []
+           elements: [],
+           bindings: []
        };
    
    var fName, fValue, fid, fLabel;
@@ -28,7 +29,9 @@
            typeName: 'text',
            valueExp: fName,
            controlName: 'textBox',
-           controlProperties: { label: fLabel }
+           controlProperties: { label: fLabel },
+           elements: [],
+           bindings: [{ binding: fName, method: 'setValue' }]
        });
    }
 
