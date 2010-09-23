@@ -85,7 +85,21 @@
 
         function extendModel(model) {
 
-            //TODO: add setProperty methods
+            function extend(obj, path) {
+
+                for (var name in obj) {
+                    if (obj.hasOwnProperty(name) && typeof obj[name] === 'object') {
+                        extend(obj[name], path ? path + '.' + name : name );
+                    }
+                }
+
+                obj.setValue = function setValue(property, value) {
+                    obj[property] = value;
+                    pushData(path ? path + '.' + property : property);
+                };
+            }
+
+            extend(model);
 
             return model;
         }

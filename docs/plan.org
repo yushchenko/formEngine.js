@@ -23,10 +23,11 @@
 
 * Next Steps
 
+  - get bindings parsing expressions or function source
   - toolBar & button controls (a way to run validation)
   - panel control
   - ? formDebugger control or an easy way to debug form
   - build: JSLint + Closure Compiler validation
   - add header to all files
   - find out a way to avoid name conflicts in DSL
-  - 
+  - add 'Select...' item in comboBox

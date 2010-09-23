@@ -206,7 +206,7 @@
 
             for (var i = 0; i < list.length; i += 1) {
 
-                if (!filter(list[i], engine.model)) {
+                if (!filter(engine.model, list[i])) {
                     continue;
                 }
 

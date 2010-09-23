@@ -62,7 +62,7 @@
           .comboBox()
                .label('City').value('person.city')
                .entityList('cities').entityListKey('code')
-               .entityListFilter(function(entity, model) { return entity.countryId === model.person.country.id; })
+               .entityListFilter(function(model, entity) { return entity.countryId === model.person.country.id; })
                .entityListDependsOn('person.country')
           .end()
 
@@ -79,9 +79,11 @@
 
     var engine = formEngine({ containerId: 'formContainer', form: form, model: model });
 
-    // engine.getElementById('loveJavaScript').control.onClick.bind(function() {
-    //     alert('model.person.loveJavaScript: ' + model.person.loveJavaScript);
-    // });
+    engine.getElementById('loveJavaScript').control.onClick.bind(function() {
+        if (model.person.loveJavaScript) {
+            model.person.setValue('occupation', 'JavaScript Developer');
+        }
+    });
 
     engine.show();
 
