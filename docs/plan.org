@@ -24,6 +24,7 @@
 * Next Steps
 
   - get bindings parsing expressions or function source
+  - add, remove method for arrays
   - toolBar & button controls (a way to run validation)
   - panel control
   - ? formDebugger control or an easy way to debug form

@@ -56,14 +56,16 @@
           .comboBox()
                .label('Country').value('person.country')
                .entityList('countries')
-               .entityListFormatter(function(entity) { return entity.name + ' (' + entity.language +')'; })
+               .entityListFormatter(function(entity) { return entity.name + ' (' + entity.language + ')'; })
+//               .entityListFormatter('{name} ({language})')
+//               .entityListFormatter('<%=name%> (<%=language%>)')
           .end()
 
           .comboBox()
                .label('City').value('person.city')
                .entityList('cities').entityListKey('code')
                .entityListFilter(function(model, entity) { return entity.countryId === model.person.country.id; })
-               .entityListDependsOn('person.country')
+//               .entityListFilter('$$.countryId === $.person.country.id')
           .end()
 
           .textLabel()
@@ -72,7 +74,8 @@
                          return m.person.firstName + ' ' + m.person.lastName +
                                 ' from ' + m.person.city.name + ', ' + m.person.country.name +
                                 ' speaks ' + m.person.country.language;
-                     },'person.firstName', 'person.lastName', 'person.country.name', 'person.city.name')
+                    })
+//            .value('<%=person.firstName%> <%=person.lastName%> from <%=person.city.name%>, <%= person.coutry.name%> speaks <%=m.person.country.language%>'
           .end()
 
        .end();

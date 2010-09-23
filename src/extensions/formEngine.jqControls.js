@@ -286,19 +286,20 @@
         },
 
         entityListFilter: function(fn) {
-            return this.property('entityListFilter', fn);
-        },
 
-        entityListDependsOn: function() { // should be after entityList
+            // var bindings = formEngine.form.getBindingsFromFunctionSource(fn);
 
             var arg = this.currentElement.controlProperties.entityList;
 
-            for (var i = 0; i < arguments.length; i += 1) {
-                this.currentElement.bindings.push({binding: arguments[i], method: 'setList', argument: arg});
-            }
+            // for (var i = 0; i < bindings.length; i += 1) {
+            //     this.currentElement.bindings.push({binding: bindings[i], method: 'setList', argument: arg});
+            // }
 
-            return this;
-        } 
+            formEngine.form.addBindings(this.currentElement, fn, 'setList', undefined, arg);
+
+            return this.property('entityListFilter', fn);
+        }
+
     });
 
 })(formEngine);

@@ -27,23 +27,40 @@
         };
     }
 
-    function addBinding(element, args, propertyName, methodName) {
+    function getBindingsFromFunctionSource(fn) {
 
-        var exp = args[0];
+        var source = fn.toString(),
+            argRegExp = /function\s*\(\s*([\w\_\$]+)/,
+            argName = argRegExp.exec(source)[1],
+            safeArgName = argName.replace(/\$/, '\\$&'), // argument name can contain $
+            bindingRegExp = new RegExp(safeArgName + '\\.[\\w\\.\\_\\$]+', 'g'),
+            matches = source.match(bindingRegExp),
+            results = [];
 
-        element[propertyName] = exp;
-
-        if (typeof exp === 'string') { // direct binding
-            element.bindings.push({ binding: exp, method: methodName });
+        for (var i = 0; i < (matches || []).length; i += 1) {
+            results.push(matches[i].slice(argName.length + 1));
         }
 
-        if (typeof exp === 'function') { // calculated value
+        return results;
+    };
 
-            for (var i = 1; i < args.length; i += 1) {
-                element.bindings.push({ binding: args[i], method: methodName, argument: exp });
+    form.addBindings = function addBindings(element, exp, methodName, propertyName, argument) {
+
+        propertyName && (element[propertyName] = exp);
+
+        if (typeof exp === 'string') { // string
+            element.bindings.push({ binding: exp, method: methodName, argument: argument });
+        }
+
+        if (typeof exp === 'function') { // function
+
+            var bindings = getBindingsFromFunctionSource(exp);
+
+            for (var i = 0; i < bindings.length; i += 1) {
+                element.bindings.push({ binding: bindings[i], method: methodName, argument: argument || exp });
             }
         }
-    }
+    };
 
     form.fn = form.prototype = {
 
@@ -89,17 +106,17 @@
         },
 
         value: function(exp) {
-            addBinding(this.currentElement, arguments, 'valueExp', 'setValue');
+            form.addBindings(this.currentElement, exp, 'setValue', 'valueExp');
             return this;
         },
 
         hidden: function(exp) {
-            addBinding(this.currentElement, arguments, 'hiddenExp', 'setHidden');
+            form.addBindings(this.currentElement, exp, 'setHidden', 'hiddenExp');
             return this;
         },
 
         readonly: function(exp) {
-            addBinding(this.currentElement, arguments, 'readonlyExp', 'setReadonly');
+            form.addBindings(this.currentElement, exp, 'setReadonly', 'readonlyExp');
             return this;
         },
         
