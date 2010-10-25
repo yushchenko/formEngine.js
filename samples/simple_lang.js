@@ -56,26 +56,28 @@
           .comboBox()
                .label('Country').value('person.country')
                .entityList('countries')
-               .entityListFormatter(function(entity) { return entity.name + ' (' + entity.language + ')'; })
-//               .entityListFormatter('{name} ({language})')
-//               .entityListFormatter('<%=name%> (<%=language%>)')
+               // .entityListFormatter(function(entity, model) { return entity.name + ' (' + entity.language + ')'; })
+               // .entityListFormatter('e.name + " (" + e.language + ")"')
+               .entityListFormatter('<%=name%> (<%=language%>)')
           .end()
 
           .comboBox()
                .label('City').value('person.city')
                .entityList('cities').entityListKey('code')
-               .entityListFilter(function(model, entity) { return entity.countryId === model.person.country.id; })
-//               .entityListFilter('$$.countryId === $.person.country.id')
+               .entityListFilter('e.countryId === m.person.country.id')
+               // .entityListFilter(function(entity, model) { return entity.countryId === model.person.country.id; })
+               .entityListFormatter('.name')
           .end()
 
           .textLabel()
               .label('Summary')
-              .value(function(m) {
-                         return m.person.firstName + ' ' + m.person.lastName +
-                                ' from ' + m.person.city.name + ', ' + m.person.country.name +
-                                ' speaks ' + m.person.country.language;
-                    })
-//            .value('<%=person.firstName%> <%=person.lastName%> from <%=person.city.name%>, <%= person.coutry.name%> speaks <%=m.person.country.language%>'
+              // .value(function(m) {
+              //            return m.person.firstName + ' ' + m.person.lastName +
+              //                   ' from ' + m.person.city.name + ', ' + m.person.country.name +
+              //                   ' speaks ' + m.person.country.language;
+              //       })
+              .value('<%=person.firstName%> <%=person.lastName%> from <%=person.city.name%>, <%= person.coutry.name%> ' +
+                     'speaks <%=m.person.country.language%>')
           .end()
 
        .end();

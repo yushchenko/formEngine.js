@@ -189,7 +189,13 @@
         var that = formEngine.jqControlBase.apply(formEngine, arguments),
             $ctrl, list, filteredList, selectedItemKey,
             key = properties.entityListKey || 'id',
-            formatter = properties.entityListFormatter || function (i) { return i.name; },
+
+            fmt = properties.entityListFormatter,
+            formatter = typeof fmt === 'string' && fmt.slice(0,1) === '%'
+                            ? t(fmt.slice(1)) :
+                        typeof fmt === 'function'
+                            ? fmt : function (i) { return i.name; },
+
             filter = properties.entityListFilter || function () { return true;};
 
         that.getMarkup = function getMarkup() {

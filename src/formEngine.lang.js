@@ -29,8 +29,8 @@
 
     function getBindingsFromFunctionSource(fn) {
 
-        var source = fn.toString(),
-            argRegExp = /function\s*\(\s*([\w\_\$]+)/,
+        var source = fn.toString();
+        var argRegExp = /function\s*[\w\_\$]*\s*\(\s*([\w\_\$]+)/,
             argName = argRegExp.exec(source)[1],
             safeArgName = argName.replace(/\$/, '\\$&'), // argument name can contain $
             bindingRegExp = new RegExp(safeArgName + '\\.[\\w\\.\\_\\$]+', 'g'),
@@ -42,14 +42,23 @@
         }
 
         return results;
-    };
+    }
+
+    function getBindingsFromTemplate(tmpl) {
+        
+    }
 
     form.addBindings = function addBindings(element, exp, methodName, propertyName, argument) {
 
         propertyName && (element[propertyName] = exp);
 
-        if (typeof exp === 'string') { // string
+        if (typeof exp === 'string' && exp.slice(0,1) !== '%') { // simple binding
             element.bindings.push({ binding: exp, method: methodName, argument: argument });
+            return;
+        }
+
+        if (typeof exp === 'string' && exp.slice(0,1) === '%') { // template
+            exp = formEngine.template(exp.slice(1)); // just make function from template
         }
 
         if (typeof exp === 'function') { // function
