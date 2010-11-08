@@ -44,13 +44,7 @@
         return results;
     }
 
-    function getBindingsFromTemplate(tmpl) {
-        
-    }
-
-    form.addBindings = function addBindings(element, exp, methodName, propertyName, argument) {
-
-        propertyName && (element[propertyName] = exp);
+    form.addBindings = function addBindings(element, exp, methodName, argument) {
 
         if (typeof exp === 'string' && exp.slice(0,1) !== '%') { // simple binding
             element.bindings.push({ binding: exp, method: methodName, argument: argument });
@@ -115,17 +109,18 @@
         },
 
         value: function(exp) {
-            form.addBindings(this.currentElement, exp, 'setValue', 'valueExp');
+            form.addBindings(this.currentElement, exp, 'setValue');
+            this.currentElement.valueExp = exp;
             return this;
         },
 
         hidden: function(exp) {
-            form.addBindings(this.currentElement, exp, 'setHidden', 'hiddenExp');
+            form.addBindings(this.currentElement, exp, 'setHidden');
             return this;
         },
 
         readonly: function(exp) {
-            form.addBindings(this.currentElement, exp, 'setReadonly', 'readonlyExp');
+            form.addBindings(this.currentElement, exp, 'setReadonly');
             return this;
         },
         

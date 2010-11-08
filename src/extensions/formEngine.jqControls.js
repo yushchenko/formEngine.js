@@ -293,19 +293,12 @@
 
         entityListFilter: function(fn) {
 
-            // var bindings = formEngine.form.getBindingsFromFunctionSource(fn);
-
             var arg = this.currentElement.controlProperties.entityList;
 
-            // for (var i = 0; i < bindings.length; i += 1) {
-            //     this.currentElement.bindings.push({binding: bindings[i], method: 'setList', argument: arg});
-            // }
-
-            formEngine.form.addBindings(this.currentElement, fn, 'setList', undefined, arg);
+            formEngine.form.addBindings(this.currentElement, fn, 'setList', arg);
 
             return this.property('entityListFilter', fn);
         }
-
     });
 
 })(formEngine);
