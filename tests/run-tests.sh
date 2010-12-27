@@ -1,0 +1,1 @@
+java -jar libs/JsTestDriver-1.2.2.jar --config tests.yaml --tests all

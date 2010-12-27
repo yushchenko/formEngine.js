@@ -1,0 +1,21 @@
+<project name="formEngine.js" default="tests" basedir=".">
+
+  <target name="jslint">
+	<exec executable="java" failonerror="true">
+	  <arg line="-jar build/libs/js.jar build/jslint-runner.js" />
+	</exec>
+  </target>
+
+  <target name="tests" depends="jslint"> 
+    <exec executable="java" failonerror="true">
+      <arg line="-jar tests/libs/JsTestDriver-1.2.2.jar --config tests/tests.yaml --tests all" />
+    </exec>
+  </target>
+
+  <target name="combine" depends="tests">
+  </target>
+
+  <target name="crunch" depends="combine">
+  </target>
+
+</project>

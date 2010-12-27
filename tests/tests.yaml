@@ -1,0 +1,10 @@
+server: http://localhost:9876
+
+load:
+  # libs
+  - libs/jasmine.js
+  - libs/JasmineAdapter.js
+  # code
+  - ../source/fe.js
+  # tests
+  - source/fe.tests.js
