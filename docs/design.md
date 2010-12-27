@@ -1,84 +1,77 @@
 ## Form Engine Design
 
-### Metadata Structure
+### Introduction
 
-    element
-        id: element id
+FormEngine.js implements MVC pattern, it consists of 3 parts: model, engine and view.
+Model is responsible for data access, data validation and change tracking.
+Engine works like a controler, it passes messages between model and view.
+View presents data to user and allows to edit it.
 
-        typeName: form|container|control|text|number|date|entity|list
+The main difference between formEngine.js and classical MVC is that
+every FormEngine's component is configured using metadata.
+Model's metadata contains validation rules.
+View's metadata is represented as visual tree, cares information
+about UI controls and their properties.
+Engine's configured by set of rules and triggers.
+A rule instructs engine how to pass messages between components.
+A trigger is a kind of filter, it gets message, makes calculation and send next message.
 
-        controlName: textBox|comboBox|datePicker|...
-        controlProperties: {...}
+### Model
+* provides data access and notifies other participants about data changes;
+* changes data according received messages;
+* validates data and notifies when validation status changes;
+* tracks data changes, allows undo or redo data changes, notifies data status changes;
+* can be extended adding new types of validators;
 
-        valueExp: binding expression
-        hiddenExp: binding expression
-        readonlyExp: binding expression
-        
-        elements: []
+### Engine
+* maintains catalog of message receivers;
+* routes messages to receivers according rules;
+* executes triggers;
 
-        validationRules: [
-            validatorName: required|maxLength|minLength|...
-            properties: {...}
-        ]
+Message:
+    senderId: one
+    path: undefined|one
+    signal: one
+    data: undefined|one
 
-### Expressions
+Rule:
+    receiverId: one
+    senderId: undefined|one|list
+    path: undefined|one|list         // link to data, e.g. request.client.name
+    sigal: undefined|one|list        // value, changes, errors, click, select
 
-Expression types:
-
-  - direct two way bindings like `request.client.name`, uses the first argument only
-  - templates for example `<%=name%> (<%=code%>)`, uses the first argument only
-  - lambdas like `entity.countryId === model.person.country.id`
-  - function
-
-Expression contexts and arguments:
-
-  - value (two way if direct, one way otherwise), arguments - model
-  - hidden, readonly, entity list (one way), arguments - model
-  - entity list formatter and filter, arguments - entity, model
-  - ...
-
-### Form Engine Interface
-
-    formEngine.controls[...]
-    formEngine.validators[...]
-
-    var form = formEngine({ containerId: id, form: metadata, model: model });
-    form.show();
-
-    form.model.request.setValue('step', '02');
-
-    form.validate();
-
-### Element Interface
-
-    formEngine.element(metadata)
-        typeName
-        controlName
-        control
-        
-        container
-        elements
-
-### Control Interface
-
-    control(properties, element, engine): formEngine.controlBase
-
-        getMarkup()
-        initialize() ???
-        
-        setValue(value)
-        setHidden(hidden)
-        setReadonly(readonly)
-        setState(state)
-
-        onValueChanged
-
-### Validator Interface
-
-
-### Utils
-
-    formEngine.event
-    formEngine.template
-    formEngine.lambda
+Trigger:
+    rule: one
+    processor: one                  // function, gets in and returns out message
     
+Rule examples:
+* control's value  { path: request.client.name, signal: value|errors|changes }
+* model binding { path: request, signal: value }
+* event subscription { senderId: saveButton, signal: click }
+* trigger { path: [path1, path2, ...], signal: value } 
+* control's on trigger { senderId: txxx, signal: hidden|readonly }      
+
+### View
+* represents data to user, refreshes on change notifications;
+* allows user to change data and notifies about changes;
+* presents data status: errors, changes;
+* can be extended adding new types of controls;
+
+### Metadata Provider
+* gets form description in format convinient for developer
+  and returns metadata for all components.
+
+### Code Sample
+
+    var provider = fe.metadataProvider(/* JSON, DSL etc */),
+        engine = fe.engine(),
+        model = fe.model(provider.getModel(), engine),
+        view = fe.view(provider.getView(), engine);
+
+    engine.addRules(provider.getRules());
+    engine.addTriggers(provider.getTriggers());
+
+    view.initialize();
+
+    model.set(data);
+
