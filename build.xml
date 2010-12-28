@@ -1,4 +1,6 @@
-<project name="formEngine.js" default="tests" basedir=".">
+<project name="formEngine.js" default="crunch" basedir=".">
+
+  <property name="FE" value="formEngine.js" />
 
   <target name="jslint">
 	<exec executable="java" failonerror="true">
@@ -13,6 +15,11 @@
   </target>
 
   <target name="combine" depends="tests">
+	<concat destfile="${FE}">
+	  <fileset file="source/intro.js" />
+      <fileset file="source/fe.js" />
+	  <fileset file="source/outro.js" />
+	</concat>
   </target>
 
   <target name="crunch" depends="combine">
