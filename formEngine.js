@@ -40,9 +40,27 @@ fe.engine = function engine(config) {
     return that;
 };
 fe.model = function model(config) {
-    
+
+    var that = {};
+
+    function receiveMessage(message) {
+        
+    }
+
+    that.receiveMessage = receiveMessage;
+
+    return that;
 };
 fe.view = function view (config) {
-    
+
+    var that = {};
+
+    function receiveMessage(message) {
+        
+    }
+
+    that.receiveMessage = receiveMessage;
+
+    return that;
 };
 })((function () { return this; })());
