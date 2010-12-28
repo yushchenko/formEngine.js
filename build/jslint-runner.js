@@ -1,7 +1,13 @@
 load("build/libs/jslint.js");
 
  check('source/fe.js')
+.check('source/fe.engine.js')
+.check('source/fe.model.js')
+.check('source/fe.view.js')
 .check('tests/source/fe.tests.js')
+.check('tests/source/fe.engine.tests.js')
+.check('tests/source/fe.model.tests.js')
+.check('tests/source/fe.view.tests.js')
 .report();
 
 

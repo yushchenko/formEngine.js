@@ -18,6 +18,9 @@
 	<concat destfile="${FE}">
 	  <fileset file="source/intro.js" />
       <fileset file="source/fe.js" />
+      <fileset file="source/fe.engine.js" />
+      <fileset file="source/fe.model.js" />
+      <fileset file="source/fe.view.js" />
 	  <fileset file="source/outro.js" />
 	</concat>
   </target>
