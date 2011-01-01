@@ -1,26 +1,31 @@
 
 fe.model = function model(config) {
 
+    config = config || {};
+
     var that = {},
+        id = config.id || fe.getUniqueId(),
+        engine = config.engine,
         data = {};
 
-    function receiveMessage(message) {
-        
+    function bindToEngine() {
+        if (engine) {
+            engine.addReceiver(id, that);
+            engine.addRule({ receiverId: id, signal: 'value' });
+        }
     }
 
-    function set(/* [path], value */) {
-
-        var parts, i, len, target, value;
-
-        if (arguments.length === 1) {
-            data = arguments[0];
-            return;
+    function receiveMessage(msg) {
+        if (msg.signal === 'value' && typeof msg.path === 'string') {
+            doSet(msg.path, msg.data);
         }
+    }
 
-        parts = arguments[0].split('.');
-        len = parts.length - 1;
-        value = arguments[1];
-        target = data;
+    function doSet(path, value) {
+
+        var parts = path.split('.'),
+            i, len = parts.length - 1,
+            target = data;
         
         for (i = 0; i < len; i += 1) {
             target = target[parts[i]];
@@ -28,7 +33,18 @@ fe.model = function model(config) {
                 return;
             }
         }
+
         target[parts[len]] = value;
+    }
+
+    function set(/* [path], value */) {
+
+        if (arguments.length === 1) {
+            data = arguments[0];
+            return;
+        }
+
+        doSet(arguments[0], arguments[1]);
     }
 
     function get(path) {
@@ -54,6 +70,8 @@ fe.model = function model(config) {
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
+
+    bindToEngine();
 
     return that;
 };

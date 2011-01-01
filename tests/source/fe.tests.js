@@ -6,8 +6,18 @@ describe('fe', function() {
     });
 
     it('should expose version', function() {
-        expect(fe.version).toBeDefined();
-        //expect(fe.version).toEqual('string');
+        expect(typeof fe.version).toEqual('string');
+    });
+
+    it('should return unique IDs', function() {
+
+        var id1 = fe.getUniqueId(),
+            id2 = fe.getUniqueId(),
+            id3 = fe.getUniqueId();
+
+        expect(id1).not.toEqual(id2);
+        expect(id2).not.toEqual(id3);
+        expect(id3).not.toEqual(id1);
     });
 
 });

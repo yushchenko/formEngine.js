@@ -65,8 +65,8 @@ Rule examples:
 
     var provider = fe.metadataProvider(/* JSON, DSL etc */),
         engine = fe.engine(),
-        model = fe.model(provider.getModel(), engine),
-        view = fe.view(provider.getView(), engine);
+        model = fe.model({ metadata: provider.getModel(), engine: engine }),
+        view = fe.view({ metadata: provider.getView(), engine: engine });
 
     engine.addRules(provider.getRules());
     engine.addTriggers(provider.getTriggers());

@@ -36,4 +36,20 @@ describe('fe.model', function() {
         expect(m.get('y.zz')).toEqual(5); // new property
         expect(m.get('not.existing.path')).toEqual(undefined); // broken path
     });
+
+    it('should update data when gets message with appropriate path and signal', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e }),
+            data = { x: 1, y: { z: 2 } },
+            msg = { path: 'y.z', signal: 'value', data: 3 };
+
+        m.set(data);
+        expect(m.get('y.z')).toEqual(2);
+
+        e.sendMessage(msg);
+
+        expect(m.get('y.z')).toEqual(3);
+    });
+
 });
