@@ -30,11 +30,11 @@ fe.engine = function engine(config) {
             properties = ['senderId', 'path', 'signal'],
             checkers = ['checkSender', 'checkPath', 'checkSignal'],
             checkStartWith = [false, true, false],
-            i, len = properties.length;
+            i, len;
 
         r.receiverId = rule.receiverId;
 
-        for (i = 0; i < len; i += 1) { (function(property, checker, checkStartWith) {
+        function addChecker(property, checker, checkStartWith) {
 
             if (property) {
                 r[checker] = function (arg) {
@@ -53,8 +53,11 @@ fe.engine = function engine(config) {
                     return true;
                 };
             }
+        }
 
-        })(rule[properties[i]], checkers[i], checkStartWith[i]);}
+        for (i = 0, len = properties.length; i < len; i += 1) {
+            addChecker(rule[properties[i]], checkers[i], checkStartWith[i]);
+        }
 
         rules.push(r);
     }
