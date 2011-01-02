@@ -52,4 +52,24 @@ describe('fe.model', function() {
         expect(m.get('y.z')).toEqual(3);
     });
 
+    it('should notify data update', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ id: 'model', engine: e }),
+            data = { x: 1, y: { z: 2 } },
+            receiver = { receiveMessage: jasmine.createSpy() },
+            rule = { receiverId: 'r1', path: 'y.z', signal: 'value' },
+            msg1 = { senderId: 'model', path: '', signal: 'value', data: 2},
+            msg2 = { senderId: 'model', path: 'y.z', signal: 'value', data: 3};
+
+        e.addReceiver('r1', receiver);
+        e.addRule(rule);
+                    
+        m.set(data);
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(msg1); // the first update
+
+        m.set('y.z', 3);
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(msg2); // on data change by model.set()
+    });
+
 });

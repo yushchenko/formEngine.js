@@ -37,14 +37,16 @@ fe.engine = function engine(config) {
         function addChecker(property, checker, checkStartWith) {
 
             if (property) {
-                r[checker] = function (arg) {
+                r[checker] = function (msgProperty) {
                     var ii, ll;
                     if (typeof property === 'string') {
-                        return checkStartWith ? arg.indexOf(property) === 0 : arg === property;
+                        return checkStartWith ? property.indexOf(msgProperty) === 0
+                                              : property === msgProperty;
                     }
                     if (typeof property === 'object' && property.length) {
                         for (ii = 0, ll = property.length; ii < ll; ii += 1) {
-                            if (checkStartWith ? arg.indexOf(property[ii]) === 0 : arg === property[ii]) {
+                            if (checkStartWith ? property[ii].indexOf(msgProperty) === 0
+                                               : property === msgProperty[ii]) {
                                 return true;
                             }
                         }
@@ -58,6 +60,15 @@ fe.engine = function engine(config) {
         for (i = 0, len = properties.length; i < len; i += 1) {
             addChecker(rule[properties[i]], checkers[i], checkStartWith[i]);
         }
+
+        r.transformData = function transformData(data, path) {
+            var len;
+            if (typeof path === 'string' && typeof rule.path === 'string' && rule.path.length > path.length) {
+                len = path.length;
+                return getByPath(data, rule.path.slice(len > 0 ? len + 1: len));
+            }
+            return data;
+        };
 
         rules.push(r);
     }
@@ -100,6 +111,10 @@ fe.engine = function engine(config) {
             if ((!rule.checkSender || rule.checkSender(message.senderId)) &&
                 (!rule.checkPath || rule.checkPath(message.path)) &&
                 (!rule.checkSignal || rule.checkSignal(message.signal))) {
+
+                if (message.data) {
+                    message.data = rule.transformData(message.data, message.path);
+                }
 
                 send();
             }

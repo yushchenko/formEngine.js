@@ -4,9 +4,42 @@ fe.model = function model(config) {
     config = config || {};
 
     var that = {},
-        id = config.id || fe.getUniqueId(),
+        id = config.id || getUniqueId(),
         engine = config.engine,
         data = {};
+
+    function receiveMessage(msg) {
+        if (msg.signal === 'value' && typeof msg.path === 'string') {
+            setByPath(data, msg.path, msg.data);
+        }
+    }
+
+    function set(/* [path], value */) {
+
+        if (arguments.length === 1) {
+            data = arguments[0];
+            notifyUpdate('', data);
+            return;
+        }
+
+        var path = arguments[0],
+            value = arguments[1];
+
+        setByPath(data, path, value);
+        notifyUpdate(path, value);
+    }
+
+    function get(path) {
+
+        if (path === undefined) {
+            return data;
+        }
+
+        return getByPath(data, path);
+    }
+
+    /* Utilities
+     ****************************************************************/
 
     function bindToEngine() {
         if (engine) {
@@ -15,56 +48,11 @@ fe.model = function model(config) {
         }
     }
 
-    function receiveMessage(msg) {
-        if (msg.signal === 'value' && typeof msg.path === 'string') {
-            doSet(msg.path, msg.data);
-        }
-    }
-
-    function doSet(path, value) {
-
-        var parts = path.split('.'),
-            i, len = parts.length - 1,
-            target = data;
-        
-        for (i = 0; i < len; i += 1) {
-            target = target[parts[i]];
-            if (target === undefined) {
-                return;
-            }
-        }
-
-        target[parts[len]] = value;
-    }
-
-    function set(/* [path], value */) {
-
-        if (arguments.length === 1) {
-            data = arguments[0];
+    function notifyUpdate(path, value) {
+        if (!engine) {
             return;
         }
-
-        doSet(arguments[0], arguments[1]);
-    }
-
-    function get(path) {
-
-        var parts, i, len, result;
-
-        if (path === undefined) {
-            return data;
-        }
-
-        parts = path.split('.');
-        result = data;
-        
-        for (i = 0, len = parts.length; i < len; i += 1) {
-            result = result[parts[i]];
-            if (result === undefined) {
-                return undefined;
-            }
-        }
-        return result;
+        engine.sendMessage({ senderId: id, path: path, signal: 'value', data: value });
     }
 
     that.receiveMessage = receiveMessage;

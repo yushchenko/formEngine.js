@@ -14,12 +14,47 @@ var fe = {
     version: '0.0.1'
 };
 
+
+/* Private functions
+ **********************************************************************/
 var nextUniqueId = 0;
 
-fe.getUniqueId = function getUniqueId() {
+function getUniqueId() {
     nextUniqueId += 1;
     return 'i' + nextUniqueId;
-};
+}
+
+function getByPath(obj, path) {
+
+    var parts, i, len, result;
+
+    parts = path.split('.');
+    result = obj;
+    
+    for (i = 0, len = parts.length; i < len; i += 1) {
+        result = result[parts[i]];
+        if (result === undefined) {
+            return undefined;
+        }
+    }
+    return result;
+}
+
+function setByPath(obj, path, value) {
+
+    var parts = path.split('.'),
+    i, len = parts.length - 1,
+    target = obj;
+    
+    for (i = 0; i < len; i += 1) {
+        target = target[parts[i]];
+        if (target === undefined) {
+            return;
+        }
+    }
+
+    target[parts[len]] = value;
+}
 fe.engine = function engine(config) {
 
     var that = {},
@@ -58,14 +93,16 @@ fe.engine = function engine(config) {
         function addChecker(property, checker, checkStartWith) {
 
             if (property) {
-                r[checker] = function (arg) {
+                r[checker] = function (msgProperty) {
                     var ii, ll;
                     if (typeof property === 'string') {
-                        return checkStartWith ? arg.indexOf(property) === 0 : arg === property;
+                        return checkStartWith ? property.indexOf(msgProperty) === 0
+                                              : property === msgProperty;
                     }
                     if (typeof property === 'object' && property.length) {
                         for (ii = 0, ll = property.length; ii < ll; ii += 1) {
-                            if (checkStartWith ? arg.indexOf(property[ii]) === 0 : arg === property[ii]) {
+                            if (checkStartWith ? property[ii].indexOf(msgProperty) === 0
+                                               : property === msgProperty[ii]) {
                                 return true;
                             }
                         }
@@ -79,6 +116,15 @@ fe.engine = function engine(config) {
         for (i = 0, len = properties.length; i < len; i += 1) {
             addChecker(rule[properties[i]], checkers[i], checkStartWith[i]);
         }
+
+        r.transformData = function transformData(data, path) {
+            var len;
+            if (typeof path === 'string' && typeof rule.path === 'string' && rule.path.length > path.length) {
+                len = path.length;
+                return getByPath(data, rule.path.slice(len > 0 ? len + 1: len));
+            }
+            return data;
+        };
 
         rules.push(r);
     }
@@ -122,6 +168,10 @@ fe.engine = function engine(config) {
                 (!rule.checkPath || rule.checkPath(message.path)) &&
                 (!rule.checkSignal || rule.checkSignal(message.signal))) {
 
+                if (message.data) {
+                    message.data = rule.transformData(message.data, message.path);
+                }
+
                 send();
             }
         }
@@ -140,9 +190,42 @@ fe.model = function model(config) {
     config = config || {};
 
     var that = {},
-        id = config.id || fe.getUniqueId(),
+        id = config.id || getUniqueId(),
         engine = config.engine,
         data = {};
+
+    function receiveMessage(msg) {
+        if (msg.signal === 'value' && typeof msg.path === 'string') {
+            setByPath(data, msg.path, msg.data);
+        }
+    }
+
+    function set(/* [path], value */) {
+
+        if (arguments.length === 1) {
+            data = arguments[0];
+            notifyUpdate('', data);
+            return;
+        }
+
+        var path = arguments[0],
+            value = arguments[1];
+
+        setByPath(data, path, value);
+        notifyUpdate(path, value);
+    }
+
+    function get(path) {
+
+        if (path === undefined) {
+            return data;
+        }
+
+        return getByPath(data, path);
+    }
+
+    /* Utilities
+     ****************************************************************/
 
     function bindToEngine() {
         if (engine) {
@@ -151,56 +234,11 @@ fe.model = function model(config) {
         }
     }
 
-    function receiveMessage(msg) {
-        if (msg.signal === 'value' && typeof msg.path === 'string') {
-            doSet(msg.path, msg.data);
-        }
-    }
-
-    function doSet(path, value) {
-
-        var parts = path.split('.'),
-            i, len = parts.length - 1,
-            target = data;
-        
-        for (i = 0; i < len; i += 1) {
-            target = target[parts[i]];
-            if (target === undefined) {
-                return;
-            }
-        }
-
-        target[parts[len]] = value;
-    }
-
-    function set(/* [path], value */) {
-
-        if (arguments.length === 1) {
-            data = arguments[0];
+    function notifyUpdate(path, value) {
+        if (!engine) {
             return;
         }
-
-        doSet(arguments[0], arguments[1]);
-    }
-
-    function get(path) {
-
-        var parts, i, len, result;
-
-        if (path === undefined) {
-            return data;
-        }
-
-        parts = path.split('.');
-        result = data;
-        
-        for (i = 0, len = parts.length; i < len; i += 1) {
-            result = result[parts[i]];
-            if (result === undefined) {
-                return undefined;
-            }
-        }
-        return result;
+        engine.sendMessage({ senderId: id, path: path, signal: 'value', data: value });
     }
 
     that.receiveMessage = receiveMessage;

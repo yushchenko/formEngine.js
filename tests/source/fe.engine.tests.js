@@ -34,7 +34,7 @@ describe('fe.engine', function() {
 
         var e = fe.engine(),
             receiver = { receiveMessage: jasmine.createSpy('receiveMessage') },
-            rule = { receiverId: 'r1', path: 'a', signal: 'value' },
+            rule = { receiverId: 'r1', signal: 'value' },
             message1 =  { senderId: 's1', path: 'a.b.c', signal: 'value', data: 'test data c' },
             message2 =  { senderId: 's1', path: 'a.b.d', signal: 'value', data: 'test data d' };
 
@@ -63,6 +63,39 @@ describe('fe.engine', function() {
         e.sendMessage(msg2);
 
         expect(receiver.receiveMessage).toHaveBeenCalledWith(msg1);
+    });
+
+    it('should extract data according subpath if rule path longer than msg path', function() {
+
+        var e = fe.engine(),
+            receiver = { receiveMessage: jasmine.createSpy('receiveMessage')},
+            rule = { receiverId: 'r1', path: 'a.b.c', signal: 'value' },
+
+            msg1 = { senderId: 'm1', path: '', signal: 'value', data: {a: {b: {c: 1}}}},
+            expMsg1 = { senderId: 'm1', path: '', signal: 'value', data: 1},
+
+            msg2 = { senderId: 'm1', path: 'a', signal: 'value', data: {b: {c: 2}}},
+            expMsg2 = { senderId: 'm1', path: 'a', signal: 'value', data: 2},
+
+            msg3 = { senderId: 'm1', path: 'a.b', signal: 'value', data: {c: 3}},
+            expMsg3 = { senderId: 'm1', path: 'a.b', signal: 'value', data: 3},
+
+            msg4 = { senderId: 'm1', path: 'a.b.c', signal: 'value', data: 4};
+
+        e.addReceiver('r1', receiver);
+        e.addRule(rule);
+
+        e.sendMessage(msg1);
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(expMsg1);
+
+        e.sendMessage(msg2);
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(expMsg2);
+
+        e.sendMessage(msg3);
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(expMsg3);
+
+        e.sendMessage(msg4);
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(msg4);
     });
 
     it('should send message to trigger', function() {
