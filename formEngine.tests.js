@@ -182,6 +182,16 @@ describe('fe.engine', function() {
         expect(c2.receiveMessage).toHaveBeenCalledWith(msg);
     });
 
+    it('should throw exception when sending message to unknown receiver', function() {
+
+        var e = fe.engine(),
+            rule = { receiverId: 'not existing', senderId: 't', signal: 'test' },
+            msg = { senderId: 't', signal: 'test'};
+
+        e.addRule(rule);
+        expect(function() {  e.sendMessage(msg); }).toThrow('engine.sendMessage: receiver not found.');
+    });
+
 });
 describe('fe.model', function() {
     
@@ -372,15 +382,62 @@ describe('fe.element', function() {
             e = fe.element({ metadata: getElementMedatadata(), engine: engine });
 
         expect(e.id).toEqual('test');
-        expect(e.properties).toEqual({ test: 'ok' });
+        expect(e.properties).toEqual({ test: 'ok', binding: 'a.b.c' });
         expect(e.children).toEqual([]);
+    });
+
+    it('should call setValue method on "value" message', function() {
+
+        var engine = fe.engine(),
+            f = field({ metadata: getElementMedatadata(), engine: engine }),
+            rule = { receiverId: 'test', path: 'a.b.c', signal: 'value' },
+            msg = { senderId: 'unknown', path: 'a.b.c', signal: 'value', data: 123 };
+
+        engine.addRule(rule);
+        engine.sendMessage(msg);
+
+        expect(f.currentValue).toEqual(123);
+    });
+
+    it('should send "value" message when notifyValueChange called', function() {
+
+        var engine = fe.engine(),
+            f = field({ metadata: getElementMedatadata(), engine: engine }),
+            receiver = { receiveMessage: jasmine.createSpy() },
+            rule = { receiverId: 't', path: 'a.b.c', signal: 'value' },
+            msg = { senderId: 'test', path: 'a.b.c', signal: 'value', data: 123 };
+
+        engine.addReceiver('t', receiver);
+        engine.addRule(rule);
+
+        f.notifyValueChange(123);
+        
+        expect(receiver.receiveMessage).toHaveBeenCalledWith(msg);
+    });
+
+    it('should throw exception when notifyValueChange called for element without binding', function() {
+
+        var engine = fe.engine(),
+            element = fe.element({ metadata: {}, engine: engine });
+
+        expect(function() { element.notifyValueChange(123); }).toThrow('element.notifyValueChange: can\'t send notification if binding property not defined.');
     });
 
     function getElementMedatadata() {
         return {
             id: 'test',
-            properties: { test: 'ok' }
+            properties: { test: 'ok', binding: 'a.b.c' }
         };
+    }
+
+    function field(config) {
+        var that = fe.element(config);
+
+        that.setValue = function(value) {
+            that.currentValue = value;
+        };
+
+        return that;
     }
 });
 describe('fe.metadataProvider', function() {
