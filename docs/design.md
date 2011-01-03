@@ -58,7 +58,7 @@ Rule examples:
 config:
     engine: {reference to engine, mandatory}
     metadata: {metadata}
-    elementTypesLocation: {reference to dictionary which contains element type's constructors by name}
+    elementTypes: {reference to dictionary which contains element type's constructors by name}
     defaultElementType: {default element type, used when typeName in metadata is empty}
 
 ### Element
