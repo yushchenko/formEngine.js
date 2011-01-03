@@ -98,6 +98,9 @@ fe.engine = function engine(config) {
         var i, len = rules.length, rule;
 
         function send() {
+            if (!(rule.receiverId in receivers)) {
+                throw new Error('engine.sendMessage: receiver not found.');
+            }
             receivers[rule.receiverId].receiveMessage(message);
         }
 

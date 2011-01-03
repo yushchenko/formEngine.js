@@ -138,4 +138,14 @@ describe('fe.engine', function() {
         expect(c2.receiveMessage).toHaveBeenCalledWith(msg);
     });
 
+    it('should throw exception when sending message to unknown receiver', function() {
+
+        var e = fe.engine(),
+            rule = { receiverId: 'not existing', senderId: 't', signal: 'test' },
+            msg = { senderId: 't', signal: 'test'};
+
+        e.addRule(rule);
+        expect(function() {  e.sendMessage(msg); }).toThrow('engine.sendMessage: receiver not found.');
+    });
+
 });
