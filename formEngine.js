@@ -253,11 +253,62 @@ fe.view = function view (config) {
 
     var that = {};
 
-    function receiveMessage(message) {
-        
+    function initialize() {
     }
 
+    function getElementById(id) {
+    }
+
+    that.initialize = initialize;
+    that.getElementById = getElementById;
+
+    return that;
+};
+fe.element = function element (config) {
+
+    var that = {},
+        engine = config.engine,
+        metadata = config.metadata || {};
+
+    that.id =  metadata.id || getUniqueId();
+    that.properties = metadata.properties || {};
+    that.children = [];
+
+    function initialize() {
+    }
+
+    function receiveMessage(message) {
+    }
+
+    function notifyValueChange(value) {
+    }
+
+    that.initialize = initialize;
     that.receiveMessage = receiveMessage;
+    that.notifyValueChange = notifyValueChange;
+
+    return that;
+};
+fe.metadataProvider = function metadataProvider (config) {
+
+    var that = {};
+
+    function getModelMetadata() {
+    }
+
+    function getViewMetadata() {
+    }
+
+    function getRules() {
+    }
+
+    function getTriggers() {
+    }
+
+    that.getModelMetadata = getModelMetadata;
+    that.getViewMetadata = getViewMetadata;
+    that.getRules = getRules;
+    that.getTriggers = getTriggers;
 
     return that;
 };

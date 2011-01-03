@@ -1,6 +1,7 @@
 <project name="formEngine.js" default="crunch" basedir=".">
 
   <property name="FE" value="formEngine.js" />
+  <property name="FET" value="formEngine.tests.js" />
 
   <target name="jslint">
 	<exec executable="java" failonerror="true">
@@ -15,14 +16,27 @@
   </target>
 
   <target name="combine" depends="tests">
+
 	<concat destfile="${FE}">
 	  <fileset file="source/intro.js" />
       <fileset file="source/fe.js" />
       <fileset file="source/fe.engine.js" />
       <fileset file="source/fe.model.js" />
       <fileset file="source/fe.view.js" />
+      <fileset file="source/fe.element.js" />
+      <fileset file="source/fe.metadataProvider.js" />
 	  <fileset file="source/outro.js" />
 	</concat>
+
+	<concat destfile="${FET}"> <!-- to estimate test suit size ;) -->
+      <fileset file="tests/source/fe.tests.js" />
+      <fileset file="tests/source/fe.engine.tests.js" />
+      <fileset file="tests/source/fe.model.tests.js" />
+      <fileset file="tests/source/fe.view.tests.js" />
+      <fileset file="tests/source/fe.element.tests.js" />
+      <fileset file="tests/source/fe.metadataProvider.tests.js" />
+	</concat>
+    
   </target>
 
   <target name="crunch" depends="combine">

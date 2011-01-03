@@ -9,6 +9,7 @@ describe('fe.view', function() {
 
         var v = fe.view({});
 
-        expect(typeof v.receiveMessage).toEqual('function');
+        expect(typeof v.initialize).toEqual('function');
+        expect(typeof v.getElementById).toEqual('function');
     });
 });

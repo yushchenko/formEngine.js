@@ -3,11 +3,14 @@ fe.view = function view (config) {
 
     var that = {};
 
-    function receiveMessage(message) {
-        
+    function initialize() {
     }
 
-    that.receiveMessage = receiveMessage;
+    function getElementById(id) {
+    }
+
+    that.initialize = initialize;
+    that.getElementById = getElementById;
 
     return that;
 };

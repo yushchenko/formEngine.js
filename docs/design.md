@@ -52,21 +52,47 @@ Rule examples:
 * control's on trigger { senderId: txxx, signal: hidden|readonly }      
 
 ### View
+* initialize element hierarchy using metadata;
+* provides access to elements by id;
+
+config:
+    engine: {reference to engine, mandatory}
+    metadata: {metadata}
+    elementTypesLocation: {reference to dictionary which contains element type's constructors by name}
+    defaultElementType: {default element type, used when typeName in metadata is empty}
+
+### Element
 * represents data to user, refreshes on change notifications;
-* allows user to change data and notifies about changes;
+* allows user to edit data and notifies about changes;
 * presents data status: errors, changes;
 * can be extended adding new types of controls;
 
+config:
+    engine: {reference to engine, mandatory}
+    metadata: {metadata}
+
 ### Metadata Provider
 * gets form description in format convinient for developer
-  and returns metadata for all components.
+  and returns metadata for model, engine and view.
+
+config:
+    metadata: {full form's metadata}
+
+### View Metadata
+
+    id: 'element id, if not provided, will be generated'
+    typeName: 'element type name, if not provided, view.defaultElement will be used'
+    children: [references to child elements]
+    properties: {}
+
+### Model Metadata
 
 ### Code Sample
 
     var provider = fe.metadataProvider(/* JSON, DSL etc */),
         engine = fe.engine(),
-        model = fe.model({ metadata: provider.getModel(), engine: engine }),
-        view = fe.view({ metadata: provider.getView(), engine: engine });
+        model = fe.model({ metadata: provider.getModelMetadata(), engine: engine }),
+        view = fe.view({ metadata: provider.getViewMetadata(), engine: engine });
 
     engine.addRules(provider.getRules());
     engine.addTriggers(provider.getTriggers());
