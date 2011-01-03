@@ -15,7 +15,7 @@ var fe = {
 };
 
 
-/* Private functions
+/* Private stuff
  **********************************************************************/
 var nextUniqueId = 0;
 
@@ -55,6 +55,15 @@ function setByPath(obj, path, value) {
 
     target[parts[len]] = value;
 }
+
+var msg = {
+    notUniqueReceiverId: 'engine.addReceiver: recevier with given ID has been already added.',
+    receiverIdMustBeString: 'engine.addReceiver: id must be string',
+    noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage"',
+    noReceiverId: 'engine.addRule: rule must have receiverId property, type string',
+    receiverNotFound: 'engine.sendMessage: receiver not found.',
+    elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
+};
 fe.engine = function engine(config) {
 
     var that = {},
@@ -63,14 +72,14 @@ fe.engine = function engine(config) {
 
     function addReceiver(id, receiver) {
 
-        if (id in receivers) {
-            throw new Error('engine.addReceiver: recevier with given ID has been already added.');
-        }
         if (typeof id !== 'string') {
-            throw new Error('engine.addReceiver: id must be string');
+            throw new Error(msg.receiverIdMustBeString);
         }
         if (!receiver || typeof receiver.receiveMessage !== 'function') {
-            throw new Error('engine.addReceiver: receiver should have method "receiveMessage"');
+            throw new Error(msg.noReceiveMessageMethod);
+        }
+        if (id in receivers) {
+            throw new Error(msg.notUniqueReceiverId);
         }
 
         receivers[id] = receiver;
@@ -79,7 +88,7 @@ fe.engine = function engine(config) {
     function addRule(rule) {
 
         if (typeof rule.receiverId !== 'string') {
-            throw new Error('engine.addRule: rule must have receiverId property, type string');
+            throw new Error(msg.noReceiverId);
         }
 
         var r = {},
@@ -155,7 +164,7 @@ fe.engine = function engine(config) {
 
         function send() {
             if (!(rule.receiverId in receivers)) {
-                throw new Error('engine.sendMessage: receiver not found.');
+                throw new Error(msg.receiverNotFound);
             }
             receivers[rule.receiverId].receiveMessage(message);
         }
@@ -266,10 +275,6 @@ fe.view = function view (config) {
             element = ctor({ metadata: metadata, engine: engine }),
             i, len;
 
-        if(element.id in elementsById) {
-            throw new Error('view: element id duplication.');
-        }
-
         elementsById[element.id] = element;
         
         if (metadata.children && metadata.children.length) {
@@ -330,7 +335,7 @@ fe.element = function element (config) {
         if (typeof path === 'string') {
             engine.sendMessage({ senderId: that.id, path: path, signal: 'value', data: value });            
         } else {
-            throw new Error('element.notifyValueChange: can\'t send notification if binding property not defined.');
+            throw new Error(msg.elementWithoutBinding);
         }
     }
 

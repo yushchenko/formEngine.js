@@ -33,7 +33,7 @@ fe.element = function element (config) {
         if (typeof path === 'string') {
             engine.sendMessage({ senderId: that.id, path: path, signal: 'value', data: value });            
         } else {
-            throw new Error('element.notifyValueChange: can\'t send notification if binding property not defined.');
+            throw new Error(msg.elementWithoutBinding);
         }
     }
 

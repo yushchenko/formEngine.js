@@ -13,10 +13,6 @@ fe.view = function view (config) {
             element = ctor({ metadata: metadata, engine: engine }),
             i, len;
 
-        if(element.id in elementsById) {
-            throw new Error('view: element id duplication.');
-        }
-
         elementsById[element.id] = element;
         
         if (metadata.children && metadata.children.length) {

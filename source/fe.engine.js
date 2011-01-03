@@ -7,14 +7,14 @@ fe.engine = function engine(config) {
 
     function addReceiver(id, receiver) {
 
-        if (id in receivers) {
-            throw new Error('engine.addReceiver: recevier with given ID has been already added.');
-        }
         if (typeof id !== 'string') {
-            throw new Error('engine.addReceiver: id must be string');
+            throw new Error(msg.receiverIdMustBeString);
         }
         if (!receiver || typeof receiver.receiveMessage !== 'function') {
-            throw new Error('engine.addReceiver: receiver should have method "receiveMessage"');
+            throw new Error(msg.noReceiveMessageMethod);
+        }
+        if (id in receivers) {
+            throw new Error(msg.notUniqueReceiverId);
         }
 
         receivers[id] = receiver;
@@ -23,7 +23,7 @@ fe.engine = function engine(config) {
     function addRule(rule) {
 
         if (typeof rule.receiverId !== 'string') {
-            throw new Error('engine.addRule: rule must have receiverId property, type string');
+            throw new Error(msg.noReceiverId);
         }
 
         var r = {},
@@ -99,7 +99,7 @@ fe.engine = function engine(config) {
 
         function send() {
             if (!(rule.receiverId in receivers)) {
-                throw new Error('engine.sendMessage: receiver not found.');
+                throw new Error(msg.receiverNotFound);
             }
             receivers[rule.receiverId].receiveMessage(message);
         }

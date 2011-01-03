@@ -59,7 +59,7 @@ describe('fe.element', function() {
         var engine = fe.engine(),
             element = fe.element({ metadata: {}, engine: engine });
 
-        expect(function() { element.notifyValueChange(123); }).toThrow('element.notifyValueChange: can\'t send notification if binding property not defined.');
+        expect(function() { element.notifyValueChange(123); }).toThrow(msg.elementWithoutBinding);
     });
 
     function getElementMedatadata() {

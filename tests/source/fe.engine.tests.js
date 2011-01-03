@@ -15,6 +15,24 @@ describe('fe.engine', function() {
         expect(typeof e.sendMessage).toEqual('function');
     });
 
+    it('should check receiver id and receiver', function() {
+
+        var e = fe.engine(),
+            r = { receiveMessage: function() {} };
+
+        expect(function() { e.addReceiver();  }).toThrow(msg.receiverIdMustBeString);
+        expect(function() { e.addReceiver('1', {}); }).toThrow(msg.noReceiveMessageMethod);
+        e.addReceiver('1', r);
+        expect(function() { e.addReceiver('1', r);  }).toThrow(msg.notUniqueReceiverId);
+    });
+
+    it('should check rule', function() {
+
+        var e = fe.engine();
+
+        expect(function() { e.addRule({}); }).toThrow(msg.noReceiverId);
+    });
+
     it('should send simple message (event subscription)', function() {
 
         var e = fe.engine(),
@@ -145,7 +163,7 @@ describe('fe.engine', function() {
             msg = { senderId: 't', signal: 'test'};
 
         e.addRule(rule);
-        expect(function() {  e.sendMessage(msg); }).toThrow('engine.sendMessage: receiver not found.');
+        expect(function() {  e.sendMessage(msg); }).toThrow(msg.receiverNotFound);
     });
 
 });
