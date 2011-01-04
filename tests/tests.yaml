@@ -4,18 +4,18 @@ load:
   # libs
   - libs/jasmine.js
   - libs/JasmineAdapter.js
-  # code
+  # code & tests
   - ../source/fe.js
   - ../source/fe.engine.js
   - ../source/fe.model.js
   - ../source/fe.view.js
   - ../source/fe.element.js
-  - ../source/fe.metadataProvider.js  
-  # tests
-  - source/fe.tests.js
-  - source/fe.engine.tests.js
-  - source/fe.model.tests.js
-  - source/fe.view.tests.js
-  - source/fe.element.tests.js
-  - source/fe.metadataProvider.tests.js
-  - source/formEngine.tests.js
+  - ../source/fe.metadataProvider.js
+  - ../tests/source/fe.tests.js
+  - ../tests/source/fe.engine.tests.js
+  - ../tests/source/fe.model.tests.js
+  - ../tests/source/fe.view.tests.js
+  - ../tests/source/fe.element.tests.js
+  - ../tests/source/fe.metadataProvider.tests.js
+  - ../tests/source/formEngine.tests.js
+

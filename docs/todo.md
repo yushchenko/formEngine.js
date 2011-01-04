@@ -1,6 +1,5 @@
 ## TODO
 
-* [build] add automatic generation of jslint, jsTestDriver, jasmine html using build.xml file;
+* jquery extension
 * move parts of design.md into component's source files, add it automatic generation;
-* extract exception messages into constants not to duplicate them in unit tests;
 
