@@ -155,7 +155,9 @@ fe.engine = function engine(config) {
     }
 
     function addTrigger(trigger) {
-        
+    }
+
+    function addTriggers(/* triggers in array or argumenst */) {
     }
 
     function sendMessage(message) {
@@ -193,6 +195,7 @@ fe.engine = function engine(config) {
     that.addRule = addRule;
     that.addRules = addRules;
     that.addTrigger = addTrigger;
+    that.addTriggers = addTriggers;
     that.sendMessage = sendMessage;
     
     return that;

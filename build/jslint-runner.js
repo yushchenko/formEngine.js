@@ -13,6 +13,7 @@ load("build/libs/jslint.js");
 .check('tests/source/fe.view.tests.js')
 .check('tests/source/fe.element.tests.js')
 .check('tests/source/fe.metadataProvider.tests.js')
+.check('tests/source/formEngine.tests.js')
 
 .report();
 

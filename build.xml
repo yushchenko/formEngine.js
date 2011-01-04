@@ -35,6 +35,7 @@
       <fileset file="tests/source/fe.view.tests.js" />
       <fileset file="tests/source/fe.element.tests.js" />
       <fileset file="tests/source/fe.metadataProvider.tests.js" />
+      <fileset file="tests/source/formEngine.tests.js" />
 	</concat>
     
   </target>

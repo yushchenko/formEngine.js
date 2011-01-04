@@ -11,7 +11,9 @@ describe('fe.engine', function() {
 
         expect(typeof e.addReceiver).toEqual('function');
         expect(typeof e.addRule).toEqual('function');
+        expect(typeof e.addRules).toEqual('function');           
         expect(typeof e.addTrigger).toEqual('function');
+        expect(typeof e.addTriggers).toEqual('function');
         expect(typeof e.sendMessage).toEqual('function');
     });
 

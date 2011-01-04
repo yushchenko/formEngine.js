@@ -18,3 +18,4 @@ load:
   - source/fe.view.tests.js
   - source/fe.element.tests.js
   - source/fe.metadataProvider.tests.js
+  - source/formEngine.tests.js

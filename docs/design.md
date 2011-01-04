@@ -132,10 +132,10 @@ Form Metadata:
 
 ### Code Sample
 
-    var provider = fe.metadataProvider(/* JSON, DSL etc */),
+    var provider = fe.metadataProvider({ metadata: form }),
         engine = fe.engine(),
         model = fe.model({ metadata: provider.getModelMetadata(), engine: engine }),
-        view = fe.view({ metadata: provider.getViewMetadata(), engine: engine });
+        view = fe.view({ metadata: provider.getViewMetadata(), elementTypes: {...}, engine: engine });
 
     engine.addRules(provider.getRules());
     engine.addTriggers(provider.getTriggers());
