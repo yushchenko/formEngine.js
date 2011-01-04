@@ -2,90 +2,125 @@
 
 ### Introduction
 
-FormEngine.js implements MVC pattern, it consists of 3 parts: model, engine and view.
-Model is responsible for data access, data validation and change tracking.
+FormEngine.js implements MVC pattern and consists of 3 parts: model, engine and view.
+Model is responsible for data access, validation and change tracking.
 Engine works like a controler, it passes messages between model and view.
-View presents data to user and allows to edit it.
+View just presents data to user.
 
 The main difference between formEngine.js and classical MVC is that
 every FormEngine's component is configured using metadata.
 Model's metadata contains validation rules.
-View's metadata is represented as visual tree, cares information
-about UI controls and their properties.
-Engine's configured by set of rules and triggers.
-A rule instructs engine how to pass messages between components.
-A trigger is a kind of filter, it gets message, makes calculation and send next message.
+View's metadata represents visual tree and cares information about UI controls properties.
+Engine's configuration consists of set rules and triggers.
+A rule instructs engine how to pass messages between receivers.
+A trigger is a kind of filter, it gets a message, makes certain calculations and sends message back.
 
-### Model
-* provides data access and notifies other participants about data changes;
-* changes data according received messages;
-* validates data and notifies when validation status changes;
-* tracks data changes, allows undo or redo data changes, notifies data status changes;
-* can be extended adding new types of validators;
 
 ### Engine
+
+Responsibilities:
+
 * maintains catalog of message receivers;
 * routes messages to receivers according rules;
 * executes triggers;
 
-Message:
+Message structure:
+
     senderId: one
     path: undefined|one
     signal: one
     data: undefined|one
 
-Rule:
+Rule structure:
+
     receiverId: one
     senderId: undefined|one|list
     path: undefined|one|list         // link to data, e.g. request.client.name
     sigal: undefined|one|list        // value, changes, errors, click, select
 
-Trigger:
+Trigger structure:
+
     rule: one
     processor: one                  // function, gets in and returns out message
     
 Rule examples:
+
 * control's value  { path: request.client.name, signal: value|errors|changes }
 * model binding { path: request, signal: value }
 * event subscription { senderId: saveButton, signal: click }
 * trigger { path: [path1, path2, ...], signal: value } 
 * control's on trigger { senderId: txxx, signal: hidden|readonly }      
 
+
+### Model
+
+Responsibilities:
+
+* provides data access and notifies other participants about data changes;
+* updates data according received messages;
+* validates data and notifies when validation status changes;
+* tracks data changes, allows undo or redo data changes, notifies data status changes;
+* can be extended adding new types of validators;
+
+Configuration:
+
+    engine: {reference to engine, mandatory}
+    metadata: {model metadata, contains validation rules}
+    
+Model Metadata:
+
+    [???]
+
+
 ### View
+
+Responsibilities:
+
 * initialize element hierarchy using metadata;
 * provides access to elements by id;
 
-config:
+Configuration:
+
     engine: {reference to engine, mandatory}
     metadata: {metadata}
     elementTypes: {reference to dictionary which contains element type's constructors by name}
     defaultElementType: {default element type, used when typeName in metadata is empty}
 
-### Element
-* represents data to user, refreshes on change notifications;
-* allows user to edit data and notifies about changes;
-* presents data status: errors, changes;
-* can be extended adding new types of controls;
-
-config:
-    engine: {reference to engine, mandatory}
-    metadata: {metadata}
-
-### Metadata Provider
-* gets form description in format convinient for developer
-  and returns metadata for model, engine and view.
-
-config:
-    metadata: {full form's metadata}
-
-### View Metadata
+View Metadata:
 
     id: 'element id, if not provided, will be generated'
     typeName: 'element type name, if not provided, view.defaultElement will be used'
     children: [references to child elements]
     properties: {}
 
-### Model Metadata
+
+
+### Element
+
+Responsibilities:
+
+* represents data to user, refreshes on change notifications;
+* allows user to edit data and notifies about changes;
+* presents data status: errors, changes;
+* can be extended adding new types of controls;
+
+Configuration:
+
+    engine: {reference to engine, mandatory}
+    metadata: {metadata}
+
+
+### Metadata Provider
+
+Responsibilities:
+
+* gets form description in format convinient for developer
+  and returns metadata for model, engine and view.
+
+Configuration:
+
+    metadata: {full form's metadata}
+
 
 ### Code Sample
 
@@ -100,4 +135,3 @@ config:
     view.initialize();
 
     model.set(data);
-
