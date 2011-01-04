@@ -474,7 +474,58 @@ describe('fe.metadataProvider', function() {
         expect(typeof p.getTriggers).toEqual('function');
     });
 
+    it('should return view metadata', function() {
+
+        var p = fe.metadataProvider({ metadata: getMetadata() });
+
+        expect(p.getViewMetadata()).toEqual({
+            id: 'testForm',
+            typeName: 'form',
+            properties: { header: 'test form' },
+            children: [
+                {
+                    id: 'firstName',
+                    typeName: 'textBox',
+                    properties: { binding: 'customer.firstName' }
+                },
+                {
+                    id: 'lastName',
+                    typeName: 'textBox',
+                    properties: { binding: 'customer.lastName' }
+                }
+            ]
+        });
+    });
+
+    it('should return engine rules', function() {
+
+        var p = fe.metadataProvider({ metadata: getMetadata() });
+
+        expect(p.getRules()).toEqual([
+            { receiverId: 'firstName', path: 'customer.firstName', signal: 'value' },
+            { receiverId: 'lastName', path: 'customer.lastName', signal: 'value' }
+        ]);
+
+    });
+
     function getMetadata() {
-        return {};
+
+        return {
+            id: 'testForm',
+            typeName: 'form',
+            properties: { header: 'test form' },
+            children: [
+                {
+                    id: 'firstName',
+                    typeName: 'textBox',
+                    binding: 'customer.firstName'
+                },
+                {
+                    id: 'lastName',
+                    typeName: 'textBox',
+                    binding: 'customer.lastName'
+                }
+            ]
+        };
     }
 });

@@ -88,7 +88,7 @@ Configuration:
 
 View Metadata:
 
-    id: 'element id, if not provided, will be generated'
+    id: 'element id, mandatory'
     typeName: 'element type name, if not provided, view.defaultElement will be used'
     children: [references to child elements]
     properties: {}
@@ -119,7 +119,15 @@ Responsibilities:
 
 Configuration:
 
-    metadata: {full form's metadata}
+    metadata: {full form metadata}
+
+Form Metadata:
+
+    id: 'element id, should be unique; if not provided, will be generated'
+    typeName: 'element type name, determines which element type will be used'
+    binding: 'element data binding'
+    children: [references to child elements]
+    properties: {}
 
 
 ### Code Sample
