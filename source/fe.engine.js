@@ -63,7 +63,7 @@ fe.engine = function engine(config) {
 
         r.transformData = function transformData(data, path) {
             var len;
-            if (typeof path === 'string' && typeof rule.path === 'string' && rule.path.length > path.length) {
+            if (data !== undefined && typeof path === 'string' && typeof rule.path === 'string' && rule.path.length > path.length) {
                 len = path.length;
                 return getByPath(data, rule.path.slice(len > 0 ? len + 1: len));
             }
@@ -99,13 +99,6 @@ fe.engine = function engine(config) {
 
         var i, len = rules.length, rule;
 
-        function send() {
-            if (!(rule.receiverId in receivers)) {
-                throw new Error(msg.receiverNotFound);
-            }
-            receivers[rule.receiverId].receiveMessage(message);
-        }
-
         for (i = 0; i < len; i += 1) {
             rule = rules[i];
 
@@ -117,11 +110,16 @@ fe.engine = function engine(config) {
                 (!rule.checkPath || rule.checkPath(message.path)) &&
                 (!rule.checkSignal || rule.checkSignal(message.signal))) {
 
-                if (message.data) {
-                    message.data = rule.transformData(message.data, message.path);
+                if (!(rule.receiverId in receivers)) {
+                    throw new Error(msg.receiverNotFound);
                 }
 
-                send();
+                receivers[rule.receiverId].receiveMessage({
+                    senderId: message.senderId,
+                    path: message.path,
+                    signal: message.signal,
+                    data: rule.transformData(message.data, message.path)
+                });
             }
         }
     }
