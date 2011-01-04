@@ -1,9 +1,14 @@
 <project name="formEngine.js" default="crunch" basedir=".">
 
-  <property name="FE" value="formEngine.js" />
-  <property name="FET" value="formEngine.tests.js" />
+  <property name="FE" value="formEngine" />
 
-  <target name="jslint">
+  <target name="gen">
+	<exec executable="java" failonerror="true">
+	  <arg line="-jar build/libs/js.jar build/generator.js" />
+	</exec>
+  </target>
+
+  <target name="jslint" depends="gen">
 	<exec executable="java" failonerror="true">
 	  <arg line="-jar build/libs/js.jar build/jslint-runner.js" />
 	</exec>
@@ -17,25 +22,29 @@
 
   <target name="combine" depends="tests">
 
-	<concat destfile="${FE}">
-	  <fileset file="source/intro.js" />
-      <fileset file="source/fe.js" />
-      <fileset file="source/fe.engine.js" />
-      <fileset file="source/fe.model.js" />
-      <fileset file="source/fe.view.js" />
-      <fileset file="source/fe.element.js" />
-      <fileset file="source/fe.metadataProvider.js" />
-	  <fileset file="source/outro.js" />
+	<concat destfile="${FE}.testable.js">
+      <fileset file="source/fe.js" /> <!--lint,test-->
+      <fileset file="source/fe.engine.js" /> <!--lint,test-->
+      <fileset file="source/fe.model.js" /> <!--lint,test-->
+      <fileset file="source/fe.view.js" /> <!--lint,test-->
+      <fileset file="source/fe.element.js" /> <!--lint,test-->
+      <fileset file="source/fe.metadataProvider.js" /> <!--lint,test-->
 	</concat>
 
-	<concat destfile="${FET}"> <!-- to estimate test suit size ;) -->
-      <fileset file="tests/source/fe.tests.js" />
-      <fileset file="tests/source/fe.engine.tests.js" />
-      <fileset file="tests/source/fe.model.tests.js" />
-      <fileset file="tests/source/fe.view.tests.js" />
-      <fileset file="tests/source/fe.element.tests.js" />
-      <fileset file="tests/source/fe.metadataProvider.tests.js" />
-      <fileset file="tests/source/formEngine.tests.js" />
+	<concat destfile="${FE}.tests.js"> <!-- to estimate test suit size ;) -->
+      <fileset file="tests/source/fe.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.engine.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.model.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.view.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.element.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.metadataProvider.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/formEngine.tests.js" /> <!--lint,test-->
+	</concat>
+
+	<concat destfile="${FE}.js">
+	  <fileset file="source/intro.js" />
+      <fileset file="${FE}.testable.js" />
+	  <fileset file="source/outro.js" />
 	</concat>
     
   </target>

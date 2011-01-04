@@ -1,25 +1,18 @@
 load("build/libs/jslint.js");
 
- check('source/fe.js')
-.check('source/fe.engine.js')
-.check('source/fe.model.js')
-.check('source/fe.view.js')
-.check('source/fe.element.js')
-.check('source/fe.metadataProvider.js')
+var files = readFile('build/jslint.files').split('\n'),
+    i, len = files.length,
+    errorCount = 0;
 
-.check('tests/source/fe.tests.js')
-.check('tests/source/fe.engine.tests.js')
-.check('tests/source/fe.model.tests.js')
-.check('tests/source/fe.view.tests.js')
-.check('tests/source/fe.element.tests.js')
-.check('tests/source/fe.metadataProvider.tests.js')
-.check('tests/source/formEngine.tests.js')
+for (i = 0; i < len; i += 1) {
+    check(files[i]);
+}
 
-.report();
-
-
+java.lang.System.exit(errorCount);
 
 function check(file) {
+
+    print('Checking ' + file + '...');
 
     JSLINT(readFile(file), { maxerr: 999 });
 
@@ -32,12 +25,5 @@ function check(file) {
         print(e.evidence);
     }
 
-    check.count = (check.count || 0) + len;
-
-    return {
-        check: check,
-        report: function() {
-            java.lang.System.exit(check.count);
-        }
-    };
+    errorCount += len;
 }
