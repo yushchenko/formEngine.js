@@ -15,7 +15,7 @@ function check(file) {
 
     print('Checking ' + file + '...');
 
-    JSLINT(readFile(file), { maxerr: 999 });
+    JSLINT(readFile(file), { maxerr: 999, evil: true });
 
     var errors = JSLINT.errors,
         i, len = errors.length, e;

@@ -52,6 +52,7 @@
 	<concat destfile="extensions/jquery/${FE}.jquery.js" fixlastline="yes">
 	  <fileset file="extensions/jquery/source/intro.js" />
 	  <fileset file="extensions/jquery/source/fe.jquery.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/fe.jquery.jqElement.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/elements/view.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/elements/textBox.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/outro.js" />

@@ -328,9 +328,17 @@ fe.element = function element (config) {
         }
     }
 
+    function eachChild(fn) {
+        var i, len;
+        for (i =0, len = that.children.length; i < len; i += 1) {
+            fn(that.children[i], i);
+        }
+    }
+
     that.initialize = initialize;
     that.receiveMessage = receiveMessage;
     that.notifyValueChange = notifyValueChange;
+    that.eachChild = eachChild;
 
     engine.addReceiver(that.id, that);
 

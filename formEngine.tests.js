@@ -447,6 +447,25 @@ describe('fe.element', function() {
         expect(function() { element.notifyValueChange(123); }).toThrow(msg.elementWithoutBinding);
     });
 
+    it('should iterate over children', function() {
+
+        var engine = fe.engine(),
+            element = fe.element({ metadata: {}, engine: engine }),
+            child1 = fe.element({ metadata: { id: 'c1' }, engine: engine }),
+            child2 = fe.element({ metadata: { id: 'c2' }, engine: engine }),
+            ids = [], indexes = [];
+
+        element.children.push(child1, child2);
+
+        element.eachChild(function(child, index) {
+            ids.push(child.id);
+            indexes.push(index);
+        });
+
+        expect(ids).toEqual(['c1', 'c2']);
+        expect(indexes).toEqual([0, 1]);
+    });
+
     function getElementMedatadata() {
         return {
             id: 'test',
