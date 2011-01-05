@@ -1,5 +1,5 @@
 
-// writeFile from "Spicing Up Embedded JavaScript" by John Resig
+// writeFile() from "Spicing Up Embedded JavaScript" by John Resig
 
 importPackage(java.io);
 
@@ -43,3 +43,20 @@ function template(str, data) {
                           + "');}return p.join('');");
     return data ? fn(data) : fn;
 };
+
+
+function getFileList(tag) { // extracts file list from build.xml
+
+    var re = new RegExp('^\\s*<fileset\\s+file="([^>]*)"\\s*\\/>\\s*<!--[a-z,]*' + tag + '[a-z,]*-->', 'gm'),
+        files = [], matches;
+
+    if(!getFileList.buildFile) {
+        getFileList.buildFile = readFile('build.xml');
+    }
+
+    while ((matches = re.exec(getFileList.buildFile))) {
+        files.push(matches[1]);
+    }
+
+    return files;
+}

@@ -1,6 +1,7 @@
 load("build/libs/jslint.js");
+load('build/utils.js');
 
-var files = readFile('build/jslint.files').split('\n'),
+var files = getFileList('lint'),
     i, len = files.length,
     errorCount = 0;
 
