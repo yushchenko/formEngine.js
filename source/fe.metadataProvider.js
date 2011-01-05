@@ -1,4 +1,3 @@
-
 fe.metadataProvider = function metadataProvider (config) {
 
     var that = {},

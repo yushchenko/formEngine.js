@@ -8,4 +8,3 @@
  */
 
 (function( global, undefined ) {
-

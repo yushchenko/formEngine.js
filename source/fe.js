@@ -1,4 +1,3 @@
- 
 var fe = {
     version: '0.0.1'
 };

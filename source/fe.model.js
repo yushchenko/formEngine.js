@@ -1,4 +1,3 @@
-
 fe.model = function model(config) {
 
     config = config || {};

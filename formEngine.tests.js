@@ -43,6 +43,7 @@ describe('fe', function() {
         expect(obj.not).not.toBeDefined(); // should ignore not existing paths
     });
 });
+
 describe('fe.engine', function() {
     
     it('should declare engine constructor', function() {
@@ -213,6 +214,7 @@ describe('fe.engine', function() {
     });
 
 });
+
 describe('fe.model', function() {
     
     it('should declare fe.model constructor', function() {
@@ -287,6 +289,7 @@ describe('fe.model', function() {
     });
 
 });
+
 describe('fe.view', function() {
     
     it('should declare fe.view constructor', function() {
@@ -380,6 +383,7 @@ describe('fe.view', function() {
         };
     }
 });
+
 describe('fe.element', function() {
     
     it('should declare fe.element constructor', function() {
@@ -460,6 +464,7 @@ describe('fe.element', function() {
         return that;
     }
 });
+
 describe('fe.metadataProvider', function() {
     
     it('should declare fe.metadataProvider constructor', function() {
@@ -531,6 +536,7 @@ describe('fe.metadataProvider', function() {
         };
     }
 });
+
 describe('formEngine', function() {
 
     var form = {

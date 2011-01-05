@@ -8,8 +8,6 @@
  */
 
 (function( global, undefined ) {
-
- 
 var fe = {
     version: '0.0.1'
 };
@@ -414,6 +412,7 @@ fe.metadataProvider = function metadataProvider (config) {
 
     return that;
 };
+
 global.fe = fe;
 
 })((function () { return this; })());

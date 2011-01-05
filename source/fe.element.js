@@ -1,4 +1,3 @@
-
 fe.element = function element (config) {
 
     var that = {},

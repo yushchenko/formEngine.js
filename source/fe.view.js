@@ -1,4 +1,3 @@
-
 fe.view = function view (config) {
 
     var that = {},
