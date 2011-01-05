@@ -41,12 +41,25 @@
       <fileset file="tests/source/formEngine.tests.js" /> <!--lint,test-->
 	</concat>
 
-    <echo message="Creating ${FE}.js..." />
-
+    <echo message="Building ${FE}.js..." />
 	<concat destfile="${FE}.js" fixlastline="yes">
 	  <fileset file="source/intro.js" />
       <fileset file="${FE}.testable.js" />
 	  <fileset file="source/outro.js" />
+	</concat>
+
+    <echo message="Building ${FE}.jquery.js..." />
+	<concat destfile="extensions/jquery/${FE}.jquery.js" fixlastline="yes">
+	  <fileset file="extensions/jquery/source/intro.js" />
+	  <fileset file="extensions/jquery/source/fe.jquery.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/elements/view.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/elements/textBox.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/outro.js" />
+	</concat>
+
+    <echo message="Building ${FE}.jquery.css..." />
+	<concat destfile="extensions/jquery/${FE}.jquery.css" fixlastline="yes">
+	  <fileset file="extensions/jquery/source/fe.jquery.css" />
 	</concat>
     
   </target>

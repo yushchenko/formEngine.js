@@ -364,12 +364,6 @@ fe.metadataProvider = function metadataProvider (config) {
         element.typeName = metadata.typeName;
         element.properties = metadata.properties || {};
 
-        // for (name in metadata.properties) {
-        //     if (metadata.properties.hasOwnProperty(name)) {
-        //         element.properties[name] = metadata.properties[name];
-        //     }
-        // }
-
         if (metadata.children && metadata.children.length) {
 
             element.children = [];
