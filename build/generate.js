@@ -8,8 +8,8 @@ writeFile(
     template(readFile('tests/tests.yaml.template'), { files: testFiles })
 );
 
-print('Generating run-tests.html...');
+print('Generating tests.html...');
 writeFile(
-    'tests/run-tests.html',
-    template(readFile('tests/run-tests.html.template'), { files: testFiles })
+    'tests/tests.html',
+    template(readFile('tests/tests.html.template'), { files: testFiles })
 );

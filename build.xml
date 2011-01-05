@@ -4,13 +4,13 @@
 
   <target name="gen">
 	<exec executable="java" failonerror="true">
-	  <arg line="-jar build/libs/js.jar build/generator.js" />
+	  <arg line="-jar build/libs/js.jar build/generate.js" />
 	</exec>
   </target>
 
   <target name="jslint" depends="gen">
 	<exec executable="java" failonerror="true">
-	  <arg line="-jar build/libs/js.jar build/jslint-runner.js" />
+	  <arg line="-jar build/libs/js.jar build/lint.js" />
 	</exec>
   </target>
 
