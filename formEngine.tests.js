@@ -42,6 +42,17 @@ describe('fe', function() {
         setByPath(obj, 'not.existing.path', 5); 
         expect(obj.not).not.toBeDefined(); // should ignore not existing paths
     });
+
+    it('should apply function to args', function() {
+
+        var args = [];
+        applyToArgs([1,2,3], function(a) { args.push(a); });
+        expect(args).toEqual([1,2,3]);
+
+        args = [];
+        applyToArgs([[1,2],3], function(a) { args.push(a); });
+        expect(args).toEqual([1,2,3]);
+    });
 });
 
 describe('fe.rule', function() {

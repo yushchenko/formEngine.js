@@ -29,25 +29,14 @@ fe.engine = function engine(config) {
     }
 
     function addRules(/*rules in array or arguments*/) {
-
-        var i, l = arguments.length,
-            ii, ll;
-
-        for(i = 0; i < l; i += 1) {
-            if (arguments[i].length) {
-                for (ii = 0, ll = arguments[i].length; ii < ll; ii += 1) {
-                    addRule(arguments[i][ii]);
-                }
-            } else {
-                addRule(arguments[i]);
-            }
-        }
+        applyToArgs(arguments, addRule);
     }
 
     function addTrigger(trigger) {
     }
 
     function addTriggers(/* triggers in array or argumenst */) {
+        applyToArgs(arguments, addTrigger);
     }
 
     function sendMessage(message) {

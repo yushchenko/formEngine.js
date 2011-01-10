@@ -54,6 +54,23 @@ function setByPath(obj, path, value) {
     target[parts[len]] = value;
 }
 
+
+function applyToArgs(args, fn) {
+
+    var i, l = args.length,
+        ii, ll;
+
+    for(i = 0; i < l; i += 1) {
+        if (args[i].length) {
+            for (ii = 0, ll = args[i].length; ii < ll; ii += 1) {
+                fn(args[i][ii]);
+            }
+        } else {
+            fn(args[i]);
+        }
+    }
+}
+
 var msg = {
     notUniqueReceiverId: 'engine.addReceiver: recevier with given ID has been already added.',
     receiverIdMustBeString: 'engine.addReceiver: id must be string',
@@ -145,25 +162,14 @@ fe.engine = function engine(config) {
     }
 
     function addRules(/*rules in array or arguments*/) {
-
-        var i, l = arguments.length,
-            ii, ll;
-
-        for(i = 0; i < l; i += 1) {
-            if (arguments[i].length) {
-                for (ii = 0, ll = arguments[i].length; ii < ll; ii += 1) {
-                    addRule(arguments[i][ii]);
-                }
-            } else {
-                addRule(arguments[i]);
-            }
-        }
+        applyToArgs(arguments, addRule);
     }
 
     function addTrigger(trigger) {
     }
 
     function addTriggers(/* triggers in array or argumenst */) {
+        applyToArgs(arguments, addTrigger);
     }
 
     function sendMessage(message) {
