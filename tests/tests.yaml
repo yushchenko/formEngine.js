@@ -6,12 +6,14 @@ load:
   - libs/JasmineAdapter.js
   # code & tests
   - ../source/fe.js
+  - ../source/fe.rule.js
   - ../source/fe.engine.js
   - ../source/fe.model.js
   - ../source/fe.view.js
   - ../source/fe.element.js
   - ../source/fe.metadataProvider.js
   - ../tests/source/fe.tests.js
+  - ../tests/source/fe.rule.tests.js
   - ../tests/source/fe.engine.tests.js
   - ../tests/source/fe.model.tests.js
   - ../tests/source/fe.view.tests.js

@@ -28,6 +28,7 @@ Message structure:
 
     senderId: one
     path: undefined|one
+    rulePath: undefined|one          // path from rule
     signal: one
     data: undefined|one
 
@@ -40,8 +41,11 @@ Rule structure:
 
 Trigger structure:
 
+    id: one
     rule: one
     processor: one                  // function, gets in and returns out message
+    processorArgs: list
+    signal: one
     
 Rule examples:
 
