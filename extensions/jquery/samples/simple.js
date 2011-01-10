@@ -4,7 +4,8 @@ $(function() {
         customer: {
             firstName: 'John',
             lastName: 'Smith',
-            country: { id: 2 }
+            country: { id: 2 },
+            hasDiscount: true
         },
         countries: [
             { id: 1, name: 'Great Britain' },
@@ -37,6 +38,12 @@ $(function() {
                 typeName: 'comboBox',
                 binding: 'customer.country',
                 properties: { list: 'countries', label: 'Country' }
+            },
+            {
+                id: 'hasDiscount',
+                typeName: 'checkBox',
+                binding: 'customer.hasDiscount',
+                properties: { label: 'Has Discount' }
             }
         ]
     };

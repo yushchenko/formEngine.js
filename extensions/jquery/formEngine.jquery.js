@@ -128,7 +128,7 @@ fe.jquery.elements.textBox = function textBox(config) {
 
     that.template = template(
         '<div id="<%=containerId%>">' +
-            '<label for="<%=editorId%>"><%=properties.label%></label>' +
+            '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<input type="text" id="<%=editorId%>"></input>' +
         '</div>'
     );
@@ -162,7 +162,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
 
     that.template = template(
         '<div id="<%=containerId%>">' +
-            '<label for="<%=editorId%>"><%=properties.label%></label>' +
+            '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<select id="<%=editorId%>"></select>' +
         '</div>'
     );
@@ -209,7 +209,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
             addOption(list[i]);
         }
 
-        selectItem();
+        selectItem(); // restoring selected item
     }
 
     that.setValue = function setValue(value) {
@@ -237,6 +237,30 @@ fe.jquery.elements.comboBox = function comboBox(config) {
 
         return undefined;
     }
+
+    return that;
+};
+
+fe.jquery.elements.checkBox = function checkBox(config) {
+
+    var that = fe.jquery.element(config);
+
+    that.template = template(
+        '<div id="<%=containerId%>">' +
+            '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<input type="checkbox" id="<%=editorId%>"></input>' +
+        '</div>'
+    );
+
+    that.initialize = function() {
+        that.getEditor().change(function() {
+            that.notifyValueChange(that.getEditor().attr('checked'));
+        });
+    };
+
+    that.setValue = function setValue(value) {
+        that.getEditor().attr('checked', value);
+    };
 
     return that;
 };
