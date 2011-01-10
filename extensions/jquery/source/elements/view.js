@@ -1,7 +1,7 @@
 
 fe.jquery.elements.view = function view(config) {
 
-    var that = jqElement(config);
+    var that = fe.jquery.element(config);
 
     that.template = template('<div id="<%=containerId%>"><%=content%></div>');
 

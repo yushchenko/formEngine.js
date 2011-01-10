@@ -1,7 +1,7 @@
 
 fe.jquery.elements.textBox = function textBox(config) {
 
-    var that = jqElement(config);
+    var that = fe.jquery.element(config);
 
     that.template = template(
         '<div id="<%=containerId%>">' +

@@ -265,7 +265,7 @@ fe.view = function view (config) {
     var that = {},
         engine = config.engine,
         elementTypes = config.elementTypes,
-        defaultElementType = config.defaultElementType,
+        defaultElementType = config.defaultElementType || fe.element,
         elementsById = {};
 
     function createElement(metadata) {

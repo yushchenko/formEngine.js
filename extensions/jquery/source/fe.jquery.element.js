@@ -1,5 +1,5 @@
 
-function jqElement(config) {
+fe.jquery.element = function jqueryElement(config) {
 
     var that = fe.element(config),
         editorQuery, containerQuery;
@@ -60,4 +60,6 @@ function jqElement(config) {
     that.getContainer = getContainer;
 
     return that;
-}
+};
+
+
