@@ -7,6 +7,7 @@ load:
   # code & tests
   - ../source/fe.js
   - ../source/fe.rule.js
+  - ../source/fe.trigger.js
   - ../source/fe.engine.js
   - ../source/fe.model.js
   - ../source/fe.view.js
@@ -14,6 +15,7 @@ load:
   - ../source/fe.metadataProvider.js
   - ../tests/source/fe.tests.js
   - ../tests/source/fe.rule.tests.js
+  - ../tests/source/fe.trigger.tests.js
   - ../tests/source/fe.engine.tests.js
   - ../tests/source/fe.model.tests.js
   - ../tests/source/fe.view.tests.js

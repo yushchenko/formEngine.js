@@ -40,13 +40,6 @@ fe.model = function model(config) {
     /* Utilities
      ****************************************************************/
 
-    function bindToEngine() {
-        if (engine) {
-            engine.addReceiver(id, that);
-            engine.addRule({ receiverId: id, signal: 'value' });
-        }
-    }
-
     function notifyUpdate(path, value) {
         if (!engine) {
             return;
@@ -58,7 +51,11 @@ fe.model = function model(config) {
     that.set = set;
     that.get = get;
 
-    bindToEngine();
+    if (engine) {
+        engine.addReceiver(id, that);
+        engine.addRule({ receiverId: id, signal: 'value' });
+        engine.addModel(that);
+    }
 
     return that;
 };

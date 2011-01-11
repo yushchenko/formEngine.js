@@ -51,7 +51,7 @@ function applyToArgs(args, fn) {
         ii, ll;
 
     for(i = 0; i < l; i += 1) {
-        if (args[i].length) {
+        if (typeof args[i].length === 'number') {
             for (ii = 0, ll = args[i].length; ii < ll; ii += 1) {
                 fn(args[i][ii]);
             }

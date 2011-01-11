@@ -37,12 +37,11 @@ Rule structure:
     receiverId: one
     senderId: undefined|one|list
     path: undefined|one|list         // link to data, e.g. request.client.name
-    sigal: undefined|one|list        // value, changes, errors, click, select
+    signal: undefined|one|list       // value, changes, errors, click, select
 
 Trigger structure:
 
     id: one
-    rule: one
     processor: one                  // function, gets in and returns out message
     processorArgs: list
     signal: one

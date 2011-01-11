@@ -52,5 +52,9 @@ describe('fe', function() {
         args = [];
         applyToArgs([[1,2],3], function(a) { args.push(a); });
         expect(args).toEqual([1,2,3]);
+
+        args = [];
+        applyToArgs([[]], function(a) { args.push(a); });
+        expect(args).toEqual([]);
     });
 });

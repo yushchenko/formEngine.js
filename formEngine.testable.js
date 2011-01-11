@@ -51,7 +51,7 @@ function applyToArgs(args, fn) {
         ii, ll;
 
     for(i = 0; i < l; i += 1) {
-        if (args[i].length) {
+        if (typeof args[i].length === 'number') {
             for (ii = 0, ll = args[i].length; ii < ll; ii += 1) {
                 fn(args[i][ii]);
             }
@@ -121,11 +121,44 @@ fe.rule = function rule(config) {
 
     return that;
 };
+
+fe.trigger = function trigger(config) {
+
+    var that = {},
+        id = config.id,
+        engine = config.engine,
+        processor = config.processor,
+        processorArgs = config.processorArgs,
+        signal = config.signal;
+
+    function receiveMessage(messsage) {
+
+        var args = [],
+            i, len = processorArgs.length,
+            result;
+
+        for (i = 0; i < len; i += 1) {
+            args.push(engine.get(processorArgs[i]));
+        }
+
+        result = processor.apply(undefined, args);
+
+        engine.sendMessage({ senderId: id, signal: signal, data: result });
+    }
+
+    that.receiveMessage = receiveMessage;
+
+    engine.addReceiver(id, that);
+
+    return that;
+};
 fe.engine = function engine(config) {
 
     var that = {},
         receivers = {},
-        rules = [];
+        rules = [],
+        triggers = [],
+        models = [];
 
     function addReceiver(id, receiver) {
 
@@ -155,11 +188,17 @@ fe.engine = function engine(config) {
         applyToArgs(arguments, addRule);
     }
 
-    function addTrigger(trigger) {
+    function addTrigger(triggerConfig) {
+        triggerConfig.engine = that;
+        triggers.push(fe.trigger(triggerConfig));
     }
 
     function addTriggers(/* triggers in array or argumenst */) {
         applyToArgs(arguments, addTrigger);
+    }
+
+    function addModel(model) {
+        models.push(model);
     }
 
     function sendMessage(message) {
@@ -191,12 +230,28 @@ fe.engine = function engine(config) {
         }
     }
 
+    function get(path) {
+
+        var i, len, value;
+
+        for (i = 0, len = models.length; i < len; i += 1) {
+            value = models[i].get(path);
+            if (value !== undefined) {
+                return value;
+            }
+        }
+
+        return undefined;
+    }
+
     that.addReceiver = addReceiver;
     that.addRule = addRule;
     that.addRules = addRules;
     that.addTrigger = addTrigger;
     that.addTriggers = addTriggers;
+    that.addModel = addModel;
     that.sendMessage = sendMessage;
+    that.get = get;
     
     return that;
 };
@@ -242,13 +297,6 @@ fe.model = function model(config) {
     /* Utilities
      ****************************************************************/
 
-    function bindToEngine() {
-        if (engine) {
-            engine.addReceiver(id, that);
-            engine.addRule({ receiverId: id, signal: 'value' });
-        }
-    }
-
     function notifyUpdate(path, value) {
         if (!engine) {
             return;
@@ -260,7 +308,11 @@ fe.model = function model(config) {
     that.set = set;
     that.get = get;
 
-    bindToEngine();
+    if (engine) {
+        engine.addReceiver(id, that);
+        engine.addRule({ receiverId: id, signal: 'value' });
+        engine.addModel(that);
+    }
 
     return that;
 };

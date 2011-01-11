@@ -2,7 +2,9 @@ fe.engine = function engine(config) {
 
     var that = {},
         receivers = {},
-        rules = [];
+        rules = [],
+        triggers = [],
+        models = [];
 
     function addReceiver(id, receiver) {
 
@@ -32,11 +34,17 @@ fe.engine = function engine(config) {
         applyToArgs(arguments, addRule);
     }
 
-    function addTrigger(trigger) {
+    function addTrigger(triggerConfig) {
+        triggerConfig.engine = that;
+        triggers.push(fe.trigger(triggerConfig));
     }
 
     function addTriggers(/* triggers in array or argumenst */) {
         applyToArgs(arguments, addTrigger);
+    }
+
+    function addModel(model) {
+        models.push(model);
     }
 
     function sendMessage(message) {
@@ -68,12 +76,28 @@ fe.engine = function engine(config) {
         }
     }
 
+    function get(path) {
+
+        var i, len, value;
+
+        for (i = 0, len = models.length; i < len; i += 1) {
+            value = models[i].get(path);
+            if (value !== undefined) {
+                return value;
+            }
+        }
+
+        return undefined;
+    }
+
     that.addReceiver = addReceiver;
     that.addRule = addRule;
     that.addRules = addRules;
     that.addTrigger = addTrigger;
     that.addTriggers = addTriggers;
+    that.addModel = addModel;
     that.sendMessage = sendMessage;
+    that.get = get;
     
     return that;
 };

@@ -168,4 +168,20 @@ describe('fe.engine', function() {
         expect(function() {  e.sendMessage(msg); }).toThrow(msg.receiverNotFound);
     });
 
+    it('should return value from registrated model', function() {
+
+        var e = fe.engine(),
+            model1 = fe.model({ engine: e }),
+            model2 = fe.model({ engine: e }),
+            data1 = { a: { b: { c: 'value1' } } },
+            data2 = { x: { y: { z: 'value2' } } };
+
+        model1.set(data1);
+        model2.set(data2);
+
+        expect(e.get('a.b.c')).toEqual('value1');
+        expect(e.get('x.y.z')).toEqual('value2');
+        expect(e.get('non.existing.path')).not.toBeDefined();
+    });
+
 });

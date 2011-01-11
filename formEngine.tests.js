@@ -52,6 +52,10 @@ describe('fe', function() {
         args = [];
         applyToArgs([[1,2],3], function(a) { args.push(a); });
         expect(args).toEqual([1,2,3]);
+
+        args = [];
+        applyToArgs([[]], function(a) { args.push(a); });
+        expect(args).toEqual([]);
     });
 });
 
@@ -81,6 +85,42 @@ describe('fe.rule', function() {
 
         expect(rule1.transformData(data, '')).toEqual('value');
         expect(rule2.transformData(data, '')).toEqual(data); // no transformation
+    });
+
+});
+
+describe('fe.trigger', function() {
+    
+    it('should have appropriate interface', function() {
+
+        var engine = fe.engine(),
+            t = fe.trigger({ id: 't1', engine: engine });
+
+        expect(typeof t.receiveMessage).toEqual('function');
+    });
+
+    it('should execute function and send message', function() {
+
+        var engine = fe.engine(),
+            model = fe.model({ engine: engine }),
+            data = { x: 1, y: 2 },
+            t = fe.trigger({
+                id: 't1',
+                processorArgs: ['x', 'y'],
+                processor: function (x,y) { return x + y; },
+                signal: 'test',
+                engine: engine
+            }),
+            r = { receiveMessage: jasmine.createSpy() };
+
+        engine.addRule({ receiverId: 't1', path: ['x', 'y'], signal: 'value' });
+
+        engine.addReceiver('r1', r);
+        engine.addRule({ receiverId: 'r1', signal: 'test' });
+
+        model.set(data);
+        
+        expect(r.receiveMessage).toHaveBeenCalledWith({ senderId: 't1', signal: 'test', data: 3 });
     });
 
 });
@@ -252,6 +292,22 @@ describe('fe.engine', function() {
 
         e.addRule(rule);
         expect(function() {  e.sendMessage(msg); }).toThrow(msg.receiverNotFound);
+    });
+
+    it('should return value from registrated model', function() {
+
+        var e = fe.engine(),
+            model1 = fe.model({ engine: e }),
+            model2 = fe.model({ engine: e }),
+            data1 = { a: { b: { c: 'value1' } } },
+            data2 = { x: { y: { z: 'value2' } } };
+
+        model1.set(data1);
+        model2.set(data2);
+
+        expect(e.get('a.b.c')).toEqual('value1');
+        expect(e.get('x.y.z')).toEqual('value2');
+        expect(e.get('non.existing.path')).not.toBeDefined();
     });
 
 });
