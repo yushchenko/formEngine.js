@@ -5,7 +5,8 @@ $(function() {
             firstName: 'John',
             lastName: 'Smith',
             country: { id: 2 },
-            hasDiscount: true
+            hasDiscount: true,
+            discount: 10
         },
         countries: [
             { id: 1, name: 'Great Britain' },
@@ -44,6 +45,13 @@ $(function() {
                 typeName: 'checkBox',
                 binding: 'customer.hasDiscount',
                 properties: { label: 'Has Discount' }
+            },
+            {
+                id: 'discount',
+                typeName: 'textBox',
+                binding: 'customer.discount',
+                hidden: '!customer.hasDiscount',
+                properties: { label: 'Discount' }
             }
         ]
     };

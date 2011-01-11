@@ -33,6 +33,11 @@ describe('fe.metadataProvider', function() {
                     id: 'lastName',
                     typeName: 'textBox',
                     properties: { binding: 'customer.lastName' }
+                },
+                {
+                    id: 'discount',
+                    typeName: 'textBox',
+                    properties: { binding: 'customer.discount' }
                 }
             ]
         });
@@ -40,13 +45,29 @@ describe('fe.metadataProvider', function() {
 
     it('should return engine rules', function() {
 
-        var p = fe.metadataProvider({ metadata: getMetadata() });
+        var p = fe.metadataProvider({ metadata: getMetadata() }),
+            rules = p.getRules();
 
-        expect(p.getRules()).toEqual([
+        expect(rules.length).toEqual(5);
+
+        expect(rules.slice(0,3)).toEqual([
             { receiverId: 'firstName', path: 'customer.firstName', signal: 'value' },
-            { receiverId: 'lastName', path: 'customer.lastName', signal: 'value' }
+            { receiverId: 'lastName', path: 'customer.lastName', signal: 'value' },
+            { receiverId: 'discount', path: 'customer.discount', signal: 'value' }
         ]);
 
+        expect(rules[3].path).toEqual(['customer.hasDiscount']);
+        expect(rules[4].signal).toEqual('hidden');
+    });
+
+    it('should return triggers', function() {
+
+        var p = fe.metadataProvider({ metadata: getMetadata() }),
+            t = p.getTriggers()[0];
+
+        expect(t.processorArgs).toEqual([ 'customer.hasDiscount' ]);
+        expect(t.processor(true)).toEqual(false);
+        expect(t.signal).toEqual('hidden');
     });
 
     function getMetadata() {
@@ -65,6 +86,12 @@ describe('fe.metadataProvider', function() {
                     id: 'lastName',
                     typeName: 'textBox',
                     binding: 'customer.lastName'
+                },
+                {
+                    id: 'discount',
+                    typeName: 'textBox',
+                    binding: 'customer.discount',
+                    hidden: '!customer.hasDiscount'
                 }
             ]
         };

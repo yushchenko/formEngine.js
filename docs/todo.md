@@ -1,8 +1,7 @@
 ## TODO
 
-* trigger
 * add 'rulePath' to message, fix comboBox
-* dependency sample (hide/show textBox when checkBox checked/unchecked)
+* add 'run' function to fe.jquery namespace
 
 * move parts of design.md into component's source files, add it automatic generation
 * upgrade JSLint
@@ -19,10 +18,9 @@
 ## Version 0.2
 
 * change tracker
-* master/detail
 * Ext JS extension (with grids)
+* master/detail
 
 ## Version 0.3
 
 * jQuery Mobile extension
-

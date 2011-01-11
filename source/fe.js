@@ -69,3 +69,9 @@ var msg = {
     receiverNotFound: 'engine.sendMessage: receiver not found.',
     elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
 };
+
+function log(msg) {
+    if (console !== undefined && typeof console.log === 'function') {
+        console.log(msg);
+    }
+}

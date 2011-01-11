@@ -143,6 +143,10 @@ fe.jquery.elements.textBox = function textBox(config) {
         that.getEditor().val(value);
     };
 
+    that.setHidden = function setHidden(hidden) {
+        that.getContainer().toggleClass('fe-hidden', hidden);
+    };
+
     return that;
 };
 
