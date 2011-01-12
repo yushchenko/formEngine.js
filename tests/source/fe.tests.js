@@ -57,4 +57,11 @@ describe('fe', function() {
         applyToArgs([[]], function(a) { args.push(a); });
         expect(args).toEqual([]);
     });
+
+    it('should trim strings', function() {
+        expect(trim('')).toEqual('');
+        expect(trim(null)).toEqual('');
+        expect(trim(undefined)).toEqual('');
+        expect(trim(' abc  ')).toEqual('abc');
+    });
 });

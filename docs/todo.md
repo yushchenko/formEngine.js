@@ -4,7 +4,7 @@
 
 ## Version 0.1
 
-* hidden/readonly
+* DONE hidden/readonly for jquery extension
 * validation
 * introduction in README
 

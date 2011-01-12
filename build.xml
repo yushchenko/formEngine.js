@@ -33,6 +33,7 @@
       <fileset file="source/fe.trigger.js" /> <!--lint,test-->
       <fileset file="source/fe.engine.js" /> <!--lint,test-->
       <fileset file="source/fe.model.js" /> <!--lint,test-->
+      <fileset file="source/fe.validators.js" /> <!--lint,test-->      
       <fileset file="source/fe.view.js" /> <!--lint,test-->
       <fileset file="source/fe.element.js" /> <!--lint,test-->
       <fileset file="source/fe.metadataProvider.js" /> <!--lint,test-->
@@ -44,6 +45,7 @@
       <fileset file="tests/source/fe.trigger.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.engine.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.model.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.validators.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.view.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.element.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.metadataProvider.tests.js" /> <!--lint,test-->

@@ -12,6 +12,7 @@ describe('fe.model', function() {
         expect(typeof m.receiveMessage).toEqual('function');
         expect(typeof m.set).toEqual('function');
         expect(typeof m.get).toEqual('function');
+        expect(typeof m.isValid).toEqual('function');
     });
 
     it('should provide access to data', function() {
@@ -70,6 +71,24 @@ describe('fe.model', function() {
 
         m.set('y.z', 3);
         expect(receiver.receiveMessage).toHaveBeenCalledWith(msg2); // on data change by model.set()
+    });
+
+    it('should check if data is valid according validation rules', function() {
+        
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y.z', validatorName: 'required' }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }}),
+            data = { x: { y: { z: 1 } } };
+
+        expect(m.isValid()).toEqual(false);
+        expect(m.isValid('x.y.z')).toEqual(false);
+
+        m.set(data);
+
+        expect(m.isValid()).toEqual(true);
+        expect(m.isValid('x.y.z')).toEqual(true);
     });
 
 });

@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Wed Jan 12 13:44:41 2011 +0200
+ * Wed Jan 12 14:09:56 2011 +0200
  * 
  */
 
@@ -17,7 +17,9 @@ var fe = {
 
 /* Private stuff
  **********************************************************************/
-var nextUniqueId = 0;
+var nextUniqueId = 0,
+    trimLeft = /^\s+/,
+	trimRight = /\s+$/;
 
 function getUniqueId() {
     nextUniqueId += 1;
@@ -56,7 +58,6 @@ function setByPath(obj, path, value) {
     target[parts[len]] = value;
 }
 
-
 function applyToArgs(args, fn) {
 
     var i, l = args.length,
@@ -73,6 +74,18 @@ function applyToArgs(args, fn) {
     }
 }
 
+// taken from jQuery
+function trim(t) {
+    //TODO: use native trim when available
+    return t === null || t === undefined ? "" : t.toString().replace( trimLeft, "" ).replace( trimRight, "" );
+}
+
+function log(msg) {
+    if (console !== undefined && typeof console.log === 'function') {
+        console.log(msg);
+    }
+}
+
 var msg = {
     notUniqueReceiverId: 'engine.addReceiver: recevier with given ID has been already added.',
     receiverIdMustBeString: 'engine.addReceiver: id must be string',
@@ -81,12 +94,6 @@ var msg = {
     receiverNotFound: 'engine.sendMessage: receiver not found.',
     elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
 };
-
-function log(msg) {
-    if (console !== undefined && typeof console.log === 'function') {
-        console.log(msg);
-    }
-}
 
 fe.rule = function rule(config) {
 
@@ -289,7 +296,8 @@ fe.model = function model(config) {
     var that = {},
         id = config.id || getUniqueId(),
         engine = config.engine,
-        data = {};
+        data = {},
+        validationRules = (config.metadata || {}).validationRules || [];
 
     function receiveMessage(msg) {
         if (msg.signal === 'value' && typeof msg.path === 'string') {
@@ -321,6 +329,28 @@ fe.model = function model(config) {
         return getByPath(data, path);
     }
 
+    function isValid(path) {
+
+        var i, len, rule, validator;
+
+        for (i = 0, len = validationRules.length; i < len; i += 1) {
+
+            rule = validationRules[i];
+
+            if (path && rule.path.indexOf(path) !== 0) {
+                continue;
+            }
+
+            validator = fe.validators[rule.validatorName];
+
+            if (validator(getByPath(data, rule.path), rule.properties || {}) !== undefined) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /* Utilities
      ****************************************************************/
 
@@ -334,6 +364,7 @@ fe.model = function model(config) {
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
+    that.isValid = isValid;
 
     if (engine) {
         engine.addReceiver(id, that);
@@ -342,6 +373,19 @@ fe.model = function model(config) {
     }
 
     return that;
+};
+fe.validators = {};
+
+fe.validators.required = function required(value, properties) {
+
+    if (value === undefined || value === null || 
+        (typeof value === 'string' && trim(value) === '') ||
+        (typeof value === 'number' && isNaN(value))) {
+
+        return properties.message || 'This field is required!';
+    }
+
+    return undefined;
 };
 fe.view = function view (config) {
 

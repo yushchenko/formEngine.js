@@ -57,6 +57,13 @@ describe('fe', function() {
         applyToArgs([[]], function(a) { args.push(a); });
         expect(args).toEqual([]);
     });
+
+    it('should trim strings', function() {
+        expect(trim('')).toEqual('');
+        expect(trim(null)).toEqual('');
+        expect(trim(undefined)).toEqual('');
+        expect(trim(' abc  ')).toEqual('abc');
+    });
 });
 
 describe('fe.rule', function() {
@@ -357,6 +364,7 @@ describe('fe.model', function() {
         expect(typeof m.receiveMessage).toEqual('function');
         expect(typeof m.set).toEqual('function');
         expect(typeof m.get).toEqual('function');
+        expect(typeof m.isValid).toEqual('function');
     });
 
     it('should provide access to data', function() {
@@ -417,6 +425,47 @@ describe('fe.model', function() {
         expect(receiver.receiveMessage).toHaveBeenCalledWith(msg2); // on data change by model.set()
     });
 
+    it('should check if data is valid according validation rules', function() {
+        
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y.z', validatorName: 'required' }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }}),
+            data = { x: { y: { z: 1 } } };
+
+        expect(m.isValid()).toEqual(false);
+        expect(m.isValid('x.y.z')).toEqual(false);
+
+        m.set(data);
+
+        expect(m.isValid()).toEqual(true);
+        expect(m.isValid('x.y.z')).toEqual(true);
+    });
+
+});
+describe('fe.validators', function() {
+
+    it('should validate required', function () {
+
+        var v = fe.validators.required,
+            msg = 'error',
+            properties = { message: msg };
+
+        expect(v).toBeDefined();
+
+        expect(v('value', properties)).toEqual(undefined);
+        expect(v(0, properties)).toEqual(undefined);
+        expect(v(new Date(), properties)).toEqual(undefined);
+        expect(v({}, properties)).toEqual(undefined);
+        expect(v([], properties)).toEqual(undefined);
+
+        expect(v(undefined, properties)).toEqual(msg);        
+        expect(v(null, properties)).toEqual(msg);
+        expect(v(NaN, properties)).toEqual(msg);
+        expect(v('', properties)).toEqual(msg);
+        expect(v(' ', properties)).toEqual(msg);
+    });
 });
 
 describe('fe.view', function() {

@@ -5,7 +5,9 @@ var fe = {
 
 /* Private stuff
  **********************************************************************/
-var nextUniqueId = 0;
+var nextUniqueId = 0,
+    trimLeft = /^\s+/,
+	trimRight = /\s+$/;
 
 function getUniqueId() {
     nextUniqueId += 1;
@@ -44,7 +46,6 @@ function setByPath(obj, path, value) {
     target[parts[len]] = value;
 }
 
-
 function applyToArgs(args, fn) {
 
     var i, l = args.length,
@@ -61,6 +62,18 @@ function applyToArgs(args, fn) {
     }
 }
 
+// taken from jQuery
+function trim(t) {
+    //TODO: use native trim when available
+    return t === null || t === undefined ? "" : t.toString().replace( trimLeft, "" ).replace( trimRight, "" );
+}
+
+function log(msg) {
+    if (console !== undefined && typeof console.log === 'function') {
+        console.log(msg);
+    }
+}
+
 var msg = {
     notUniqueReceiverId: 'engine.addReceiver: recevier with given ID has been already added.',
     receiverIdMustBeString: 'engine.addReceiver: id must be string',
@@ -69,9 +82,3 @@ var msg = {
     receiverNotFound: 'engine.sendMessage: receiver not found.',
     elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
 };
-
-function log(msg) {
-    if (console !== undefined && typeof console.log === 'function') {
-        console.log(msg);
-    }
-}

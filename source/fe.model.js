@@ -5,7 +5,8 @@ fe.model = function model(config) {
     var that = {},
         id = config.id || getUniqueId(),
         engine = config.engine,
-        data = {};
+        data = {},
+        validationRules = (config.metadata || {}).validationRules || [];
 
     function receiveMessage(msg) {
         if (msg.signal === 'value' && typeof msg.path === 'string') {
@@ -37,6 +38,28 @@ fe.model = function model(config) {
         return getByPath(data, path);
     }
 
+    function isValid(path) {
+
+        var i, len, rule, validator;
+
+        for (i = 0, len = validationRules.length; i < len; i += 1) {
+
+            rule = validationRules[i];
+
+            if (path && rule.path.indexOf(path) !== 0) {
+                continue;
+            }
+
+            validator = fe.validators[rule.validatorName];
+
+            if (validator(getByPath(data, rule.path), rule.properties || {}) !== undefined) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /* Utilities
      ****************************************************************/
 
@@ -50,6 +73,7 @@ fe.model = function model(config) {
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
+    that.isValid = isValid;
 
     if (engine) {
         engine.addReceiver(id, that);

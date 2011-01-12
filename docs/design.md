@@ -61,18 +61,25 @@ Responsibilities:
 
 * provides data access and notifies other participants about data changes;
 * updates data according received messages;
-* validates data and notifies when validation status changes;
+* validates data and notifies when validation status changes,
+  can be extended adding new types of validators;
 * tracks data changes, allows undo or redo data changes, notifies data status changes;
-* can be extended adding new types of validators;
 
 Configuration:
 
     engine: {reference to engine, mandatory}
-    metadata: {model metadata, contains validation rules}
+    metadata: {model metadata, validation rules}
     
 Model Metadata:
 
-    [???]
+    validationRules: []
+         path
+         validatorName
+         validatorProperties
+
+A validator is function that gets value and properties
+and returns error message if data invalid or undefined value otherwise.
+All validators should be referenced in fe.validators object by name.
 
 
 ### View
