@@ -2,6 +2,11 @@
 
   <property name="FE" value="formEngine" />
 
+  <loadfile property="version" srcfile="version.txt" />
+  <exec executable="git" outputproperty="date">
+	<arg line="log -1 --pretty=format:%ad" />
+  </exec>
+
   <target name="gen">
 	<exec executable="java" failonerror="true">
 	  <arg line="-jar build/libs/js.jar build/generate.js" />
@@ -51,6 +56,8 @@
       <fileset file="${FE}.testable.js" />
 	  <fileset file="source/outro.js" />
 	</concat>
+    <replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${FE}.js" />
+	<replaceregexp match="@DATE" replace="${date}" file="${FE}.js" />
 
     <echo message="Building ${FE}.jquery.js..." />
 	<concat destfile="extensions/jquery/${FE}.jquery.js" fixlastline="yes">
@@ -63,6 +70,9 @@
 	  <fileset file="extensions/jquery/source/elements/checkBox.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/outro.js" />
 	</concat>
+    <replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true"
+                   file="extensions/jquery/${FE}.jquery.js" />
+	<replaceregexp match="@DATE" replace="${date}" file="extensions/jquery/${FE}.jquery.js" />
 
     <echo message="Building ${FE}.jquery.css..." />
 	<concat destfile="extensions/jquery/${FE}.jquery.css" fixlastline="yes">

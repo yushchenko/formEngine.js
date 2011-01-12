@@ -1,8 +1,6 @@
 ## TODO
 
 * move parts of design.md into component's source files, add it automatic generation
-* add version info
-
 
 ## Version 0.1
 
