@@ -4,8 +4,8 @@ fe.jquery.element = function jqueryElement(config) {
     var that = fe.element(config),
         editorQuery, containerQuery;
 
-    that.editorId = that.id;
-    that.containerId = 'c_' + that.id;
+    that.editorId = that.id.replace(/\./g, '_');
+    that.containerId = 'c_' + that.editorId;
 
     function initialize() {
 
@@ -53,11 +53,28 @@ fe.jquery.element = function jqueryElement(config) {
         return containerQuery;
     }
 
+    function setHidden(hidden) {
+        var container = that.getContainer();
+        if (container) {
+            container.toggleClass('fe-hidden', hidden);
+        }
+    }
+
+    function setReadonly(readonly) {
+        var editor = that.getEditor();
+        if (editor) {
+            editor.get(0).disabled = readonly;
+        }
+    }
+
     that.initialize = initialize;
     that.getMarkup = getMarkup;
 
     that.getEditor = getEditor;
     that.getContainer = getContainer;
+
+    that.setHidden = setHidden;
+    that.setReadonly = setReadonly;
 
     return that;
 };

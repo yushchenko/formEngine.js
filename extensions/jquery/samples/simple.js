@@ -6,6 +6,7 @@ $(function() {
             lastName: 'Smith',
             country: { id: 2 },
             hasDiscount: true,
+            hasVariableDiscount: false,
             discount: 10
         },
         countries: [
@@ -45,10 +46,18 @@ $(function() {
                 properties: { label: 'Has Discount' }
             },
             {
+                id: 'hasVariableDiscount',
+                typeName: 'checkBox',
+                binding: 'customer.hasVariableDiscount',
+                hidden: '!customer.hasDiscount',
+                properties: { label: 'Has Variable Discount' }
+            },
+            {
                 id: 'discount',
                 typeName: 'textBox',
                 binding: 'customer.discount',
                 hidden: '!customer.hasDiscount',
+                readonly: '!customer.hasVariableDiscount',
                 properties: { label: 'Discount' }
             }
         ]
