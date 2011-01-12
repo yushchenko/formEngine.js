@@ -1,4 +1,4 @@
-load("build/libs/jslint.js");
+load("build/libs/fulljslint.js");
 load('build/utils.js');
 
 var files = getFileList('lint'),
