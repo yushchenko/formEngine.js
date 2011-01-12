@@ -68,6 +68,8 @@
 	  <fileset file="extensions/jquery/source/elements/textBox.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/elements/comboBox.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/elements/checkBox.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/elements/toolBar.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/elements/button.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/outro.js" />
 	</concat>
     <replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true"

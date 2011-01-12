@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Wed Jan 12 10:08:35 2011 +0200
+ * Wed Jan 12 12:48:48 2011 +0200
  * 
  */
 
@@ -304,6 +304,33 @@ fe.jquery.elements.checkBox = function checkBox(config) {
 
     that.setValue = function setValue(value) {
         that.getEditor().attr('checked', value);
+    };
+
+    return that;
+};
+
+fe.jquery.elements.toolBar = function toolBar(config) {
+
+    var that = fe.jquery.element(config);
+
+    that.template = template('<div id="<%=containerId%>"><%=content%></div>');
+
+    return that;
+};
+
+fe.jquery.elements.button = function button(config) {
+
+    var that = fe.jquery.element(config),
+        engine = config.engine;
+
+    that.template = template('<span id="<%=editorId%>"><%=properties.label%></span>');
+
+    that.initialize = function() {
+        that.getEditor()
+            .button({ icons: { primary: that.properties.icon } })
+            .click(function() {
+                engine.sendMessage({ senderId: that.id, signal: 'click' });
+            });
     };
 
     return that;

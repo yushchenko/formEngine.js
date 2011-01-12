@@ -59,11 +59,29 @@ $(function() {
                 hidden: '!customer.hasDiscount',
                 readonly: '!customer.hasVariableDiscount',
                 properties: { label: 'Discount' }
+            },
+            {
+                typeName: 'toolBar',
+                children: [
+                    {
+                        id: 'validateButton',
+                        typeName: 'button',
+                        properties: { label: 'Validate', icon: 'ui-icon-check' }
+                    }
+                ]
             }
         ]
     };
 
     var app = fe.jquery.runSimpleApp(metadata, data);
+
+    app.engine.addReceiver('r1', {
+        receiveMessage: function() {
+            console.log('click');
+        }
+    });
+
+    app.engine.addRule({ receiverId: 'r1', senderId: 'validateButton', signal: 'click' });
 
     window.model = app.model; // to play from console ;)
 });
