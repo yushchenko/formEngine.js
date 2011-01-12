@@ -75,13 +75,9 @@ $(function() {
 
     var app = fe.jquery.runSimpleApp(metadata, data);
 
-    app.engine.addReceiver('r1', {
-        receiveMessage: function() {
-            console.log('click');
-        }
+    app.engine.subscribe({ senderId: 'validateButton', signal: 'click' }, function (msg) {
+        console.log('click');
     });
-
-    app.engine.addRule({ receiverId: 'r1', senderId: 'validateButton', signal: 'click' });
 
     window.model = app.model; // to play from console ;)
 });

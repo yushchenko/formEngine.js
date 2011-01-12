@@ -184,4 +184,36 @@ describe('fe.engine', function() {
         expect(e.get('non.existing.path')).not.toBeDefined();
     });
 
+    it('should accept function as receiver', function () {
+
+        var e = fe.engine(),
+            msg = { senderId: 's1', signal: 'test' },
+            rule = { receiverId: 'r1', signal: 'test'},
+            receivedMsg;
+
+        e.addReceiver('r1', function(msg) {
+            receivedMsg = msg;
+        });
+
+        e.addRule(rule);
+        e.sendMessage(msg);
+        
+        expect(receivedMsg).toEqual(msg);
+    });
+
+    it('should add receiver and rule when subscribe method called', function () {
+
+        var e = fe.engine(),
+            msg = { senderId: 's1', signal: 'test' },
+            receivedMsg;
+
+        e.subscribe({ signal: 'test' }, function (m) {
+            receivedMsg = m;
+        });
+
+        e.sendMessage(msg);
+
+        expect(receivedMsg).toEqual(msg);
+    });
+
 });

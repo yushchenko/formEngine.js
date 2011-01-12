@@ -64,7 +64,7 @@ function applyToArgs(args, fn) {
 var msg = {
     notUniqueReceiverId: 'engine.addReceiver: recevier with given ID has been already added.',
     receiverIdMustBeString: 'engine.addReceiver: id must be string',
-    noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage"',
+    noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage" or be a function',
     noReceiverId: 'engine.addRule: rule must have receiverId property, type string',
     receiverNotFound: 'engine.sendMessage: receiver not found.',
     elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'

@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Wed Jan 12 12:48:48 2011 +0200
+ * Wed Jan 12 13:44:41 2011 +0200
  * 
  */
 
@@ -76,7 +76,7 @@ function applyToArgs(args, fn) {
 var msg = {
     notUniqueReceiverId: 'engine.addReceiver: recevier with given ID has been already added.',
     receiverIdMustBeString: 'engine.addReceiver: id must be string',
-    noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage"',
+    noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage" or be a function',
     noReceiverId: 'engine.addRule: rule must have receiverId property, type string',
     receiverNotFound: 'engine.sendMessage: receiver not found.',
     elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
@@ -183,14 +183,14 @@ fe.engine = function engine(config) {
         if (typeof id !== 'string') {
             throw new Error(msg.receiverIdMustBeString);
         }
-        if (!receiver || typeof receiver.receiveMessage !== 'function') {
+        if (!receiver || (typeof receiver !== 'function' && typeof receiver.receiveMessage !== 'function')) {
             throw new Error(msg.noReceiveMessageMethod);
         }
         if (id in receivers) {
             throw new Error(msg.notUniqueReceiverId);
         }
 
-        receivers[id] = receiver;
+        receivers[id] = typeof receiver !== 'function' ? receiver : { receiveMessage: receiver };
     }
 
     function addRule(ruleConfig) {
@@ -263,6 +263,13 @@ fe.engine = function engine(config) {
         return undefined;
     }
 
+    function subscribe(ruleTemplate, fn) {
+        var id = getUniqueId();
+        addReceiver(id, fn);
+        ruleTemplate.receiverId = id;
+        addRule(ruleTemplate);
+    }
+
     that.addReceiver = addReceiver;
     that.addRule = addRule;
     that.addRules = addRules;
@@ -271,6 +278,7 @@ fe.engine = function engine(config) {
     that.addModel = addModel;
     that.sendMessage = sendMessage;
     that.get = get;
+    that.subscribe = subscribe;
     
     return that;
 };
