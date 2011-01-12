@@ -1,7 +1,6 @@
 ## TODO
 
 * move parts of design.md into component's source files, add it automatic generation
-* add crunching (Closure Compiler)
 * add version info
 
 

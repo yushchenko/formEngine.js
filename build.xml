@@ -1,4 +1,4 @@
-<project name="formEngine.js" default="crunch" basedir=".">
+<project name="formEngine.js" default="min" basedir=".">
 
   <property name="FE" value="formEngine" />
 
@@ -71,7 +71,24 @@
     
   </target>
 
-  <target name="crunch" depends="combine">
+  <target name="min" depends="combine">
+
+    <echo message="Minifing js files..." />
+
+	<apply executable="java" parallel="false" verbose="true" dest=".">
+	  <fileset dir=".">
+		<include name="formEngine.js" />
+		<include name="extensions/jquery/formEngine.jquery.js" />
+	  </fileset>
+	  <arg line="-jar" />
+	  <arg path="build/libs/google-compiler-20100917.jar" />
+	  <arg value="--warning_level" />
+	  <arg value="QUIET" />
+	  <arg value="--js_output_file" />
+	  <targetfile />
+	  <arg value="--js" />
+	  <mapper type="glob" from="*.js" to="*.min.js" />
+	</apply>
   </target>
 
 </project>
