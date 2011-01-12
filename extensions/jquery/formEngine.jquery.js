@@ -33,9 +33,35 @@ function template(str, data) { // Stolen from Underscore.js ;)
     return data ? fn(data) : fn;
 }
 
+function runSimpleApp(metadata, data) {
+
+    var app = {};
+
+    app.provider = fe.metadataProvider({ metadata: metadata });
+    app.engine = fe.engine();
+    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine });
+    app.view = fe.view({
+                           metadata: app.provider.getViewMetadata(),
+                           elementTypes: fe.jquery.elements,
+                           defaultElementType: fe.jquery.element,
+                           engine: app.engine
+                       });
+
+    app.engine.addRules(app.provider.getRules());
+    app.engine.addTriggers(app.provider.getTriggers());
+
+    app.view.initialize();
+
+    app.model.set(data);
+
+    return app;
+}
+
 var msg = {
     undefinedViewContainerId: 'view.initialize: viewContainerId property must be defined for view element.'
 };
+
+fe.jquery.runSimpleApp = runSimpleApp;
 
 fe.jquery.element = function jqueryElement(config) {
 

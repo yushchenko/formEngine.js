@@ -1,7 +1,5 @@
 ## TODO
 
-* add 'run' function to fe.jquery namespace
-
 * move parts of design.md into component's source files, add it automatic generation
 * upgrade JSLint
 * add crunching (Closure Compiler)
@@ -16,6 +14,7 @@
 
 ## Version 0.2
 
+* JavaScript DSL
 * change tracker
 * Ext JS extension (with grids)
 * master/detail

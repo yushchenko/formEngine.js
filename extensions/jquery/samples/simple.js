@@ -18,9 +18,7 @@ $(function() {
     var metadata = {
         id: 'testForm',
         typeName: 'view',
-        properties: {
-            viewContainerId: 'view'
-        },
+        properties: { viewContainerId: 'view' },
         children: [
             {
                 id: 'firstName',
@@ -56,22 +54,7 @@ $(function() {
         ]
     };
 
-    var provider = fe.metadataProvider({ metadata: metadata }),
-        engine = fe.engine(),
-        model = fe.model({ metadata: provider.getModelMetadata(), engine: engine }),
-        view = fe.view({
-            metadata: provider.getViewMetadata(),
-            elementTypes: fe.jquery.elements,
-            defaultElementType: fe.jquery.element,
-            engine: engine
-        });
+    var app = fe.jquery.runSimpleApp(metadata, data);
 
-    engine.addRules(provider.getRules());
-    engine.addTriggers(provider.getTriggers());
-
-    view.initialize();
-
-    model.set(data);
-
-    window.model = model; // to play from console ;)
+    window.model = app.model; // to play from console ;)
 });
