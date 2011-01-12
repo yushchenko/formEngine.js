@@ -1,6 +1,5 @@
 ## TODO
 
-* add 'rulePath' to message, fix comboBox
 * add 'run' function to fe.jquery namespace
 
 * move parts of design.md into component's source files, add it automatic generation

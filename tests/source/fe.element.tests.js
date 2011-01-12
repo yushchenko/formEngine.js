@@ -44,7 +44,7 @@ describe('fe.element', function() {
             f = field({ metadata: getElementMedatadata(), engine: engine }),
             receiver = { receiveMessage: jasmine.createSpy() },
             rule = { receiverId: 't', path: 'a.b.c', signal: 'value' },
-            msg = { senderId: 'test', path: 'a.b.c', signal: 'value', data: 123 };
+            msg = { senderId: 'test', path: 'a.b.c', rulePath: 'a.b.c', signal: 'value', data: 123 };
 
         engine.addReceiver('t', receiver);
         engine.addRule(rule);

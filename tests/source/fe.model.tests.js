@@ -59,8 +59,8 @@ describe('fe.model', function() {
             data = { x: 1, y: { z: 2 } },
             receiver = { receiveMessage: jasmine.createSpy() },
             rule = { receiverId: 'r1', path: 'y.z', signal: 'value' },
-            msg1 = { senderId: 'model', path: '', signal: 'value', data: 2},
-            msg2 = { senderId: 'model', path: 'y.z', signal: 'value', data: 3};
+            msg1 = { senderId: 'model', path: '', rulePath: 'y.z', signal: 'value', data: 2},
+            msg2 = { senderId: 'model', path: 'y.z', rulePath: 'y.z', signal: 'value', data: 3};
 
         e.addReceiver('r1', receiver);
         e.addRule(rule);

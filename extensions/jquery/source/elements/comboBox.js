@@ -22,8 +22,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
 
     that.receiveMessage = function receiveMessage(message) {
 
-        //TODO: find out a better way to distinguish between list and value messages
-        if (message.signal === 'value' && $.isArray(message.data))  {
+        if (message.signal === 'value' && message.rulePath === listPath)  {
             setList(message.data);
             return;
         }

@@ -199,8 +199,8 @@ describe('fe.engine', function() {
         var e = fe.engine(),
             receiver = { receiveMessage: jasmine.createSpy('receiveMessage')},
             rule = { receiverId: 'r1', path: 'a.b.c', signal: 'value' },
-            msg1 = { senderId: 'm1', path: 'a.b.c', signal: 'value', data: 'test a.b.c'},
-            msg2 = { senderId: 'm1', path: 'a.b.d', signal: 'value', data: 'test a.b.d'};
+            msg1 = { senderId: 'm1', path: 'a.b.c', rulePath: 'a.b.c', signal: 'value', data: 'test a.b.c'},
+            msg2 = { senderId: 'm1', path: 'a.b.d', rulePath: 'a.b.c', signal: 'value', data: 'test a.b.d'};
 
         e.addReceiver('r1', receiver);
         e.addRule(rule);
@@ -218,15 +218,15 @@ describe('fe.engine', function() {
             rule = { receiverId: 'r1', path: 'a.b.c', signal: 'value' },
 
             msg1 = { senderId: 'm1', path: '', signal: 'value', data: {a: {b: {c: 1}}}},
-            expMsg1 = { senderId: 'm1', path: '', signal: 'value', data: 1},
+            expMsg1 = { senderId: 'm1', path: '', rulePath: 'a.b.c', signal: 'value', data: 1},
 
             msg2 = { senderId: 'm1', path: 'a', signal: 'value', data: {b: {c: 2}}},
-            expMsg2 = { senderId: 'm1', path: 'a', signal: 'value', data: 2},
+            expMsg2 = { senderId: 'm1', path: 'a', rulePath: 'a.b.c', signal: 'value', data: 2},
 
             msg3 = { senderId: 'm1', path: 'a.b', signal: 'value', data: {c: 3}},
-            expMsg3 = { senderId: 'm1', path: 'a.b', signal: 'value', data: 3},
+            expMsg3 = { senderId: 'm1', path: 'a.b', rulePath: 'a.b.c', signal: 'value', data: 3},
 
-            msg4 = { senderId: 'm1', path: 'a.b.c', signal: 'value', data: 4};
+            msg4 = { senderId: 'm1', path: 'a.b.c', rulePath: 'a.b.c', signal: 'value', data: 4};
 
         e.addReceiver('r1', receiver);
         e.addRule(rule);
@@ -249,8 +249,8 @@ describe('fe.engine', function() {
         var e = fe.engine(),
             receiver = { receiveMessage: jasmine.createSpy('receiveMessage')},
             rule = { receiverId: 'r1', path: ['p1', 'p2'], signal: 'value' },
-            msg1 = { senderId: 'm1', path: 'p1', signal: 'value', data: 'test p1'},
-            msg2 = { senderId: 'm2', path: 'p2', signal: 'value', data: 'test p2'},
+            msg1 = { senderId: 'm1', path: 'p1', rulePath: ['p1', 'p2'], signal: 'value', data: 'test p1'},
+            msg2 = { senderId: 'm2', path: 'p2', rulePath: ['p1', 'p2'], signal: 'value', data: 'test p2'},
             msg3 = { senderId: 'm3', path: 'p_other', signal: 'value', data: 'test p other'};
 
         e.addReceiver('r1', receiver);
@@ -372,8 +372,8 @@ describe('fe.model', function() {
             data = { x: 1, y: { z: 2 } },
             receiver = { receiveMessage: jasmine.createSpy() },
             rule = { receiverId: 'r1', path: 'y.z', signal: 'value' },
-            msg1 = { senderId: 'model', path: '', signal: 'value', data: 2},
-            msg2 = { senderId: 'model', path: 'y.z', signal: 'value', data: 3};
+            msg1 = { senderId: 'model', path: '', rulePath: 'y.z', signal: 'value', data: 2},
+            msg2 = { senderId: 'model', path: 'y.z', rulePath: 'y.z', signal: 'value', data: 3};
 
         e.addReceiver('r1', receiver);
         e.addRule(rule);
@@ -526,7 +526,7 @@ describe('fe.element', function() {
             f = field({ metadata: getElementMedatadata(), engine: engine }),
             receiver = { receiveMessage: jasmine.createSpy() },
             rule = { receiverId: 't', path: 'a.b.c', signal: 'value' },
-            msg = { senderId: 'test', path: 'a.b.c', signal: 'value', data: 123 };
+            msg = { senderId: 'test', path: 'a.b.c', rulePath: 'a.b.c', signal: 'value', data: 123 };
 
         engine.addReceiver('t', receiver);
         engine.addRule(rule);

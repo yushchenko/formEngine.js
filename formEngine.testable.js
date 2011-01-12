@@ -229,6 +229,7 @@ fe.engine = function engine(config) {
                 receivers[rule.receiverId].receiveMessage({
                     senderId: message.senderId,
                     path: message.path,
+                    rulePath: rule.path,
                     signal: message.signal,
                     data: rule.transformData(message.data, message.path)
                 });
