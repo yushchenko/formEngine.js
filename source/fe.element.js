@@ -6,7 +6,8 @@ fe.element = function element (config) {
         messageMap = {
             value: 'setValue',
             hidden: 'setHidden',
-            readonly: 'setReadonly'
+            readonly: 'setReadonly',
+            error: 'showErrors'
         };
 
     that.id =  metadata.id || getUniqueId();

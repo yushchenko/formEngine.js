@@ -7,6 +7,7 @@ fe.jquery.elements.textBox = function textBox(config) {
         '<div id="<%=containerId%>">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<input type="text" id="<%=editorId%>"></input>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 

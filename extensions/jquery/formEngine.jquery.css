@@ -7,3 +7,8 @@
     width: 200px;
 }
 
+.fe-element-error {
+    color: red;
+    margin-left: 200px;
+    font-size: 0.8em;
+}

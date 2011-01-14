@@ -84,6 +84,15 @@ describe('fe.rule', function() {
         expect(typeof rule3.checkSignal).toEqual('function');
     });
 
+    it('[bug] should check signal properly when several signals given', function() {
+
+        var r = fe.rule({ receiverId: 'r1', signal: ['value', 'error'] });
+
+        expect(r.checkSignal('value')).toEqual(true);
+        expect(r.checkSignal('error')).toEqual(true);
+        expect(r.checkSignal('other')).toEqual(false);
+    });
+
     it('should transform data', function() {
 
         var rule1 = fe.rule({ receiverId: 'r1', path: 'a.b.c'}),
@@ -502,6 +511,23 @@ describe('fe.model', function() {
         expect(errors.length).toEqual(1);
     });
 
+    it('[bug] should send value and properties to validator', function() {
+
+        fe.validators.test = jasmine.createSpy();
+        this.after(function() { delete fe.validators.test; });
+
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y.z', validatorName: 'test', validatorProperties: { testProperty: 1 } }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }}),
+            data = { x: { y: { z: 1 } } };
+
+        m.validate();
+
+        expect(fe.validators.test).toHaveBeenCalledWith(undefined, { testProperty: 1 });
+    });
+
 });
 describe('fe.validators', function() {
 
@@ -524,6 +550,34 @@ describe('fe.validators', function() {
         expect(v(NaN, properties)).toEqual(msg);
         expect(v('', properties)).toEqual(msg);
         expect(v(' ', properties)).toEqual(msg);
+    });
+
+    it('should validate minLenght', function() {
+
+        var v = fe.validators.minLength,
+            msg = 'error',
+            properties = { message: msg, length: 3 };
+
+        expect(v).toBeDefined();
+
+        expect(v('value', properties)).toEqual(undefined);
+        expect(v(0, properties)).toEqual(undefined); // not string
+
+        expect(v('12', properties)).toEqual(msg);
+    });
+
+    it('should validate maxLenght', function() {
+
+        var v = fe.validators.maxLength,
+            msg = 'error',
+            properties = { message: msg, length: 3 };
+
+        expect(v).toBeDefined();
+
+        expect(v('val', properties)).toEqual(undefined);
+        expect(v(0, properties)).toEqual(undefined); // not string
+
+        expect(v('1234', properties)).toEqual(msg);
     });
 });
 
@@ -773,9 +827,9 @@ describe('fe.metadataProvider', function() {
         expect(rules.length).toEqual(5);
 
         expect(rules.slice(0,3)).toEqual([
-            { receiverId: 'firstName', path: 'customer.firstName', signal: 'value' },
-            { receiverId: 'lastName', path: 'customer.lastName', signal: 'value' },
-            { receiverId: 'discount', path: 'customer.discount', signal: 'value' }
+            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] },
+            { receiverId: 'lastName', path: 'customer.lastName', signal: ['value', 'error'] },
+            { receiverId: 'discount', path: 'customer.discount', signal: ['value', 'error'] }
         ]);
 
         expect(rules[3].path).toEqual(['customer.hasDiscount']);
@@ -790,6 +844,19 @@ describe('fe.metadataProvider', function() {
         expect(t.processorArgs).toEqual([ 'customer.hasDiscount' ]);
         expect(t.processor(true)).toEqual(false);
         expect(t.signal).toEqual('hidden');
+    });
+
+    it('should return model metadata (validation rules)', function() {
+
+        var p = fe.metadataProvider({ metadata: getMetadata() }),
+            validationRules = p.getModelMetadata().validationRules;
+
+        expect(validationRules).toEqual([
+            { path: 'customer.lastName', validatorName: 'required' },
+            { path: 'customer.lastName', validatorName: 'minLength', validatorProperties: { length: 2 } },
+            { path: 'customer.lastName', validatorName: 'maxLength', validatorProperties: { length: 30 } }
+        ]);
+
     });
 
     function getMetadata() {
@@ -807,7 +874,8 @@ describe('fe.metadataProvider', function() {
                 {
                     id: 'lastName',
                     typeName: 'textBox',
-                    binding: 'customer.lastName'
+                    binding: 'customer.lastName',
+                    validationRules: { required: true, minLength: 2, maxLength: { length: 30 } }
                 },
                 {
                     id: 'discount',

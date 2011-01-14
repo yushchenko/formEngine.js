@@ -7,6 +7,7 @@ fe.jquery.elements.checkBox = function checkBox(config) {
         '<div id="<%=containerId%>">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<input type="checkbox" id="<%=editorId%>"></input>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 

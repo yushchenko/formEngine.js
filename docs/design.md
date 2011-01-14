@@ -150,6 +150,7 @@ Form Metadata:
     binding: 'element data binding'
     children: [references to child elements]
     properties: {}
+    validationRules: { validatorName: true | default parameter | parameters }
 
 
 ### Code Sample

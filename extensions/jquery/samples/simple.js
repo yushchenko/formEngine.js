@@ -31,13 +31,15 @@ $(function() {
                 id: 'lastName',
                 typeName: 'textBox',
                 binding: 'customer.lastName',
-                properties: { label: 'Last Name' }
+                properties: { label: 'Last Name' },
+                validationRules: { required: true, minLength: 2, maxLength: 20 }
             },
             {
                 id: 'country',
                 typeName: 'comboBox',
                 binding: 'customer.country',
-                properties: { list: 'countries', label: 'Country' }
+                properties: { list: 'countries', label: 'Country' },
+                validationRules: { required: true }
             },
             {
                 id: 'hasDiscount',

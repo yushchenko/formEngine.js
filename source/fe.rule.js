@@ -22,7 +22,7 @@ fe.rule = function rule(config) {
                 if (typeof property === 'object' && property.length) {
                     for (ii = 0, ll = property.length; ii < ll; ii += 1) {
                         if (checkStartWith ? property[ii].indexOf(msgProperty) === 0
-                                           : property === msgProperty[ii]) {
+                                           : property[ii] === msgProperty) {
                             return true;
                         }
                     }

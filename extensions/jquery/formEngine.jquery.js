@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Wed Jan 12 19:50:51 2011 +0200
+ * Fri Jan 14 12:06:46 2011 +0200
  * 
  */
 
@@ -68,10 +68,11 @@ fe.jquery.runSimpleApp = runSimpleApp;
 fe.jquery.element = function jqueryElement(config) {
 
     var that = fe.element(config),
-        editorQuery, containerQuery;
+        editorQuery, containerQuery, errorQuery;
 
     that.editorId = that.id.replace(/\./g, '_');
     that.containerId = 'c_' + that.editorId;
+    that.errorId = 'e_' + that.editorId;
 
     function initialize() {
 
@@ -97,6 +98,7 @@ fe.jquery.element = function jqueryElement(config) {
             return tmpl({
                 editorId: that.editorId,
                 containerId: that.containerId,
+                errorId: that.errorId,
                 content: content,
                 properties: that.properties
             });
@@ -119,6 +121,13 @@ fe.jquery.element = function jqueryElement(config) {
         return containerQuery;
     }
 
+    function getError() {
+        if (errorQuery === undefined) {
+            errorQuery = $('#' + that.errorId);
+        }
+        return errorQuery;
+    }
+
     function setHidden(hidden) {
         var container = that.getContainer();
         if (container) {
@@ -133,19 +142,26 @@ fe.jquery.element = function jqueryElement(config) {
         }
     }
 
+    function showErrors(errors) {
+        var error = that.getError();
+        if(error) {
+            error.html(errors.join('<br />'));
+        }
+    }
+
     that.initialize = initialize;
     that.getMarkup = getMarkup;
 
     that.getEditor = getEditor;
     that.getContainer = getContainer;
+    that.getError = getError;
 
     that.setHidden = setHidden;
     that.setReadonly = setReadonly;
+    that.showErrors = showErrors;
 
     return that;
 };
-
-
 
 fe.jquery.elements.view = function view(config) {
 
@@ -175,6 +191,7 @@ fe.jquery.elements.textBox = function textBox(config) {
         '<div id="<%=containerId%>">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<input type="text" id="<%=editorId%>"></input>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
@@ -209,6 +226,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
         '<div id="<%=containerId%>">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<select id="<%=editorId%>"></select>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
@@ -293,6 +311,7 @@ fe.jquery.elements.checkBox = function checkBox(config) {
         '<div id="<%=containerId%>">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<input type="checkbox" id="<%=editorId%>"></input>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 

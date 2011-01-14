@@ -1,5 +1,9 @@
 ## TODO
 
+* fullName = firstName + lastName
+* validation messages formating
+* validators: required, minLength, maxLength, minValue, maxValue
+* jquery css: margines, borders etc
 * move parts of design.md into component's source files, add it automatic generation
 
 ## Version 0.1

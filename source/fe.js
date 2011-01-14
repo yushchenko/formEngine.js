@@ -80,5 +80,6 @@ var msg = {
     noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage" or be a function',
     noReceiverId: 'engine.addRule: rule must have receiverId property, type string',
     receiverNotFound: 'engine.sendMessage: receiver not found.',
-    elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
+    elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.',
+    unknownValidator: 'metadataProvider: unknown validator: '
 };

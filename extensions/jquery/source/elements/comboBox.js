@@ -17,6 +17,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
         '<div id="<%=containerId%>">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<select id="<%=editorId%>"></select>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 

@@ -150,4 +150,21 @@ describe('fe.model', function() {
         expect(errors.length).toEqual(1);
     });
 
+    it('[bug] should send value and properties to validator', function() {
+
+        fe.validators.test = jasmine.createSpy();
+        this.after(function() { delete fe.validators.test; });
+
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y.z', validatorName: 'test', validatorProperties: { testProperty: 1 } }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }}),
+            data = { x: { y: { z: 1 } } };
+
+        m.validate();
+
+        expect(fe.validators.test).toHaveBeenCalledWith(undefined, { testProperty: 1 });
+    });
+
 });

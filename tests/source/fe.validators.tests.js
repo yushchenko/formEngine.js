@@ -20,4 +20,32 @@ describe('fe.validators', function() {
         expect(v('', properties)).toEqual(msg);
         expect(v(' ', properties)).toEqual(msg);
     });
+
+    it('should validate minLenght', function() {
+
+        var v = fe.validators.minLength,
+            msg = 'error',
+            properties = { message: msg, length: 3 };
+
+        expect(v).toBeDefined();
+
+        expect(v('value', properties)).toEqual(undefined);
+        expect(v(0, properties)).toEqual(undefined); // not string
+
+        expect(v('12', properties)).toEqual(msg);
+    });
+
+    it('should validate maxLenght', function() {
+
+        var v = fe.validators.maxLength,
+            msg = 'error',
+            properties = { message: msg, length: 3 };
+
+        expect(v).toBeDefined();
+
+        expect(v('val', properties)).toEqual(undefined);
+        expect(v(0, properties)).toEqual(undefined); // not string
+
+        expect(v('1234', properties)).toEqual(msg);
+    });
 });

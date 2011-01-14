@@ -62,7 +62,7 @@ fe.model = function model(config) {
             }
 
             validator = fe.validators[rule.validatorName];
-            msg = validator(getByPath(data, rule.path), rule.properties || {});
+            msg = validator(getByPath(data, rule.path), rule.validatorProperties || {});
 
             if (msg !== undefined) {
                 errorsByPath[rule.path].push(msg);

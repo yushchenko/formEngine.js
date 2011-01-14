@@ -17,6 +17,15 @@ describe('fe.rule', function() {
         expect(typeof rule3.checkSignal).toEqual('function');
     });
 
+    it('[bug] should check signal properly when several signals given', function() {
+
+        var r = fe.rule({ receiverId: 'r1', signal: ['value', 'error'] });
+
+        expect(r.checkSignal('value')).toEqual(true);
+        expect(r.checkSignal('error')).toEqual(true);
+        expect(r.checkSignal('other')).toEqual(false);
+    });
+
     it('should transform data', function() {
 
         var rule1 = fe.rule({ receiverId: 'r1', path: 'a.b.c'}),

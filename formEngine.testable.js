@@ -80,7 +80,8 @@ var msg = {
     noReceiveMessageMethod: 'engine.addReceiver: receiver should have method "receiveMessage" or be a function',
     noReceiverId: 'engine.addRule: rule must have receiverId property, type string',
     receiverNotFound: 'engine.sendMessage: receiver not found.',
-    elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.'
+    elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.',
+    unknownValidator: 'metadataProvider: unknown validator: '
 };
 
 fe.rule = function rule(config) {
@@ -106,7 +107,7 @@ fe.rule = function rule(config) {
                 if (typeof property === 'object' && property.length) {
                     for (ii = 0, ll = property.length; ii < ll; ii += 1) {
                         if (checkStartWith ? property[ii].indexOf(msgProperty) === 0
-                                           : property === msgProperty[ii]) {
+                                           : property[ii] === msgProperty) {
                             return true;
                         }
                     }
@@ -341,7 +342,7 @@ fe.model = function model(config) {
             }
 
             validator = fe.validators[rule.validatorName];
-            msg = validator(getByPath(data, rule.path), rule.properties || {});
+            msg = validator(getByPath(data, rule.path), rule.validatorProperties || {});
 
             if (msg !== undefined) {
                 errorsByPath[rule.path].push(msg);
@@ -397,6 +398,27 @@ fe.validators.required = function required(value, properties) {
 
     return undefined;
 };
+
+fe.validators.minLength = function minLength(value, properties) {
+
+    if (value.length !== undefined && value.length < properties.length) {
+        return properties.message || 'This field is too short!';
+    }
+
+    return undefined;
+};
+fe.validators.minLength.defaultProperty = 'length';
+
+
+fe.validators.maxLength = function maxLength(value, properties) {
+
+    if (value.length !== undefined && value.length > properties.length) {
+        return properties.message || 'This field is too long!';
+    }
+
+    return undefined;
+};
+fe.validators.maxLength.defaultProperty = 'length';
 fe.view = function view (config) {
 
     var that = {},
@@ -445,7 +467,8 @@ fe.element = function element (config) {
         messageMap = {
             value: 'setValue',
             hidden: 'setHidden',
-            readonly: 'setReadonly'
+            readonly: 'setReadonly',
+            error: 'showErrors'
         };
 
     that.id =  metadata.id || getUniqueId();
@@ -494,7 +517,7 @@ fe.element = function element (config) {
 fe.metadataProvider = function metadataProvider (config) {
 
     var that = {},
-        modelMetadata = [],
+        modelMetadata = { validationRules: [] },
         viewMetadata = {},
         rules = [],
         triggers = [],
@@ -522,8 +545,10 @@ fe.metadataProvider = function metadataProvider (config) {
         }
 
         if (typeof metadata.binding === 'string') {
-            rules.push({ receiverId: element.id, path: metadata.binding, signal: 'value' });
             element.properties.binding = metadata.binding;
+
+            parseValidationRules(metadata.validationRules || {}, metadata.binding);
+            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
         for (i = 0, len = expressionProperties.length; i < len; i += 1) {
@@ -544,6 +569,37 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
                 rules.push({ receiverId: element.id, senderId: id, signal: property });
+            }
+        }
+
+
+    }
+
+    function parseValidationRules(rules, path) {
+
+        var name, properties, validator;
+        
+        for (name in rules) {
+
+            if (rules.hasOwnProperty(name)) {
+
+                validator = fe.validators[name];
+
+                if (validator === undefined) {
+                    throw new Error(msg.unknownValidator + name);
+                }
+
+                if (typeof rules[name] === 'object') {
+                    properties = rules[name];
+                }
+                else if (typeof validator.defaultProperty === 'string') {
+                    properties = {};
+                    properties[validator.defaultProperty] = rules[name];
+                }
+
+                modelMetadata.validationRules.push({
+                    path: path, validatorName: name, validatorProperties: properties
+                });
             }
         }
     }

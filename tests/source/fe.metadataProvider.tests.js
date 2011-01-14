@@ -51,9 +51,9 @@ describe('fe.metadataProvider', function() {
         expect(rules.length).toEqual(5);
 
         expect(rules.slice(0,3)).toEqual([
-            { receiverId: 'firstName', path: 'customer.firstName', signal: 'value' },
-            { receiverId: 'lastName', path: 'customer.lastName', signal: 'value' },
-            { receiverId: 'discount', path: 'customer.discount', signal: 'value' }
+            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] },
+            { receiverId: 'lastName', path: 'customer.lastName', signal: ['value', 'error'] },
+            { receiverId: 'discount', path: 'customer.discount', signal: ['value', 'error'] }
         ]);
 
         expect(rules[3].path).toEqual(['customer.hasDiscount']);
@@ -68,6 +68,19 @@ describe('fe.metadataProvider', function() {
         expect(t.processorArgs).toEqual([ 'customer.hasDiscount' ]);
         expect(t.processor(true)).toEqual(false);
         expect(t.signal).toEqual('hidden');
+    });
+
+    it('should return model metadata (validation rules)', function() {
+
+        var p = fe.metadataProvider({ metadata: getMetadata() }),
+            validationRules = p.getModelMetadata().validationRules;
+
+        expect(validationRules).toEqual([
+            { path: 'customer.lastName', validatorName: 'required' },
+            { path: 'customer.lastName', validatorName: 'minLength', validatorProperties: { length: 2 } },
+            { path: 'customer.lastName', validatorName: 'maxLength', validatorProperties: { length: 30 } }
+        ]);
+
     });
 
     function getMetadata() {
@@ -85,7 +98,8 @@ describe('fe.metadataProvider', function() {
                 {
                     id: 'lastName',
                     typeName: 'textBox',
-                    binding: 'customer.lastName'
+                    binding: 'customer.lastName',
+                    validationRules: { required: true, minLength: 2, maxLength: { length: 30 } }
                 },
                 {
                     id: 'discount',
