@@ -68,6 +68,20 @@ function trim(t) {
     return t === null || t === undefined ? "" : t.toString().replace( trimLeft, "" ).replace( trimRight, "" );
 }
 
+function format(str, args) {
+
+    var name;
+
+    str = str || '';
+
+    for (name in args) {
+        if (args.hasOwnProperty(name)) {
+            str = str.replace(new RegExp('{' + name + '}', 'g'), args[name]);
+        }
+    }
+    return str;
+}
+
 function log(msg) {
     if (console !== undefined && typeof console.log === 'function') {
         console.log(msg);

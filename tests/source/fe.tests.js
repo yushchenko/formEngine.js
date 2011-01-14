@@ -64,4 +64,12 @@ describe('fe', function() {
         expect(trim(undefined)).toEqual('');
         expect(trim(' abc  ')).toEqual('abc');
     });
+
+    it('should format strings', function() {
+
+        expect(format()).toEqual('');
+        expect(format('abc')).toEqual('abc');
+        expect(format('I\'m {name}', {name: 'John'})).toEqual('I\'m John');
+        expect(format('{firstName} {lastName}', {firstName: 'John', lastName: 'Smith' })).toEqual('John Smith');
+    });
 });

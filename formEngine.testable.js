@@ -68,6 +68,20 @@ function trim(t) {
     return t === null || t === undefined ? "" : t.toString().replace( trimLeft, "" ).replace( trimRight, "" );
 }
 
+function format(str, args) {
+
+    var name;
+
+    str = str || '';
+
+    for (name in args) {
+        if (args.hasOwnProperty(name)) {
+            str = str.replace(new RegExp('{' + name + '}', 'g'), args[name]);
+        }
+    }
+    return str;
+}
+
 function log(msg) {
     if (console !== undefined && typeof console.log === 'function') {
         console.log(msg);
@@ -393,7 +407,7 @@ fe.validators.required = function required(value, properties) {
         (typeof value === 'string' && trim(value) === '') ||
         (typeof value === 'number' && isNaN(value))) {
 
-        return properties.message || 'This field is required!';
+        return format(properties.message || fe.validationMessages.required, properties);
     }
 
     return undefined;
@@ -401,8 +415,8 @@ fe.validators.required = function required(value, properties) {
 
 fe.validators.minLength = function minLength(value, properties) {
 
-    if (value.length !== undefined && value.length < properties.length) {
-        return properties.message || 'This field is too short!';
+    if (value && value.length !== undefined && value.length < properties.length) {
+        return format(properties.message || fe.validationMessages.minLenght, properties);
     }
 
     return undefined;
@@ -412,13 +426,19 @@ fe.validators.minLength.defaultProperty = 'length';
 
 fe.validators.maxLength = function maxLength(value, properties) {
 
-    if (value.length !== undefined && value.length > properties.length) {
-        return properties.message || 'This field is too long!';
+    if (value && value.length !== undefined && value.length > properties.length) {
+        return format(properties.message || fe.validationMessages.maxLenght, properties);
     }
 
     return undefined;
 };
 fe.validators.maxLength.defaultProperty = 'length';
+
+fe.validationMessages = {
+    required: 'This field is required!',
+    minLenght: 'This field should contain more that {length} symbols!',
+    maxLenght: 'This field should contain less that {length} symbols!'
+};
 fe.view = function view (config) {
 
     var that = {},

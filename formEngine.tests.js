@@ -64,6 +64,14 @@ describe('fe', function() {
         expect(trim(undefined)).toEqual('');
         expect(trim(' abc  ')).toEqual('abc');
     });
+
+    it('should format strings', function() {
+
+        expect(format()).toEqual('');
+        expect(format('abc')).toEqual('abc');
+        expect(format('I\'m {name}', {name: 'John'})).toEqual('I\'m John');
+        expect(format('{firstName} {lastName}', {firstName: 'John', lastName: 'Smith' })).toEqual('John Smith');
+    });
 });
 
 describe('fe.rule', function() {
@@ -560,6 +568,7 @@ describe('fe.validators', function() {
 
         expect(v).toBeDefined();
 
+        expect(v(undefined, properties)).toEqual(undefined);
         expect(v('value', properties)).toEqual(undefined);
         expect(v(0, properties)).toEqual(undefined); // not string
 
@@ -574,10 +583,29 @@ describe('fe.validators', function() {
 
         expect(v).toBeDefined();
 
+        expect(v(undefined, properties)).toEqual(undefined);
         expect(v('val', properties)).toEqual(undefined);
         expect(v(0, properties)).toEqual(undefined); // not string
 
         expect(v('1234', properties)).toEqual(msg);
+    });
+
+    it('should format message', function() {
+
+        var testValues = {
+                required: null,
+                maxLength: 'abcd',
+                minLength: 'ab'
+            },
+            name, v;
+
+        for (name in fe.validators) {
+            if (fe.validators.hasOwnProperty(name)) {
+                v = fe.validators[name];
+                expect(v(testValues[name], { length: 3, message: '{x}', x: 'test' })).toEqual('test');
+            }
+        }
+
     });
 });
 
