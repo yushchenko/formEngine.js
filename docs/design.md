@@ -77,9 +77,21 @@ Model Metadata:
          validatorName
          validatorProperties
 
-A validator is function that gets value and properties
+Validation
+
+A validator is function that gets value and validation rule properties as arguments
 and returns error message if data invalid or undefined value otherwise.
 All validators should be referenced in fe.validators object by name.
+
+On value message model validates received data and sends result of validation
+(array of errors) in error message[s].
+
+Model's validation can be forced using validate([path], [skipNotification]) method.
+By default this method also sends {error} messages
+but this notification can be supressed using the second parameter.
+Validate method returns true if data is valid and false otherwise.
+
+Set method doesn't trigger validation, the data's assumed to be valid.
 
 
 ### View

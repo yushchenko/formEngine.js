@@ -364,12 +364,13 @@ describe('fe.model', function() {
         expect(typeof m.receiveMessage).toEqual('function');
         expect(typeof m.set).toEqual('function');
         expect(typeof m.get).toEqual('function');
-        expect(typeof m.isValid).toEqual('function');
+        expect(typeof m.validate).toEqual('function');
     });
 
     it('should provide access to data', function() {
 
-        var m = fe.model(),
+        var e = fe.engine(),
+            m = fe.model({ engine: e }),
             data = { x: 1, y: { z: 2 } };
 
         m.set(data);
@@ -425,22 +426,80 @@ describe('fe.model', function() {
         expect(receiver.receiveMessage).toHaveBeenCalledWith(msg2); // on data change by model.set()
     });
 
-    it('should check if data is valid according validation rules', function() {
+    it('should validate data on value message and send error message', function() {
         
         var e = fe.engine(),
             rules = [
                 { path: 'x.y.z', validatorName: 'required' }
             ],
             m = fe.model({ engine: e, metadata: { validationRules: rules }}),
-            data = { x: { y: { z: 1 } } };
-
-        expect(m.isValid()).toEqual(false);
-        expect(m.isValid('x.y.z')).toEqual(false);
+            data = { x: { y: { z: 1 } } },
+            errors = [];
 
         m.set(data);
 
-        expect(m.isValid()).toEqual(true);
-        expect(m.isValid('x.y.z')).toEqual(true);
+        e.subscribe({ path: 'x.y.z', signal: 'error'}, function(msg) {
+            errors = msg.data;
+        });
+
+        e.sendMessage({ senderId: 's1', path: 'x.y.z', signal: 'value', data: null });
+        expect(errors.length).toEqual(1);
+
+        e.sendMessage({ senderId: 's1', path: 'x.y.z', signal: 'value', data: 1 });
+        expect(errors.length).toEqual(0);
+    });
+
+    it('should return validation result', function() {
+
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y.z', validatorName: 'required' },
+                { path: 'x.y.z2', validatorName: 'required' }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }}),
+            data = { x: { y: { z: 1, z2: 2 } } };
+
+        expect(m.validate()).toEqual(false);
+
+        m.set(data);
+        expect(m.validate()).toEqual(true);
+
+        m.set('x.y.z', null);
+        expect(m.validate('x.y.z')).toEqual(false);
+        expect(m.validate('x.y.z2')).toEqual(true);
+
+        m.set('x.y.z', 1);
+        expect(m.validate('x.y.z')).toEqual(true);
+        expect(m.validate('x.y.z2')).toEqual(true);
+    });
+
+    it('should send error message on validate method if not suppressed', function () {
+        
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y.z', validatorName: 'required' }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }}),
+            data = { x: { y: { z: 1 } } },
+            errors = [];
+
+        e.subscribe({ path: 'x.y.z', signal: 'error'}, function(msg) {
+            errors = msg.data;
+        });
+
+        m.validate();
+        expect(errors.length).toEqual(1);
+
+        m.set(data);
+        m.validate();
+        expect(errors.length).toEqual(0);
+
+        m.set('x.y.z', null);
+        m.validate(undefined, true);
+        expect(errors.length).toEqual(0);
+
+        m.validate();
+        expect(errors.length).toEqual(1);
     });
 
 });

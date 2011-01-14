@@ -8,9 +8,11 @@ fe.model = function model(config) {
         data = {},
         validationRules = (config.metadata || {}).validationRules || [];
 
+
     function receiveMessage(msg) {
         if (msg.signal === 'value' && typeof msg.path === 'string') {
             setByPath(data, msg.path, msg.data);
+            validate(msg.path);
         }
     }
 
@@ -38,10 +40,15 @@ fe.model = function model(config) {
         return getByPath(data, path);
     }
 
-    function isValid(path) {
+    function validate(path, skipNotification) {
 
-        var i, len, rule, validator;
+        var i, len, rule, validator, msg, errorPath,
+            errorsByPath = {}, result = true;
 
+        if (typeof path !== 'string') {
+            path = '';
+        }
+        
         for (i = 0, len = validationRules.length; i < len; i += 1) {
 
             rule = validationRules[i];
@@ -50,30 +57,45 @@ fe.model = function model(config) {
                 continue;
             }
 
-            validator = fe.validators[rule.validatorName];
+            if (!errorsByPath.hasOwnProperty(rule.path)) {
+                errorsByPath[rule.path] = [];
+            }
 
-            if (validator(getByPath(data, rule.path), rule.properties || {}) !== undefined) {
-                return false;
+            validator = fe.validators[rule.validatorName];
+            msg = validator(getByPath(data, rule.path), rule.properties || {});
+
+            if (msg !== undefined) {
+                errorsByPath[rule.path].push(msg);
+                result = false;
             }
         }
 
-        return true;
+        if (!skipNotification) {
+            for (errorPath in errorsByPath) {
+                if (errorsByPath.hasOwnProperty(errorPath)) {
+                    notifyError(errorPath, errorsByPath[errorPath]);
+                }
+            }
+        }
+
+        return result;
     }
 
     /* Utilities
      ****************************************************************/
 
     function notifyUpdate(path, value) {
-        if (!engine) {
-            return;
-        }
         engine.sendMessage({ senderId: id, path: path, signal: 'value', data: value });
+    }
+
+    function notifyError(path, messages) {
+        engine.sendMessage({ senderId: id, path: path, signal: 'error', data: messages });
     }
 
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
-    that.isValid = isValid;
+    that.validate = validate;
 
     if (engine) {
         engine.addReceiver(id, that);
