@@ -51,19 +51,49 @@ describe('fe.validators', function() {
         expect(v('1234', properties)).toEqual(msg);
     });
 
+    it('should validate minValue', function() {
+
+        var v = fe.validators.minValue,
+            msg = 'error',
+            properties = { message: msg, value: 3 };
+
+        expect(v).toBeDefined();
+
+        expect(v(undefined, properties)).toEqual(undefined);
+        expect(v(4, properties)).toEqual(undefined);
+
+        expect(v(1, properties)).toEqual(msg);
+    });
+
+    it('should validate maxValue', function() {
+
+        var v = fe.validators.maxValue,
+            msg = 'error',
+            properties = { message: msg, value: 3 };
+
+        expect(v).toBeDefined();
+
+        expect(v(undefined, properties)).toEqual(undefined);
+        expect(v(1, properties)).toEqual(undefined);
+
+        expect(v(4, properties)).toEqual(msg);
+    });
+
     it('should format message', function() {
 
         var testValues = {
                 required: null,
                 maxLength: 'abcd',
-                minLength: 'ab'
+                minLength: 'ab',
+                maxValue: 4,
+                minValue: 1
             },
             name, v;
 
         for (name in fe.validators) {
             if (fe.validators.hasOwnProperty(name)) {
                 v = fe.validators[name];
-                expect(v(testValues[name], { length: 3, message: '{x}', x: 'test' })).toEqual('test');
+                expect(v(testValues[name], { length: 3, value: 3, message: '{x}', x: 'test' })).toEqual('test');
             }
         }
 

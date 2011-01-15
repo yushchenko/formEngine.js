@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Jan 14 13:58:37 2011 +0200
+ * Fri Jan 14 14:33:51 2011 +0200
  * 
  */
 
@@ -435,7 +435,6 @@ fe.validators.minLength = function minLength(value, properties) {
 };
 fe.validators.minLength.defaultProperty = 'length';
 
-
 fe.validators.maxLength = function maxLength(value, properties) {
 
     if (value && value.length !== undefined && value.length > properties.length) {
@@ -446,10 +445,32 @@ fe.validators.maxLength = function maxLength(value, properties) {
 };
 fe.validators.maxLength.defaultProperty = 'length';
 
+fe.validators.minValue = function minValue(value, properties) {
+
+    if (value && value < properties.value) {
+        return format(properties.message || fe.validationMessages.minValue, properties);
+    }
+
+    return undefined;
+};
+fe.validators.minValue.defaultProperty = 'value';
+
+fe.validators.maxValue = function maxValue(value, properties) {
+
+    if (value && value > properties.value) {
+        return format(properties.message || fe.validationMessages.maxValue, properties);
+    }
+
+    return undefined;
+};
+fe.validators.maxValue.defaultProperty = 'value';
+
 fe.validationMessages = {
     required: 'This field is required!',
     minLenght: 'This field should contain more that {length} symbols!',
-    maxLenght: 'This field should contain less that {length} symbols!'
+    maxLenght: 'This field should contain less that {length} symbols!',
+    minValue: 'This field should have value more that {value}!',
+    maxValue: 'This field should have value less that {value}!'
 };
 fe.view = function view (config) {
 
