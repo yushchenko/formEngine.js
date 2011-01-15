@@ -66,7 +66,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     }
 
     that.setValue = function setValue(value) {
-        selectedId = value.id;
+        selectedId = (value !== null && value !== undefined) ? value.id : -1;
         selectItem();
     };
 

@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Jan 14 14:33:51 2011 +0200
+ * Sat Jan 15 14:55:41 2011 +0200
  * 
  */
 
@@ -275,7 +275,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     }
 
     that.setValue = function setValue(value) {
-        selectedId = value.id;
+        selectedId = (value !== null && value !== undefined) ? value.id : -1;
         selectItem();
     };
 

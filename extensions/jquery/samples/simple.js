@@ -2,10 +2,10 @@ $(function() {
 
     var data = {
         customer: {
-            firstName: 'John',
-            lastName: 'Smith',
-            country: { id: 2 },
-            hasDiscount: true,
+            firstName: null,
+            lastName: null,
+            country: null,
+            hasDiscount: false,
             hasVariableDiscount: false,
             discount: 10
         },
@@ -66,9 +66,9 @@ $(function() {
                 typeName: 'toolBar',
                 children: [
                     {
-                        id: 'validateButton',
+                        id: 'saveButton',
                         typeName: 'button',
-                        properties: { label: 'Validate', icon: 'ui-icon-check' }
+                        properties: { label: 'Save', icon: 'ui-icon-disk' }
                     }
                 ]
             }
@@ -77,9 +77,11 @@ $(function() {
 
     var app = fe.jquery.runSimpleApp(metadata, data);
 
-    app.engine.subscribe({ senderId: 'validateButton', signal: 'click' }, function (msg) {
-        console.log('click');
+    app.engine.subscribe({ senderId: 'saveButton', signal: 'click' }, function (msg) {
+        if (app.model.validate()) {
+            alert('Data is valid and ready to be sent to server.');
+        }
     });
 
-    window.model = app.model; // to play from console ;)
+    window.model = app.model; // to play with data binding from console ;)
 });
