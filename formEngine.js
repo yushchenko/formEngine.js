@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Jan 15 14:55:41 2011 +0200
+ * Sat Jan 15 15:11:43 2011 +0200
  * 
  */
 
@@ -574,11 +574,11 @@ fe.metadataProvider = function metadataProvider (config) {
         viewMetadata = {},
         rules = [],
         triggers = [],
-        expressionProperties = ['hidden', 'readonly'];
+        expressionProperties = ['value', 'hidden', 'readonly'];
 
     function parseMetadata(metadata, element) {
 
-        var name, i, len, child, property, expression, parsed, id;
+        var name, i, len, child;
 
         element = element || viewMetadata;
 
@@ -600,32 +600,13 @@ fe.metadataProvider = function metadataProvider (config) {
         if (typeof metadata.binding === 'string') {
             element.properties.binding = metadata.binding;
 
+            // validation rules make sense only for data bound fields
             parseValidationRules(metadata.validationRules || {}, metadata.binding);
+
             rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
-        for (i = 0, len = expressionProperties.length; i < len; i += 1) {
-
-            property = expressionProperties[i];
-            expression = metadata[property];
-
-            if (typeof expression === 'string') {
-                parsed = parseExpression(expression);
-                id = getUniqueId();
-
-                triggers.push({
-                    id: id,
-                    processorArgs: parsed.args,
-                    processor: parsed.processor,
-                    signal: property
-                });
-
-                rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
-                rules.push({ receiverId: element.id, senderId: id, signal: property });
-            }
-        }
-
-
+        parseExpressionProperties(element, metadata);
     }
 
     function parseValidationRules(rules, path) {
@@ -657,20 +638,48 @@ fe.metadataProvider = function metadataProvider (config) {
         }
     }
 
+    function parseExpressionProperties(element, metadata) {
+
+        var i, len, property, expression, parsed, id;
+
+        for (i = 0, len = expressionProperties.length; i < len; i += 1) {
+
+            property = expressionProperties[i];
+            expression = metadata[property];
+
+            if (typeof expression === 'string') {
+                parsed = parseExpression(expression);
+                id = getUniqueId();
+
+                triggers.push({
+                    id: id,
+                    processorArgs: parsed.args,
+                    processor: parsed.processor,
+                    signal: property
+                });
+
+                rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
+                rules.push({ receiverId: element.id, senderId: id, signal: property });
+            }
+        }
+    }
+
     function parseExpression(expression) {
 
         var result = { args: [] },
-            argRe = /[a-zA-Z_\$][\w\$]*(?:\.?[a-zA-Z_\$][\w\$]*)+/g,
+            toReplace = [],
+            argRe = /\:([a-zA-Z_\$][\w\$]*(?:\.?[a-zA-Z_\$][\w\$]*)+)/g,
             matches,
             source = expression,
             i, len;
 
         while((matches = argRe.exec(expression)) !== null) {
-            result.args.push(matches[0]);
+            toReplace.push(matches[0]); // full expression with column line :customer.firstName
+            result.args.push(matches[1]); // data path only
         }
 
-        for (i = 0, len = result.args.length; i < len; i += 1) {
-            source = source.replace(result.args[i], 'arguments[' + i + ']');
+        for (i = 0, len = toReplace.length; i < len; i += 1) {
+            source = source.replace(toReplace[i], 'arguments[' + i + ']');
         }
 
         result.processor = new Function('return ' + source + ';');

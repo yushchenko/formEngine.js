@@ -22,44 +22,43 @@ $(function() {
         properties: { viewContainerId: 'view' },
         children: [
             {
-                id: 'firstName',
                 typeName: 'textBox',
                 binding: 'customer.firstName',
                 properties: { label: 'First Name' }
             },
             {
-                id: 'lastName',
                 typeName: 'textBox',
                 binding: 'customer.lastName',
                 properties: { label: 'Last Name' },
                 validationRules: { required: true, minLength: 2, maxLength: 20 }
             },
             {
-                id: 'country',
+                typeName: 'label',
+                value: '[:customer.firstName || "", :customer.lastName || ""].join(" ")',
+                properties: { label: 'Full Name' }
+            },
+            {
                 typeName: 'comboBox',
                 binding: 'customer.country',
                 properties: { list: 'countries', label: 'Country' },
                 validationRules: { required: true }
             },
             {
-                id: 'hasDiscount',
                 typeName: 'checkBox',
                 binding: 'customer.hasDiscount',
                 properties: { label: 'Has Discount' }
             },
             {
-                id: 'hasVariableDiscount',
                 typeName: 'checkBox',
                 binding: 'customer.hasVariableDiscount',
-                hidden: '!customer.hasDiscount',
+                hidden: '!:customer.hasDiscount',
                 properties: { label: 'Has Variable Discount' }
             },
             {
-                id: 'discount',
                 typeName: 'textBox',
                 binding: 'customer.discount',
-                hidden: '!customer.hasDiscount',
-                readonly: '!customer.hasVariableDiscount',
+                hidden: '!:customer.hasDiscount',
+                readonly: '!:customer.hasVariableDiscount',
                 properties: { label: 'Discount' }
             },
             {

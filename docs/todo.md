@@ -1,8 +1,6 @@
 ## TODO
 
-* validators: required, minLength, maxLength, minValue, maxValue
-* validate button on sample
-* fullName = firstName + lastName
+* refactor metadataProvider - extract expression parser into separate function
 * jquery css: margines, borders etc
 
 * move parts of design.md into component's source files, add it automatic generation

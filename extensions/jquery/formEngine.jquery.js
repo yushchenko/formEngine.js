@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Jan 15 14:55:41 2011 +0200
+ * Sat Jan 15 15:11:43 2011 +0200
  * 
  */
 
@@ -350,6 +350,24 @@ fe.jquery.elements.button = function button(config) {
             .click(function() {
                 engine.sendMessage({ senderId: that.id, signal: 'click' });
             });
+    };
+
+    return that;
+};
+
+fe.jquery.elements.label = function label(config) {
+
+    var that = fe.jquery.element(config);
+
+    that.template = template(
+        '<div id="<%=containerId%>">' +
+            '<label class="fe-element-label"><%=properties.label%></label>' +
+            '<span id="<%=editorId%>"></span>' +
+        '</div>'
+    );
+
+    that.setValue = function setValue(value) {
+        that.getEditor().text(value);
     };
 
     return that;

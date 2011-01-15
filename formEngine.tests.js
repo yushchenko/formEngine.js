@@ -939,7 +939,7 @@ describe('fe.metadataProvider', function() {
                     id: 'discount',
                     typeName: 'textBox',
                     binding: 'customer.discount',
-                    hidden: '!customer.hasDiscount'
+                    hidden: '!:customer.hasDiscount'
                 }
             ]
         };
