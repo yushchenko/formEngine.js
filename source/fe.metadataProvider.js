@@ -5,7 +5,8 @@ fe.metadataProvider = function metadataProvider (config) {
         viewMetadata = {},
         rules = [],
         triggers = [],
-        expressionProperties = ['value', 'hidden', 'readonly'];
+        expressionProperties = config.expressionProperties || ['value', 'hidden', 'readonly'],
+        expressionParser = config.expressionParser || fe.expressionParser;
 
     function parseMetadata(metadata, element) {
 
@@ -79,7 +80,7 @@ fe.metadataProvider = function metadataProvider (config) {
             expression = metadata[property];
 
             if (typeof expression === 'string') {
-                parsed = parseExpression(expression);
+                parsed = expressionParser(expression);
                 id = getUniqueId();
 
                 triggers.push({
@@ -93,29 +94,6 @@ fe.metadataProvider = function metadataProvider (config) {
                 rules.push({ receiverId: element.id, senderId: id, signal: property });
             }
         }
-    }
-
-    function parseExpression(expression) {
-
-        var result = { args: [] },
-            toReplace = [],
-            argRe = /\:([a-zA-Z_\$][\w\$]*(?:\.?[a-zA-Z_\$][\w\$]*)+)/g,
-            matches,
-            source = expression,
-            i, len;
-
-        while((matches = argRe.exec(expression)) !== null) {
-            toReplace.push(matches[0]); // full expression with column line :customer.firstName
-            result.args.push(matches[1]); // data path only
-        }
-
-        for (i = 0, len = toReplace.length; i < len; i += 1) {
-            source = source.replace(toReplace[i], 'arguments[' + i + ']');
-        }
-
-        result.processor = new Function('return ' + source + ';');
-
-        return result;
     }
 
     function getModelMetadata() {

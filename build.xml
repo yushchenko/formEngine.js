@@ -36,6 +36,7 @@
       <fileset file="source/fe.validators.js" /> <!--lint,test-->      
       <fileset file="source/fe.view.js" /> <!--lint,test-->
       <fileset file="source/fe.element.js" /> <!--lint,test-->
+      <fileset file="source/fe.expressionParser.js" /> <!--lint,test-->
       <fileset file="source/fe.metadataProvider.js" /> <!--lint,test-->
 	</concat>
 
@@ -48,6 +49,7 @@
       <fileset file="tests/source/fe.validators.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.view.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.element.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.expressionParser.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.metadataProvider.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/formEngine.tests.js" /> <!--lint,test-->
 	</concat>

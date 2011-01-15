@@ -13,6 +13,7 @@ load:
   - ../source/fe.validators.js
   - ../source/fe.view.js
   - ../source/fe.element.js
+  - ../source/fe.expressionParser.js
   - ../source/fe.metadataProvider.js
   - ../tests/source/fe.tests.js
   - ../tests/source/fe.rule.tests.js
@@ -22,6 +23,7 @@ load:
   - ../tests/source/fe.validators.tests.js
   - ../tests/source/fe.view.tests.js
   - ../tests/source/fe.element.tests.js
+  - ../tests/source/fe.expressionParser.tests.js
   - ../tests/source/fe.metadataProvider.tests.js
   - ../tests/source/formEngine.tests.js
 

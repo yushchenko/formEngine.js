@@ -142,6 +142,8 @@ Responsibilities:
 Configuration:
 
     metadata: {full form metadata}
+    expressionProperties: [] || ['value', 'hidden', 'readonly']
+    expressionParser: function || fe.expressionParser
 
 Form Metadata:
 
