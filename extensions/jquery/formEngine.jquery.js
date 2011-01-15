@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Jan 15 16:03:34 2011 +0200
+ * Sat Jan 15 16:37:13 2011 +0200
  * 
  */
 
@@ -188,9 +188,9 @@ fe.jquery.elements.textBox = function textBox(config) {
     var that = fe.jquery.element(config);
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
-            '<input type="text" id="<%=editorId%>"></input>' +
+            '<input type="text" id="<%=editorId%>" class="fe-editor-wide"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
@@ -223,9 +223,9 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     }
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
-            '<select id="<%=editorId%>"></select>' +
+            '<select id="<%=editorId%>" class="fe-editor-wide"></select>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
@@ -308,7 +308,7 @@ fe.jquery.elements.checkBox = function checkBox(config) {
     var that = fe.jquery.element(config);
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
             '<input type="checkbox" id="<%=editorId%>"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
@@ -332,7 +332,7 @@ fe.jquery.elements.toolBar = function toolBar(config) {
 
     var that = fe.jquery.element(config);
 
-    that.template = template('<div id="<%=containerId%>"><%=content%></div>');
+    that.template = template('<div id="<%=containerId%>" class="fe-element fe-toolbar"><%=content%></div>');
 
     return that;
 };
@@ -360,9 +360,9 @@ fe.jquery.elements.label = function label(config) {
     var that = fe.jquery.element(config);
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label class="fe-element-label"><%=properties.label%></label>' +
-            '<span id="<%=editorId%>"></span>' +
+            '<span id="<%=editorId%>" class="fe-editor-wide"></span>' +
         '</div>'
     );
 

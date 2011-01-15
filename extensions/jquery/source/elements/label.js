@@ -4,9 +4,9 @@ fe.jquery.elements.label = function label(config) {
     var that = fe.jquery.element(config);
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label class="fe-element-label"><%=properties.label%></label>' +
-            '<span id="<%=editorId%>"></span>' +
+            '<span id="<%=editorId%>" class="fe-editor-wide"></span>' +
         '</div>'
     );
 

@@ -4,9 +4,9 @@ fe.jquery.elements.textBox = function textBox(config) {
     var that = fe.jquery.element(config);
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
-            '<input type="text" id="<%=editorId%>"></input>' +
+            '<input type="text" id="<%=editorId%>" class="fe-editor-wide"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );

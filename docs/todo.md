@@ -1,6 +1,6 @@
 ## TODO
 
-* jquery css: margines, borders etc
+* validation for hidden fields (active ???)
 
 * ? move parts of design.md into component's source files, add it automatic generation
 * consider usage of github wiki for documentation

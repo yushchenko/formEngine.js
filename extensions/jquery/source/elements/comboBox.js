@@ -14,9 +14,9 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     }
 
     that.template = template(
-        '<div id="<%=containerId%>">' +
+        '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
-            '<select id="<%=editorId%>"></select>' +
+            '<select id="<%=editorId%>" class="fe-editor-wide"></select>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
