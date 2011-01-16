@@ -14,5 +14,13 @@ fe.jquery.elements.button = function button(config) {
             });
     };
 
+    that.setHidden = function setHidden(hidden) {
+        that.getEditor().toggleClass('fe-hidden', hidden);
+    };
+
+    that.setReadonly = function setReadonly(readonly) {
+        that.getEditor().button(readonly ? 'disable' : 'enable');
+    };
+
     return that;
 };

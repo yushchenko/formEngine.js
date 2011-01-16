@@ -4,6 +4,7 @@
 * number and date controls
 * titles for controls
 * visa application sample
+* ? rename children -> elements
 
 * ? move parts of design.md into component's source files, add it automatic generation
 * consider usage of github wiki for documentation

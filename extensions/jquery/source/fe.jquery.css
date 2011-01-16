@@ -1,5 +1,5 @@
 .fe-hidden {
-    display: none;
+    display: none !important;
 }
 
 .fe-element {
@@ -38,7 +38,17 @@
     border-top: 1px dotted #D1D1D1;
 }
 
+.fe-header {
+    margin-bottom: 10px;
+    font-size: medium;
+    font-weight: bold;
+}
+
 .fe-element .ui-button .ui-button-text { /* fix for very big paddings of jquery ui button */
     padding: 0.1em 0.4em 0.1em 1.8em;
     font-size: medium;
+}
+
+.fe-element .ui-button {
+    margin-right: 3px;
 }
