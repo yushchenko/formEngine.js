@@ -1,6 +1,9 @@
 ## TODO
 
 * validation for hidden fields (active ???)
+* number and date controls
+* titles for controls
+* visa application sample
 
 * ? move parts of design.md into component's source files, add it automatic generation
 * consider usage of github wiki for documentation
@@ -14,11 +17,12 @@
 
 ## Version 0.2
 
-* form representation in YAML
+* YAML form representation
 * change tracker
-* Ext JS extension (with grids)
-* master/detail
+* localization for jquery sample
 
 ## Version 0.3
 
+* Ext JS extension (with grids)
+* master/detail
 * jQuery Mobile extension
