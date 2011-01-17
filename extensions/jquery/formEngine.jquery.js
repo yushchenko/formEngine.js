@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sun Jan 16 18:17:20 2011 +0200
+ * Sun Jan 16 19:38:56 2011 +0200
  * 
  */
 
@@ -402,6 +402,34 @@ fe.jquery.elements.header = function header(config) {
 
     that.setValue = function setValue(value) {
         that.getEditor().text(value);
+    };
+
+    return that;
+};
+
+fe.jquery.elements.datePicker = function datePicker(config) {
+
+    var that = fe.jquery.element(config);
+
+    that.template = template(
+        '<div id="<%=containerId%>" class="fe-element">' +
+            '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<input type="text" id="<%=editorId%>" class="fe-editor-narrow"></input>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
+        '</div>'
+    );
+
+    that.initialize = function() {
+
+        var e = that.getEditor().datepicker();
+
+        e.change(function() {
+            that.notifyValueChange(e.datepicker('getDate'));
+        });
+    };
+
+    that.setValue = function setValue(value) {
+        that.getEditor().datepicker('setDate', value);
     };
 
     return that;

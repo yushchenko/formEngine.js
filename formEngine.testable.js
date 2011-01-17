@@ -23,7 +23,7 @@ function getByPath(obj, path) {
     
     for (i = 0, len = parts.length; i < len; i += 1) {
         result = result[parts[i]];
-        if (result === undefined) {
+        if (result === undefined || result === null) {
             return undefined;
         }
     }

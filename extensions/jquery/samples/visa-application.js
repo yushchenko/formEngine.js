@@ -8,10 +8,20 @@ $(function() {
         applicant: {
             firstName: null,
             lastName: null,
+            birthDate: null,
+            passport: null,
 
             isMaried: false,
+            partner: {
+                firstName: null,
+                lastName: null,
+                birthDate: null
+            },
 
-            country: null
+            country: null,
+            city: null,
+            address: null,
+            phone: null
         },
         countries: [
             { id: 1, name: 'Great Britain' },
@@ -23,7 +33,7 @@ $(function() {
     steps = [
         { code: '01', name: 'Personal Info' },
         { code: '02', name: 'Family' },
-        { code: '03', name: 'Origin' },
+        { code: '03', name: 'Contact Details' },
         { code: '04', name: 'Check Your Application'}
     ],
 
@@ -48,7 +58,18 @@ $(function() {
                         typeName: 'textBox',
                         binding: 'applicant.lastName',
                         properties: { label: 'Last Name' }
+                    },
+                    {
+                        typeName: 'datePicker',
+                        binding: 'applicant.birthDate',
+                        properties: { label: 'Birth Date' }
+                    },
+                    {
+                        typeName: 'textBox',
+                        binding: 'applicant.Passport',
+                        properties: { label: 'Passport Number' }
                     }
+
                 ]
             },
             {
@@ -59,6 +80,24 @@ $(function() {
                         typeName: 'checkBox',
                         binding: 'applicant.isMarried',
                         properties: { label: 'Are you married?' }
+                    },
+                    {
+                        typeName: 'textBox',
+                        binding: 'applicant.partner.firstName',
+                        hidden: '!:applicant.isMarried',
+                        properties: { label: 'Your Partner\'s First Name' } 
+                    },
+                    {
+                        typeName: 'textBox',
+                        binding: 'applicant.partner.lastName',
+                        hidden: '!:applicant.isMarried',
+                        properties: { label: 'Your Partner\'s Last Name ' }
+                    },
+                    {
+                        typeName: 'datePicker',
+                        binding: 'applicant.partner.birthDate',
+                        hidden: '!:applicant.isMarried',
+                        properties: { label: 'Your Partner\'s Birth Date' }
                     }
                 ]
             },
@@ -69,8 +108,24 @@ $(function() {
                     {
                         typeName: 'comboBox',
                         binding: 'applicant.country',
-                        properties: { list: 'countries', label: 'Country of origin' }
+                        properties: { list: 'countries', label: 'Country' }
+                    },
+                    {
+                        typeName: 'textBox',
+                        binding: 'applicant.city',
+                        properties: { label: 'City' }
+                    },
+                    {
+                        typeName: 'textBox',
+                        binding: 'applicant.address',
+                        properties: { label: 'Address' }
+                    },
+                    {
+                        typeName: 'textBox',
+                        binding: 'applicant.phone',
+                        properties: { label: 'Phone' }
                     }
+
                 ]
             },
             {
@@ -81,7 +136,19 @@ $(function() {
                         typeName: 'label',
                         value: ':applicant.firstName + " " + :applicant.lastName',
                         properties: { label: 'Full Name' }
+                    },
+                    {
+                        typeName: 'label',
+                        value: ':applicant.partner.firstName + " " + :applicant.partner.lastName',
+                        hidden: '!:applicant.isMarried',
+                        properties: { label: 'Partner\'s Full Name' }
+                    },
+                    {
+                        typeName: 'label',
+                        value: ':applicant.address + ", " + :applicant.city + ", " + :applicant.country.name',
+                        properties: { label: 'Your Address' }
                     }
+
                 ]
             },
             {
@@ -134,4 +201,5 @@ $(function() {
 
     });
 
+    window.model = app.model;
 });

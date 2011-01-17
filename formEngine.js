@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sun Jan 16 18:17:20 2011 +0200
+ * Sun Jan 16 19:38:56 2011 +0200
  * 
  */
 
@@ -35,7 +35,7 @@ function getByPath(obj, path) {
     
     for (i = 0, len = parts.length; i < len; i += 1) {
         result = result[parts[i]];
-        if (result === undefined) {
+        if (result === undefined || result === null) {
             return undefined;
         }
     }

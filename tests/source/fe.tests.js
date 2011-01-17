@@ -22,11 +22,12 @@ describe('fe', function() {
 
     it('should return object property by path', function() {
 
-        var obj = { x: 1, y: { z: 2 } };
+        var obj = { x: 1, y: { z: 2 }, yy: null  };
 
         expect(getByPath(obj, 'x')).toEqual(1);
         expect(getByPath(obj, 'y.z')).toEqual(2);
         expect(getByPath(obj, 'not.existing.path')).not.toBeDefined();
+        expect(getByPath(obj, 'yy.notPath')).not.toBeDefined();
     });
 
     it('should set object property by path', function() {

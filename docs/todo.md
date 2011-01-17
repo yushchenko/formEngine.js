@@ -1,8 +1,9 @@
 ## TODO
 
 * validation for hidden fields (active ???)
-* number and date controls
+* number control
 * titles for controls
+* readonly control doesn't show errors
 * visa application sample
 * ? rename children -> elements
 
@@ -18,7 +19,7 @@
 
 ## Version 0.2
 
-* YAML form representation
+* JavaScript DSL
 * change tracker
 * localization for jquery sample
 

@@ -77,6 +77,7 @@
 	  <fileset file="extensions/jquery/source/elements/label.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/elements/panel.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/elements/header.js" /> <!--lint-->
+	  <fileset file="extensions/jquery/source/elements/datePicker.js" /> <!--lint-->
 	  <fileset file="extensions/jquery/source/outro.js" />
 	</concat>
     <replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true"

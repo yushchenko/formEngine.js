@@ -13,6 +13,10 @@
     width: 296px;
 }
 
+.fe-element .fe-editor-narrow {
+    width: 100px;
+}
+
 .fe-element input, .fe-element select { /* reset for form elements*/
     border: 1px solid #D1D1D1;
     font-family: Verdana, Arial, sans-serif;
@@ -42,6 +46,7 @@
     margin-bottom: 10px;
     font-size: medium;
     font-weight: bold;
+    text-decoration: underline;
 }
 
 .fe-element .ui-button .ui-button-text { /* fix for very big paddings of jquery ui button */
@@ -51,4 +56,8 @@
 
 .fe-element .ui-button {
     margin-right: 3px;
+}
+
+.ui-widget {
+    font-size: small !important;
 }
