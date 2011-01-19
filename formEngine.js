@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sun Jan 16 19:38:56 2011 +0200
+ * Mon Jan 17 13:04:00 2011 +0200
  * 
  */
 
@@ -304,6 +304,38 @@ fe.engine = function engine(config) {
     
     return that;
 };
+fe.validationRule = function(config) {
+
+    var that = {},
+        id = config.id || getUniqueId(),
+        engine = config.engine,
+        path = config.path,
+        validator = fe.validators[config.validatorName],
+        validatorProperties = config.validatorProperties || {},
+        flags = {};
+
+    function receiveMessage(msg) {
+        flags[msg.signal] = msg.data; // set hidden or readonly flags
+    }
+
+    function validate(data) {
+
+        if (flags.hidden || flags.readonly) {
+            return undefined;
+        }
+
+        var value = getByPath(data, path);
+        return validator(value, validatorProperties);
+    }
+
+    that.receiveMessage = receiveMessage;
+    that.validate = validate;
+    that.path = path;
+
+    engine.addReceiver(id, that);
+
+    return that;
+};
 fe.model = function model(config) {
 
     config = config || {};
@@ -312,8 +344,24 @@ fe.model = function model(config) {
         id = config.id || getUniqueId(),
         engine = config.engine,
         data = {},
-        validationRules = (config.metadata || {}).validationRules || [];
+        validationRules = [];
 
+    function initialize() {
+
+        var rules = (config.metadata || {}).validationRules || [],
+            i, len = rules.length, r;
+
+        for (i = 0; i < len; i += 1) {
+
+            r = rules[i];
+
+            validationRules.push(fe.validationRule({
+                id: r.id, engine: engine, path: r.path,
+                validatorName: r.validatorName,
+                validatorProperties: r.validatorProperties
+            }));
+        }
+    }
 
     function receiveMessage(msg) {
         if (msg.signal === 'value' && typeof msg.path === 'string') {
@@ -367,8 +415,7 @@ fe.model = function model(config) {
                 errorsByPath[rule.path] = [];
             }
 
-            validator = fe.validators[rule.validatorName];
-            msg = validator(getByPath(data, rule.path), rule.validatorProperties || {});
+            msg = rule.validate(data);
 
             if (msg !== undefined) {
                 errorsByPath[rule.path].push(msg);
@@ -403,11 +450,10 @@ fe.model = function model(config) {
     that.get = get;
     that.validate = validate;
 
-    if (engine) {
-        engine.addReceiver(id, that);
-        engine.addRule({ receiverId: id, signal: 'value' });
-        engine.addModel(that);
-    }
+    initialize();
+    engine.addReceiver(id, that);
+    engine.addRule({ receiverId: id, signal: 'value' });
+    engine.addModel(that);
 
     return that;
 };
@@ -600,7 +646,8 @@ fe.metadataProvider = function metadataProvider (config) {
 
     function parseMetadata(metadata, element) {
 
-        var name, i, len, child;
+        var name, i, len, child,
+            validationRules = [];
 
         element = element || viewMetadata;
 
@@ -623,21 +670,24 @@ fe.metadataProvider = function metadataProvider (config) {
             element.properties.binding = metadata.binding;
 
             // validation rules make sense only for data bound fields
-            parseValidationRules(metadata.validationRules || {}, metadata.binding);
+            validationRules = parseValidationRules(metadata, element);
 
             rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
-        parseExpressionProperties(element, metadata);
+        parseExpressionProperties(metadata, element, validationRules);
     }
 
-    function parseValidationRules(rules, path) {
+    function parseValidationRules(metadata, element) {
 
-        var name, properties, validator;
+        var name, properties, validator, id,
+            path = metadata.binding,
+            validationRules = metadata.validationRules,
+            rule, result = [];
         
-        for (name in rules) {
+        for (name in validationRules) {
 
-            if (rules.hasOwnProperty(name)) {
+            if (validationRules.hasOwnProperty(name)) {
 
                 validator = fe.validators[name];
 
@@ -645,26 +695,33 @@ fe.metadataProvider = function metadataProvider (config) {
                     throw new Error(msg.unknownValidator + name);
                 }
 
-                if (typeof rules[name] === 'object') {
-                    properties = rules[name];
+                if (typeof validationRules[name] === 'object') {
+                    properties = validationRules[name];
                 }
                 else if (typeof validator.defaultProperty === 'string') {
                     properties = {};
-                    properties[validator.defaultProperty] = rules[name];
+                    properties[validator.defaultProperty] = validationRules[name];
                 }
 
-                modelMetadata.validationRules.push({
-                    path: path, validatorName: name, validatorProperties: properties
-                });
+                id = getUniqueId();
+
+                rule = {
+                    id: id, path: path, validatorName: name, validatorProperties: properties
+                };
+
+                result.push(rule);
+                modelMetadata.validationRules.push(rule);
             }
         }
+
+        return result;
     }
 
-    function parseExpressionProperties(element, metadata) {
+    function parseExpressionProperties(metadata, element, validationRules) {
 
-        var i, len, property, expression, parsed, id;
+        var i, l, ii, ll,  property, expression, parsed, id;
 
-        for (i = 0, len = expressionProperties.length; i < len; i += 1) {
+        for (i = 0, l = expressionProperties.length; i < l; i += 1) {
 
             property = expressionProperties[i];
             expression = metadata[property];
@@ -682,6 +739,10 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
                 rules.push({ receiverId: element.id, senderId: id, signal: property });
+
+                for (ii = 0, ll = validationRules.length; ii < ll; ii += 1) {
+                    rules.push({ receiverId: validationRules[ii].id, senderId: id, signal: property });
+                }
             }
         }
     }

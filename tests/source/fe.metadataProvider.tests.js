@@ -46,18 +46,15 @@ describe('fe.metadataProvider', function() {
     it('should return engine rules', function() {
 
         var p = fe.metadataProvider({ metadata: getMetadata() }),
-            rules = p.getRules();
+            rules = p.getRules(),
+            elementCount = 3, exprCount = 1, conditionalRulesCount = 1;
 
-        expect(rules.length).toEqual(5);
+        expect(rules.length).toEqual(elementCount + 2*exprCount + conditionalRulesCount);
 
-        expect(rules.slice(0,3)).toEqual([
-            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] },
-            { receiverId: 'lastName', path: 'customer.lastName', signal: ['value', 'error'] },
-            { receiverId: 'discount', path: 'customer.discount', signal: ['value', 'error'] }
+        expect(rules.slice(0,1)).toEqual([
+            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] }
         ]);
 
-        expect(rules[3].path).toEqual(['customer.hasDiscount']);
-        expect(rules[4].signal).toEqual('hidden');
     });
 
     it('should return triggers', function() {
@@ -73,14 +70,12 @@ describe('fe.metadataProvider', function() {
     it('should return model metadata (validation rules)', function() {
 
         var p = fe.metadataProvider({ metadata: getMetadata() }),
-            validationRules = p.getModelMetadata().validationRules;
+            rules = p.getModelMetadata().validationRules;
 
-        expect(validationRules).toEqual([
-            { path: 'customer.lastName', validatorName: 'required' },
-            { path: 'customer.lastName', validatorName: 'minLength', validatorProperties: { length: 2 } },
-            { path: 'customer.lastName', validatorName: 'maxLength', validatorProperties: { length: 30 } }
-        ]);
-
+        expect(rules.length).toEqual(4);
+        expect(rules[0].path).toEqual('customer.lastName');
+        expect(rules[0].validatorName).toEqual('required');
+        expect(rules[1].validatorProperties).toEqual({ length: 2 });
     });
 
     function getMetadata() {
@@ -105,7 +100,8 @@ describe('fe.metadataProvider', function() {
                     id: 'discount',
                     typeName: 'textBox',
                     binding: 'customer.discount',
-                    hidden: '!:customer.hasDiscount'
+                    hidden: '!:customer.hasDiscount',
+                    validationRules: { required: true }
                 }
             ]
         };

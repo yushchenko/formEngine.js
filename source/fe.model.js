@@ -6,8 +6,24 @@ fe.model = function model(config) {
         id = config.id || getUniqueId(),
         engine = config.engine,
         data = {},
-        validationRules = (config.metadata || {}).validationRules || [];
+        validationRules = [];
 
+    function initialize() {
+
+        var rules = (config.metadata || {}).validationRules || [],
+            i, len = rules.length, r;
+
+        for (i = 0; i < len; i += 1) {
+
+            r = rules[i];
+
+            validationRules.push(fe.validationRule({
+                id: r.id, engine: engine, path: r.path,
+                validatorName: r.validatorName,
+                validatorProperties: r.validatorProperties
+            }));
+        }
+    }
 
     function receiveMessage(msg) {
         if (msg.signal === 'value' && typeof msg.path === 'string') {
@@ -61,8 +77,7 @@ fe.model = function model(config) {
                 errorsByPath[rule.path] = [];
             }
 
-            validator = fe.validators[rule.validatorName];
-            msg = validator(getByPath(data, rule.path), rule.validatorProperties || {});
+            msg = rule.validate(data);
 
             if (msg !== undefined) {
                 errorsByPath[rule.path].push(msg);
@@ -97,11 +112,10 @@ fe.model = function model(config) {
     that.get = get;
     that.validate = validate;
 
-    if (engine) {
-        engine.addReceiver(id, that);
-        engine.addRule({ receiverId: id, signal: 'value' });
-        engine.addModel(that);
-    }
+    initialize();
+    engine.addReceiver(id, that);
+    engine.addRule({ receiverId: id, signal: 'value' });
+    engine.addModel(that);
 
     return that;
 };

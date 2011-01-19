@@ -1,6 +1,5 @@
 ## TODO
 
-* validation for hidden fields (active ???)
 * number control
 * titles for controls
 * readonly control doesn't show errors

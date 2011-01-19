@@ -9,6 +9,7 @@ load:
   - ../source/fe.rule.js
   - ../source/fe.trigger.js
   - ../source/fe.engine.js
+  - ../source/fe.validationRule.js
   - ../source/fe.model.js
   - ../source/fe.validators.js
   - ../source/fe.view.js
@@ -20,6 +21,7 @@ load:
   - ../tests/source/fe.trigger.tests.js
   - ../tests/source/fe.engine.tests.js
   - ../tests/source/fe.model.tests.js
+  - ../tests/source/fe.validationRule.tests.js
   - ../tests/source/fe.validators.tests.js
   - ../tests/source/fe.view.tests.js
   - ../tests/source/fe.element.tests.js

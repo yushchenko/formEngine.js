@@ -14,6 +14,13 @@ describe('formEngine', function() {
                 id: 'lastName',
                 typeName: 'textBox',
                 binding: 'customer.lastName'
+            },
+            {
+                id: 'discount',
+                typeName: 'textBox',
+                hidden: '!:customer.hasDiscount',
+                binding: 'customer.discount',
+                validationRules: { required: true }
             }
         ]
     };
@@ -21,7 +28,9 @@ describe('formEngine', function() {
     var data = {
         customer: {
             firstName: 'John',
-            lastName: 'Smith'
+            lastName: 'Smith',
+            hasDiscount: true,
+            discount: null
         }
     };
 
@@ -38,6 +47,14 @@ describe('formEngine', function() {
 
         that.setValue = function (value) {
             that.currentValue = value;
+        };
+
+        that.setHidden = function(hidden) {
+            that.hidden = hidden;
+        };
+
+        that.showErrors = function(errors) {
+            that.errors = errors;
         };
 
         return that;
@@ -78,6 +95,21 @@ describe('formEngine', function() {
         app.view.getElementById('firstName').notifyValueChange('Jane'); // emitation of user edit
 
         expect(app.model.get('customer.firstName')).toEqual('Jane');
+    });
+
+    it('should validate only visible fields', function() {
+
+        var app = getApp(),
+            discount = app.view.getElementById('discount');
+
+        app.model.validate();
+        expect(discount.errors.length).toEqual(1);
+
+
+        app.model.set('customer.hasDiscount', false); // hide discount element
+        expect(discount.hidden).toEqual(true);
+        app.model.validate();
+        expect(discount.errors.length).toEqual(0);
     });
 
     function getApp() {

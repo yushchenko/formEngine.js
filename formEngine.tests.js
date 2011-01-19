@@ -377,7 +377,8 @@ describe('fe.model', function() {
 
     it('should have appropriate interface', function() {
 
-        var m = fe.model({});
+        var  e = fe.engine(),
+             m = fe.model({ engine: e });
 
         expect(typeof m.receiveMessage).toEqual('function');
         expect(typeof m.set).toEqual('function');
@@ -537,6 +538,53 @@ describe('fe.model', function() {
         expect(fe.validators.test).toHaveBeenCalledWith(undefined, { testProperty: 1 });
     });
 
+});
+
+describe('fe.validationRule', function () {
+
+    it('should have appropriate interface', function() {
+
+        var e = fe.engine(),
+            r = fe.validationRule({
+                engine: e,
+                path: 'x.y.z'
+            });
+
+        expect(typeof r.receiveMessage).toEqual('function');
+        expect(typeof r.validate).toEqual('function');
+
+        expect(r.path).toEqual('x.y.z');
+    });
+
+    it('should validate data using given validator if not hidden or readonly', function() {
+
+
+        var e = fe.engine(),
+            r = fe.validationRule({
+                id: 'vr1',
+                engine: e,
+                path: 'x.y.z',
+                validatorName: 'required',
+                validatorProperties: { message: 'test error' }
+            }),
+            data = {};
+
+        e.addRule({ receiverId: 'vr1', senderId: 't', signal: ['hidden', 'readonly']});
+
+        expect(r.validate(data)).toEqual('test error');
+
+        e.sendMessage({ senderId: 't', signal: 'hidden', data: true });
+        expect(r.validate(data)).toEqual(undefined);
+
+        e.sendMessage({ senderId: 't', signal: 'hidden', data: false });
+        expect(r.validate(data)).toEqual('test error');
+
+        e.sendMessage({ senderId: 't', signal: 'readonly', data: true });
+        expect(r.validate(data)).toEqual(undefined);
+
+        e.sendMessage({ senderId: 't', signal: 'readonly', data: false });
+        expect(r.validate(data)).toEqual('test error');
+    });
 });
 describe('fe.validators', function() {
 
@@ -899,18 +947,15 @@ describe('fe.metadataProvider', function() {
     it('should return engine rules', function() {
 
         var p = fe.metadataProvider({ metadata: getMetadata() }),
-            rules = p.getRules();
+            rules = p.getRules(),
+            elementCount = 3, exprCount = 1, conditionalRulesCount = 1;
 
-        expect(rules.length).toEqual(5);
+        expect(rules.length).toEqual(elementCount + 2*exprCount + conditionalRulesCount);
 
-        expect(rules.slice(0,3)).toEqual([
-            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] },
-            { receiverId: 'lastName', path: 'customer.lastName', signal: ['value', 'error'] },
-            { receiverId: 'discount', path: 'customer.discount', signal: ['value', 'error'] }
+        expect(rules.slice(0,1)).toEqual([
+            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] }
         ]);
 
-        expect(rules[3].path).toEqual(['customer.hasDiscount']);
-        expect(rules[4].signal).toEqual('hidden');
     });
 
     it('should return triggers', function() {
@@ -926,14 +971,12 @@ describe('fe.metadataProvider', function() {
     it('should return model metadata (validation rules)', function() {
 
         var p = fe.metadataProvider({ metadata: getMetadata() }),
-            validationRules = p.getModelMetadata().validationRules;
+            rules = p.getModelMetadata().validationRules;
 
-        expect(validationRules).toEqual([
-            { path: 'customer.lastName', validatorName: 'required' },
-            { path: 'customer.lastName', validatorName: 'minLength', validatorProperties: { length: 2 } },
-            { path: 'customer.lastName', validatorName: 'maxLength', validatorProperties: { length: 30 } }
-        ]);
-
+        expect(rules.length).toEqual(4);
+        expect(rules[0].path).toEqual('customer.lastName');
+        expect(rules[0].validatorName).toEqual('required');
+        expect(rules[1].validatorProperties).toEqual({ length: 2 });
     });
 
     function getMetadata() {
@@ -958,7 +1001,8 @@ describe('fe.metadataProvider', function() {
                     id: 'discount',
                     typeName: 'textBox',
                     binding: 'customer.discount',
-                    hidden: '!:customer.hasDiscount'
+                    hidden: '!:customer.hasDiscount',
+                    validationRules: { required: true }
                 }
             ]
         };
@@ -980,6 +1024,13 @@ describe('formEngine', function() {
                 id: 'lastName',
                 typeName: 'textBox',
                 binding: 'customer.lastName'
+            },
+            {
+                id: 'discount',
+                typeName: 'textBox',
+                hidden: '!:customer.hasDiscount',
+                binding: 'customer.discount',
+                validationRules: { required: true }
             }
         ]
     };
@@ -987,7 +1038,9 @@ describe('formEngine', function() {
     var data = {
         customer: {
             firstName: 'John',
-            lastName: 'Smith'
+            lastName: 'Smith',
+            hasDiscount: true,
+            discount: null
         }
     };
 
@@ -1004,6 +1057,14 @@ describe('formEngine', function() {
 
         that.setValue = function (value) {
             that.currentValue = value;
+        };
+
+        that.setHidden = function(hidden) {
+            that.hidden = hidden;
+        };
+
+        that.showErrors = function(errors) {
+            that.errors = errors;
         };
 
         return that;
@@ -1044,6 +1105,21 @@ describe('formEngine', function() {
         app.view.getElementById('firstName').notifyValueChange('Jane'); // emitation of user edit
 
         expect(app.model.get('customer.firstName')).toEqual('Jane');
+    });
+
+    it('should validate only visible fields', function() {
+
+        var app = getApp(),
+            discount = app.view.getElementById('discount');
+
+        app.model.validate();
+        expect(discount.errors.length).toEqual(1);
+
+
+        app.model.set('customer.hasDiscount', false); // hide discount element
+        expect(discount.hidden).toEqual(true);
+        app.model.validate();
+        expect(discount.errors.length).toEqual(0);
     });
 
     function getApp() {

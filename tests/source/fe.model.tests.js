@@ -7,7 +7,8 @@ describe('fe.model', function() {
 
     it('should have appropriate interface', function() {
 
-        var m = fe.model({});
+        var  e = fe.engine(),
+             m = fe.model({ engine: e });
 
         expect(typeof m.receiveMessage).toEqual('function');
         expect(typeof m.set).toEqual('function');

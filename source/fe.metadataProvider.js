@@ -10,7 +10,8 @@ fe.metadataProvider = function metadataProvider (config) {
 
     function parseMetadata(metadata, element) {
 
-        var name, i, len, child;
+        var name, i, len, child,
+            validationRules = [];
 
         element = element || viewMetadata;
 
@@ -33,21 +34,24 @@ fe.metadataProvider = function metadataProvider (config) {
             element.properties.binding = metadata.binding;
 
             // validation rules make sense only for data bound fields
-            parseValidationRules(metadata.validationRules || {}, metadata.binding);
+            validationRules = parseValidationRules(metadata, element);
 
             rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
-        parseExpressionProperties(element, metadata);
+        parseExpressionProperties(metadata, element, validationRules);
     }
 
-    function parseValidationRules(rules, path) {
+    function parseValidationRules(metadata, element) {
 
-        var name, properties, validator;
+        var name, properties, validator, id,
+            path = metadata.binding,
+            validationRules = metadata.validationRules,
+            rule, result = [];
         
-        for (name in rules) {
+        for (name in validationRules) {
 
-            if (rules.hasOwnProperty(name)) {
+            if (validationRules.hasOwnProperty(name)) {
 
                 validator = fe.validators[name];
 
@@ -55,26 +59,33 @@ fe.metadataProvider = function metadataProvider (config) {
                     throw new Error(msg.unknownValidator + name);
                 }
 
-                if (typeof rules[name] === 'object') {
-                    properties = rules[name];
+                if (typeof validationRules[name] === 'object') {
+                    properties = validationRules[name];
                 }
                 else if (typeof validator.defaultProperty === 'string') {
                     properties = {};
-                    properties[validator.defaultProperty] = rules[name];
+                    properties[validator.defaultProperty] = validationRules[name];
                 }
 
-                modelMetadata.validationRules.push({
-                    path: path, validatorName: name, validatorProperties: properties
-                });
+                id = getUniqueId();
+
+                rule = {
+                    id: id, path: path, validatorName: name, validatorProperties: properties
+                };
+
+                result.push(rule);
+                modelMetadata.validationRules.push(rule);
             }
         }
+
+        return result;
     }
 
-    function parseExpressionProperties(element, metadata) {
+    function parseExpressionProperties(metadata, element, validationRules) {
 
-        var i, len, property, expression, parsed, id;
+        var i, l, ii, ll,  property, expression, parsed, id;
 
-        for (i = 0, len = expressionProperties.length; i < len; i += 1) {
+        for (i = 0, l = expressionProperties.length; i < l; i += 1) {
 
             property = expressionProperties[i];
             expression = metadata[property];
@@ -92,6 +103,10 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
                 rules.push({ receiverId: element.id, senderId: id, signal: property });
+
+                for (ii = 0, ll = validationRules.length; ii < ll; ii += 1) {
+                    rules.push({ receiverId: validationRules[ii].id, senderId: id, signal: property });
+                }
             }
         }
     }
