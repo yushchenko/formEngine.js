@@ -1,9 +1,5 @@
 ## TODO
 
-* titles for controls
-* ? rename children -> elements
-
-* consider usage of github wiki for documentation
 * consider usage of github pages for hosting samples
 
 ## Version 0.1
@@ -17,10 +13,14 @@
 * JavaScript DSL
 * change tracker
 * marking required controls
-* localization for jquery sample
+* perfomance testing (big form)
+
+* ? rename children -> elements
+
 
 ## Version 0.3
 
+* jQuery Mobile extension
 * Ext JS extension (with grids)
 * master/detail
-* jQuery Mobile extension
+* localization for jquery sample
