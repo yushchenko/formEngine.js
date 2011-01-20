@@ -80,7 +80,7 @@ $(function() {
 
     app.engine.subscribe({ senderId: 'saveButton', signal: 'click' }, function (msg) {
         if (app.model.validate()) {
-            alert('Data is valid and ready to be sent to server.');
+            showData($('#dialog'), app.model.get('customer'));
         }
     });
 

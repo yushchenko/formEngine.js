@@ -1,7 +1,6 @@
 ## TODO
 
 * titles for controls
-* jquery extension: dialog to show data
 * ? rename children -> elements
 
 * consider usage of github wiki for documentation

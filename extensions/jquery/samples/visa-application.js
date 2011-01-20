@@ -207,7 +207,9 @@ $(function() {
     });
 
     app.engine.subscribe({ senderId: 'apply', signal: 'click' }, function(msg) {
-
+        if(app.model.validate()) {
+            showData($('#dialog'), app.model.get('applicant'));
+        }
     });
 
     window.model = app.model;
