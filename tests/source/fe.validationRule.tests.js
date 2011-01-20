@@ -28,20 +28,14 @@ describe('fe.validationRule', function () {
             }),
             data = {};
 
-        e.addRule({ receiverId: 'vr1', senderId: 't', signal: ['hidden', 'readonly']});
+        e.addRule({ receiverId: 'vr1', senderId: 'e', signal: 'validation-inactive'});
 
         expect(r.validate(data)).toEqual('test error');
 
-        e.sendMessage({ senderId: 't', signal: 'hidden', data: true });
+        e.sendMessage({ senderId: 'e', signal: 'validation-inactive', data: true });
         expect(r.validate(data)).toEqual(undefined);
 
-        e.sendMessage({ senderId: 't', signal: 'hidden', data: false });
-        expect(r.validate(data)).toEqual('test error');
-
-        e.sendMessage({ senderId: 't', signal: 'readonly', data: true });
-        expect(r.validate(data)).toEqual(undefined);
-
-        e.sendMessage({ senderId: 't', signal: 'readonly', data: false });
+        e.sendMessage({ senderId: 'e', signal: 'validation-inactive', data: false });
         expect(r.validate(data)).toEqual('test error');
     });
 });

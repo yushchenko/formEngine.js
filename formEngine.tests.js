@@ -569,20 +569,14 @@ describe('fe.validationRule', function () {
             }),
             data = {};
 
-        e.addRule({ receiverId: 'vr1', senderId: 't', signal: ['hidden', 'readonly']});
+        e.addRule({ receiverId: 'vr1', senderId: 'e', signal: 'validation-inactive'});
 
         expect(r.validate(data)).toEqual('test error');
 
-        e.sendMessage({ senderId: 't', signal: 'hidden', data: true });
+        e.sendMessage({ senderId: 'e', signal: 'validation-inactive', data: true });
         expect(r.validate(data)).toEqual(undefined);
 
-        e.sendMessage({ senderId: 't', signal: 'hidden', data: false });
-        expect(r.validate(data)).toEqual('test error');
-
-        e.sendMessage({ senderId: 't', signal: 'readonly', data: true });
-        expect(r.validate(data)).toEqual(undefined);
-
-        e.sendMessage({ senderId: 't', signal: 'readonly', data: false });
+        e.sendMessage({ senderId: 'e', signal: 'validation-inactive', data: false });
         expect(r.validate(data)).toEqual('test error');
     });
 });
@@ -796,6 +790,9 @@ describe('fe.element', function() {
         expect(typeof e.receiveMessage).toEqual('function');
         expect(typeof e.initialize).toEqual('function');
         expect(typeof e.notifyValueChange).toEqual('function');
+        expect(typeof e.setHidden).toEqual('function');
+        expect(typeof e.setReadonly).toEqual('function');
+        expect(typeof e.notifyValidationStatusChange).toEqual('function');
     });
 
     it('should initialize propeties from metadata', function() {
@@ -862,6 +859,23 @@ describe('fe.element', function() {
 
         expect(ids).toEqual(['c1', 'c2']);
         expect(indexes).toEqual([0, 1]);
+    });
+
+    it('should notify validation status change on setHidden and setReadonly', function() {
+
+        var e = fe.engine(),
+            element = fe.element({ metadata: { id: 'e1' }, engine: e }),
+            status;
+
+        e.subscribe({ senderId: 'e1', signal: 'validation-inactive' }, function (msg) {
+            status = msg.data;
+        });
+
+        element.setHidden(true);
+        expect(status).toEqual(true);
+
+        element.setHidden(false);
+        expect(status).toEqual(false);
     });
 
     function getElementMedatadata() {
@@ -948,9 +962,9 @@ describe('fe.metadataProvider', function() {
 
         var p = fe.metadataProvider({ metadata: getMetadata() }),
             rules = p.getRules(),
-            elementCount = 3, exprCount = 1, conditionalRulesCount = 1;
+            elementCount = 3, exprCount = 1, ruleCount = 4;
 
-        expect(rules.length).toEqual(elementCount + 2*exprCount + conditionalRulesCount);
+        expect(rules.length).toEqual(elementCount + 2*exprCount + ruleCount);
 
         expect(rules.slice(0,1)).toEqual([
             { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] }
@@ -1014,6 +1028,7 @@ describe('formEngine', function() {
     var form = {
         id: 'testForm',
         typeName: 'form',
+        hidden: ':customer.secret',
         children: [
             {
                 id: 'firstName',
@@ -1040,7 +1055,8 @@ describe('formEngine', function() {
             firstName: 'John',
             lastName: 'Smith',
             hasDiscount: true,
-            discount: null
+            discount: null,
+            secret: false
         }
     };
 
@@ -1057,10 +1073,6 @@ describe('formEngine', function() {
 
         that.setValue = function (value) {
             that.currentValue = value;
-        };
-
-        that.setHidden = function(hidden) {
-            that.hidden = hidden;
         };
 
         that.showErrors = function(errors) {
@@ -1115,11 +1127,19 @@ describe('formEngine', function() {
         app.model.validate();
         expect(discount.errors.length).toEqual(1);
 
-
         app.model.set('customer.hasDiscount', false); // hide discount element
         expect(discount.hidden).toEqual(true);
         app.model.validate();
         expect(discount.errors.length).toEqual(0);
+
+        app.model.set('customer.hasDiscount', true); // show discount element
+        app.model.validate();
+        expect(discount.errors.length).toEqual(1);
+
+        app.model.set('customer.secret', true); // hide all form - discount hidden as child
+        app.model.validate();
+        expect(discount.errors.length).toEqual(0);
+
     });
 
     function getApp() {

@@ -3,10 +3,8 @@
 * number control
 * titles for controls
 * readonly control doesn't show errors
-* visa application sample
 * ? rename children -> elements
 
-* ? move parts of design.md into component's source files, add it automatic generation
 * consider usage of github wiki for documentation
 * consider usage of github pages for hosting samples
 

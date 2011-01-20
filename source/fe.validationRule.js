@@ -6,15 +6,17 @@ fe.validationRule = function(config) {
         path = config.path,
         validator = fe.validators[config.validatorName],
         validatorProperties = config.validatorProperties || {},
-        flags = {};
+        inactive;
 
     function receiveMessage(msg) {
-        flags[msg.signal] = msg.data; // set hidden or readonly flags
+        if (msg.signal === 'validation-inactive') {
+            inactive = msg.data;
+        }
     }
 
     function validate(data) {
 
-        if (flags.hidden || flags.readonly) {
+        if (inactive) {
             return undefined;
         }
 

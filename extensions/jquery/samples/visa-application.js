@@ -52,12 +52,14 @@ $(function() {
                     {
                         typeName: 'textBox',
                         binding: 'applicant.firstName',
-                        properties: { label: 'First Name' }
+                        properties: { label: 'First Name' },
+                        validationRules: { required: true }
                     },
                     {
                         typeName: 'textBox',
                         binding: 'applicant.lastName',
-                        properties: { label: 'Last Name' }
+                        properties: { label: 'Last Name' },
+                        validationRules: { required: true }
                     },
                     {
                         typeName: 'datePicker',
@@ -85,13 +87,15 @@ $(function() {
                         typeName: 'textBox',
                         binding: 'applicant.partner.firstName',
                         hidden: '!:applicant.isMarried',
-                        properties: { label: 'Your Partner\'s First Name' } 
+                        properties: { label: 'Your Partner\'s First Name' },
+                        validationRules: { required: true }
                     },
                     {
                         typeName: 'textBox',
                         binding: 'applicant.partner.lastName',
                         hidden: '!:applicant.isMarried',
-                        properties: { label: 'Your Partner\'s Last Name ' }
+                        properties: { label: 'Your Partner\'s Last Name ' },
+                        validationRules: { required: true }
                     },
                     {
                         typeName: 'datePicker',
@@ -108,17 +112,20 @@ $(function() {
                     {
                         typeName: 'comboBox',
                         binding: 'applicant.country',
-                        properties: { list: 'countries', label: 'Country' }
+                        properties: { list: 'countries', label: 'Country' },
+                        validationRules: { required: true }
                     },
                     {
                         typeName: 'textBox',
                         binding: 'applicant.city',
-                        properties: { label: 'City' }
+                        properties: { label: 'City' },
+                        validationRules: { required: true }                        
                     },
                     {
                         typeName: 'textBox',
                         binding: 'applicant.address',
-                        properties: { label: 'Address' }
+                        properties: { label: 'Address' },
+                        validationRules: { required: true }
                     },
                     {
                         typeName: 'textBox',
@@ -191,7 +198,9 @@ $(function() {
             nextStep = steps[i + shift];
 
             if (steps[i].code === currentCode && nextStep) {
-                app.model.set('step', nextStep);
+                if ((shift === 1 && app.model.validate()) || shift === -1) {
+                    app.model.set('step', nextStep);
+                }
                 return;
             }
         }

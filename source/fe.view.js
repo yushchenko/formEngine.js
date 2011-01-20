@@ -16,7 +16,7 @@ fe.view = function view (config) {
         
         if (metadata.children && metadata.children.length) {
             for (i = 0, len = metadata.children.length; i < len; i += 1) {
-                element.children.push(createElement(metadata.children[i]));
+                element.addElement(createElement(metadata.children[i]));
             }
         }
         

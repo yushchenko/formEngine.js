@@ -4,6 +4,7 @@ describe('formEngine', function() {
     var form = {
         id: 'testForm',
         typeName: 'form',
+        hidden: ':customer.secret',
         children: [
             {
                 id: 'firstName',
@@ -30,7 +31,8 @@ describe('formEngine', function() {
             firstName: 'John',
             lastName: 'Smith',
             hasDiscount: true,
-            discount: null
+            discount: null,
+            secret: false
         }
     };
 
@@ -47,10 +49,6 @@ describe('formEngine', function() {
 
         that.setValue = function (value) {
             that.currentValue = value;
-        };
-
-        that.setHidden = function(hidden) {
-            that.hidden = hidden;
         };
 
         that.showErrors = function(errors) {
@@ -105,11 +103,19 @@ describe('formEngine', function() {
         app.model.validate();
         expect(discount.errors.length).toEqual(1);
 
-
         app.model.set('customer.hasDiscount', false); // hide discount element
         expect(discount.hidden).toEqual(true);
         app.model.validate();
         expect(discount.errors.length).toEqual(0);
+
+        app.model.set('customer.hasDiscount', true); // show discount element
+        app.model.validate();
+        expect(discount.errors.length).toEqual(1);
+
+        app.model.set('customer.secret', true); // hide all form - discount hidden as child
+        app.model.validate();
+        expect(discount.errors.length).toEqual(0);
+
     });
 
     function getApp() {

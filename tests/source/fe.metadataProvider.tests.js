@@ -47,9 +47,9 @@ describe('fe.metadataProvider', function() {
 
         var p = fe.metadataProvider({ metadata: getMetadata() }),
             rules = p.getRules(),
-            elementCount = 3, exprCount = 1, conditionalRulesCount = 1;
+            elementCount = 3, exprCount = 1, ruleCount = 4;
 
-        expect(rules.length).toEqual(elementCount + 2*exprCount + conditionalRulesCount);
+        expect(rules.length).toEqual(elementCount + 2*exprCount + ruleCount);
 
         expect(rules.slice(0,1)).toEqual([
             { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] }

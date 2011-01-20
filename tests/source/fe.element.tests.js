@@ -13,6 +13,9 @@ describe('fe.element', function() {
         expect(typeof e.receiveMessage).toEqual('function');
         expect(typeof e.initialize).toEqual('function');
         expect(typeof e.notifyValueChange).toEqual('function');
+        expect(typeof e.setHidden).toEqual('function');
+        expect(typeof e.setReadonly).toEqual('function');
+        expect(typeof e.notifyValidationStatusChange).toEqual('function');
     });
 
     it('should initialize propeties from metadata', function() {
@@ -79,6 +82,23 @@ describe('fe.element', function() {
 
         expect(ids).toEqual(['c1', 'c2']);
         expect(indexes).toEqual([0, 1]);
+    });
+
+    it('should notify validation status change on setHidden and setReadonly', function() {
+
+        var e = fe.engine(),
+            element = fe.element({ metadata: { id: 'e1' }, engine: e }),
+            status;
+
+        e.subscribe({ senderId: 'e1', signal: 'validation-inactive' }, function (msg) {
+            status = msg.data;
+        });
+
+        element.setHidden(true);
+        expect(status).toEqual(true);
+
+        element.setHidden(false);
+        expect(status).toEqual(false);
     });
 
     function getElementMedatadata() {

@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Mon Jan 17 13:04:00 2011 +0200
+ * Wed Jan 19 18:47:05 2011 +0200
  * 
  */
 
@@ -68,6 +68,8 @@ fe.jquery.runSimpleApp = runSimpleApp;
 fe.jquery.element = function jqueryElement(config) {
 
     var that = fe.element(config),
+        setHiddenBase = that.setHidden,
+        setReadonlyBase = that.setReadonly,
         editorQuery, containerQuery, errorQuery;
 
     that.editorId = that.id.replace(/\./g, '_');
@@ -133,6 +135,7 @@ fe.jquery.element = function jqueryElement(config) {
         if (container) {
             container.toggleClass('fe-hidden', hidden);
         }
+        setHiddenBase(hidden);
     }
 
     function setReadonly(readonly) {
@@ -140,6 +143,7 @@ fe.jquery.element = function jqueryElement(config) {
         if (editor) {
             editor.get(0).disabled = readonly;
         }
+        setReadonlyBase(readonly);
     }
 
     function showErrors(errors) {

@@ -2,6 +2,8 @@
 fe.jquery.element = function jqueryElement(config) {
 
     var that = fe.element(config),
+        setHiddenBase = that.setHidden,
+        setReadonlyBase = that.setReadonly,
         editorQuery, containerQuery, errorQuery;
 
     that.editorId = that.id.replace(/\./g, '_');
@@ -67,6 +69,7 @@ fe.jquery.element = function jqueryElement(config) {
         if (container) {
             container.toggleClass('fe-hidden', hidden);
         }
+        setHiddenBase(hidden);
     }
 
     function setReadonly(readonly) {
@@ -74,6 +77,7 @@ fe.jquery.element = function jqueryElement(config) {
         if (editor) {
             editor.get(0).disabled = readonly;
         }
+        setReadonlyBase(readonly);
     }
 
     function showErrors(errors) {

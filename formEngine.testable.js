@@ -300,15 +300,17 @@ fe.validationRule = function(config) {
         path = config.path,
         validator = fe.validators[config.validatorName],
         validatorProperties = config.validatorProperties || {},
-        flags = {};
+        inactive;
 
     function receiveMessage(msg) {
-        flags[msg.signal] = msg.data; // set hidden or readonly flags
+        if (msg.signal === 'validation-inactive') {
+            inactive = msg.data;
+        }
     }
 
     function validate(data) {
 
-        if (flags.hidden || flags.readonly) {
+        if (inactive) {
             return undefined;
         }
 
@@ -524,7 +526,7 @@ fe.view = function view (config) {
         
         if (metadata.children && metadata.children.length) {
             for (i = 0, len = metadata.children.length; i < len; i += 1) {
-                element.children.push(createElement(metadata.children[i]));
+                element.addElement(createElement(metadata.children[i]));
             }
         }
         
@@ -561,8 +563,14 @@ fe.element = function element (config) {
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
     that.children = [];
+    that.parent = undefined;
 
     function initialize() {
+    }
+
+    function addElement(child) {
+        that.children.push(child);
+        child.parent = that;
     }
 
     function receiveMessage(message) {
@@ -585,6 +593,36 @@ fe.element = function element (config) {
         }
     }
 
+    function setHidden(hidden) {
+        that.hidden = hidden;
+        notifyValidationStatusChange();
+    }
+
+    function setReadonly(readonly) {
+        that.readonly = readonly;
+        notifyValidationStatusChange();
+    }
+
+    function isHidden() {
+        return !!that.hidden || (that.parent && that.parent.isHidden());
+    }
+
+    function isReadonly() {
+        return !!that.readonly;
+    }
+
+    function notifyValidationStatusChange() {
+
+        engine.sendMessage({ senderId: that.id, signal: 'validation-inactive',
+                             data: that.isHidden() || that.isReadonly() });
+
+
+        eachChild(function(child) {
+            child.notifyValidationStatusChange();
+        });
+
+    }
+
     function eachChild(fn) {
         var i, len;
         for (i =0, len = that.children.length; i < len; i += 1) {
@@ -593,8 +631,14 @@ fe.element = function element (config) {
     }
 
     that.initialize = initialize;
+    that.addElement = addElement;
     that.receiveMessage = receiveMessage;
     that.notifyValueChange = notifyValueChange;
+    that.setHidden = setHidden;
+    that.setReadonly = setReadonly;
+    that.isHidden = isHidden;
+    that.isReadonly = isReadonly;
+    that.notifyValidationStatusChange = notifyValidationStatusChange;
     that.eachChild = eachChild;
 
     engine.addReceiver(that.id, that);
@@ -632,10 +676,9 @@ fe.metadataProvider = function metadataProvider (config) {
         expressionProperties = config.expressionProperties || ['value', 'hidden', 'readonly'],
         expressionParser = config.expressionParser || fe.expressionParser;
 
-    function parseMetadata(metadata, element) {
+    function parseMetadata(metadata, element, parent) {
 
-        var name, i, len, child,
-            validationRules = [];
+        var name, i, len, child;
 
         element = element || viewMetadata;
 
@@ -643,36 +686,65 @@ fe.metadataProvider = function metadataProvider (config) {
         element.typeName = metadata.typeName;
         element.properties = metadata.properties || {};
 
+        parseExpressionProperties(metadata, element);
+
+        if (typeof metadata.binding === 'string') {
+            element.properties.binding = metadata.binding;
+
+            // validation rules make sense only for data bound fields
+            parseValidationRules(metadata, element);
+
+            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
+        }
+
         if (metadata.children && metadata.children.length) {
 
             element.children = [];
 
             for (i = 0, len = metadata.children.length; i < len; i += 1) {
                 child = {};
-                parseMetadata(metadata.children[i], child);
+                parseMetadata(metadata.children[i], child, element);
                 element.children.push(child);
             }
         }
+    }
 
-        if (typeof metadata.binding === 'string') {
-            element.properties.binding = metadata.binding;
 
-            // validation rules make sense only for data bound fields
-            validationRules = parseValidationRules(metadata, element);
+    function parseExpressionProperties(metadata, element) {
 
-            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
+        var i, l, ii, ll,  property, expression, parsed, id, trigger;
+
+        for (i = 0, l = expressionProperties.length; i < l; i += 1) {
+
+            property = expressionProperties[i];
+            expression = metadata[property];
+
+            if (typeof expression === 'string') {
+
+                parsed = expressionParser(expression);
+                id = getUniqueId();
+
+                trigger = {
+                    id: id,
+                    processorArgs: parsed.args,
+                    processor: parsed.processor,
+                    signal: property
+                };
+
+                triggers.push(trigger);
+
+                rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
+                rules.push({ receiverId: element.id, senderId: id, signal: property });
+            }
         }
-
-        parseExpressionProperties(metadata, element, validationRules);
     }
 
     function parseValidationRules(metadata, element) {
 
         var name, properties, validator, id,
             path = metadata.binding,
-            validationRules = metadata.validationRules,
-            rule, result = [];
-        
+            validationRules = metadata.validationRules || {};
+
         for (name in validationRules) {
 
             if (validationRules.hasOwnProperty(name)) {
@@ -693,44 +765,11 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 id = getUniqueId();
 
-                rule = {
+                modelMetadata.validationRules.push({
                     id: id, path: path, validatorName: name, validatorProperties: properties
-                };
-
-                result.push(rule);
-                modelMetadata.validationRules.push(rule);
-            }
-        }
-
-        return result;
-    }
-
-    function parseExpressionProperties(metadata, element, validationRules) {
-
-        var i, l, ii, ll,  property, expression, parsed, id;
-
-        for (i = 0, l = expressionProperties.length; i < l; i += 1) {
-
-            property = expressionProperties[i];
-            expression = metadata[property];
-
-            if (typeof expression === 'string') {
-                parsed = expressionParser(expression);
-                id = getUniqueId();
-
-                triggers.push({
-                    id: id,
-                    processorArgs: parsed.args,
-                    processor: parsed.processor,
-                    signal: property
                 });
 
-                rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
-                rules.push({ receiverId: element.id, senderId: id, signal: property });
-
-                for (ii = 0, ll = validationRules.length; ii < ll; ii += 1) {
-                    rules.push({ receiverId: validationRules[ii].id, senderId: id, signal: property });
-                }
+                rules.push({ receiverId: id, senderId: element.id, signal: 'validation-inactive' });
             }
         }
     }

@@ -13,8 +13,14 @@ fe.element = function element (config) {
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
     that.children = [];
+    that.parent = undefined;
 
     function initialize() {
+    }
+
+    function addElement(child) {
+        that.children.push(child);
+        child.parent = that;
     }
 
     function receiveMessage(message) {
@@ -37,6 +43,36 @@ fe.element = function element (config) {
         }
     }
 
+    function setHidden(hidden) {
+        that.hidden = hidden;
+        notifyValidationStatusChange();
+    }
+
+    function setReadonly(readonly) {
+        that.readonly = readonly;
+        notifyValidationStatusChange();
+    }
+
+    function isHidden() {
+        return !!that.hidden || (that.parent && that.parent.isHidden());
+    }
+
+    function isReadonly() {
+        return !!that.readonly;
+    }
+
+    function notifyValidationStatusChange() {
+
+        engine.sendMessage({ senderId: that.id, signal: 'validation-inactive',
+                             data: that.isHidden() || that.isReadonly() });
+
+
+        eachChild(function(child) {
+            child.notifyValidationStatusChange();
+        });
+
+    }
+
     function eachChild(fn) {
         var i, len;
         for (i =0, len = that.children.length; i < len; i += 1) {
@@ -45,8 +81,14 @@ fe.element = function element (config) {
     }
 
     that.initialize = initialize;
+    that.addElement = addElement;
     that.receiveMessage = receiveMessage;
     that.notifyValueChange = notifyValueChange;
+    that.setHidden = setHidden;
+    that.setReadonly = setReadonly;
+    that.isHidden = isHidden;
+    that.isReadonly = isReadonly;
+    that.notifyValidationStatusChange = notifyValidationStatusChange;
     that.eachChild = eachChild;
 
     engine.addReceiver(that.id, that);
