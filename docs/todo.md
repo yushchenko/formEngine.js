@@ -1,8 +1,7 @@
 ## TODO
 
-* number control
 * titles for controls
-* readonly control doesn't show errors
+* jquery extension: dialog to show data
 * ? rename children -> elements
 
 * consider usage of github wiki for documentation
@@ -18,6 +17,7 @@
 
 * JavaScript DSL
 * change tracker
+* marking required controls
 * localization for jquery sample
 
 ## Version 0.3

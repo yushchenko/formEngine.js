@@ -24,7 +24,8 @@ $(function() {
             {
                 typeName: 'textBox',
                 binding: 'customer.firstName',
-                properties: { label: 'First Name' }
+                properties: { label: 'First Name' },
+                validationRules: { required: true }
             },
             {
                 typeName: 'textBox',
@@ -55,11 +56,12 @@ $(function() {
                 properties: { label: 'Has Variable Discount' }
             },
             {
-                typeName: 'textBox',
+                typeName: 'numberEditor',
                 binding: 'customer.discount',
                 hidden: '!:customer.hasDiscount',
                 readonly: '!:customer.hasVariableDiscount',
-                properties: { label: 'Discount' }
+                properties: { label: 'Discount' },
+                validationRules: { required: true, minValue: 0, maxValue: 100 }
             },
             {
                 typeName: 'toolBar',

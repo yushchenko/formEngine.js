@@ -65,18 +65,22 @@ fe.jquery.element = function jqueryElement(config) {
     }
 
     function setHidden(hidden) {
+
         var container = that.getContainer();
         if (container) {
             container.toggleClass('fe-hidden', hidden);
         }
+
         setHiddenBase(hidden);
     }
 
     function setReadonly(readonly) {
+
         var editor = that.getEditor();
         if (editor) {
             editor.get(0).disabled = readonly;
         }
+
         setReadonlyBase(readonly);
     }
 

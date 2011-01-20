@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Wed Jan 19 18:47:05 2011 +0200
+ * Thu Jan 20 11:06:24 2011 +0200
  * 
  */
 
@@ -131,18 +131,22 @@ fe.jquery.element = function jqueryElement(config) {
     }
 
     function setHidden(hidden) {
+
         var container = that.getContainer();
         if (container) {
             container.toggleClass('fe-hidden', hidden);
         }
+
         setHiddenBase(hidden);
     }
 
     function setReadonly(readonly) {
+
         var editor = that.getEditor();
         if (editor) {
             editor.get(0).disabled = readonly;
         }
+
         setReadonlyBase(readonly);
     }
 
@@ -434,6 +438,45 @@ fe.jquery.elements.datePicker = function datePicker(config) {
 
     that.setValue = function setValue(value) {
         that.getEditor().datepicker('setDate', value);
+    };
+
+    return that;
+};
+
+fe.jquery.elements.numberEditor = function numberEditor(config) {
+
+    var that = fe.jquery.element(config),
+        currentValue;
+
+    that.template = template(
+        '<div id="<%=containerId%>" class="fe-element">' +
+            '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<input type="text" id="<%=editorId%>" class="fe-editor-narrow"></input>' +
+            '<div id="<%=errorId%>" class="fe-element-error"></div>' +
+        '</div>'
+    );
+
+    that.initialize = function() {
+
+        var e = that.getEditor();
+
+        e.change(function() {
+
+            var newValue = +e.val();
+
+            if (!isNaN(newValue)) {
+                that.notifyValueChange(newValue);
+                currentValue = newValue;
+            }
+            else {
+                that.setValue(currentValue);
+            }
+        });
+    };
+
+    that.setValue = function setValue(value) {
+        currentValue = value;
+        that.getEditor().val(value);
     };
 
     return that;
