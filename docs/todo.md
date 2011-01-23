@@ -1,5 +1,10 @@
 ## TODO
 
+* home: intro
+* model
+* engine
+* view, element
+
 * consider usage of github pages for hosting samples
 
 ## Version 0.1
@@ -16,6 +21,7 @@
 * perfomance testing (big form)
 
 * ? rename children -> elements
+* run unit tests under Rhino
 
 
 ## Version 0.3

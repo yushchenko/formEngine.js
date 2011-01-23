@@ -1,6 +1,6 @@
-# formEngine.js Project
+# formEngine.js
 
-An easy way to create complex interactive applications.
+An easy way to create complex interactive web applications.
 
 See documentation in [project's wiki][wiki].
 

@@ -32,6 +32,10 @@ fe.element = function element (config) {
         }
     }
 
+    function setValue(value) {
+        
+    }
+
     function notifyValueChange(value) {
 
         var path = that.properties.binding;
@@ -73,6 +77,10 @@ fe.element = function element (config) {
 
     }
 
+    function showErrors(errors) {
+        
+    }
+
     function eachChild(fn) {
         var i, len;
         for (i =0, len = that.children.length; i < len; i += 1) {
@@ -83,12 +91,14 @@ fe.element = function element (config) {
     that.initialize = initialize;
     that.addElement = addElement;
     that.receiveMessage = receiveMessage;
+    that.setValue = setValue();
     that.notifyValueChange = notifyValueChange;
     that.setHidden = setHidden;
     that.setReadonly = setReadonly;
     that.isHidden = isHidden;
     that.isReadonly = isReadonly;
     that.notifyValidationStatusChange = notifyValidationStatusChange;
+    that.showErrors = showErrors;
     that.eachChild = eachChild;
 
     engine.addReceiver(that.id, that);
