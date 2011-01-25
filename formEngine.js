@@ -1,11 +1,11 @@
 /*
- * FormEngine.js 0.0.1 - MVC on steroids :)
+ * FormEngine.js 0.1 - MVC on steroids :)
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 20 14:55:00 2011 +0200
+ * Tue Jan 25 18:24:03 2011 +0200
  * 
  */
 
