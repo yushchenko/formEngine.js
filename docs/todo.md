@@ -1,7 +1,6 @@
 ## TODO
 
-* extend README, add short description
-* add samples to project pages
+* tag version 0.1
 * blog post: "formEngine.js Project"
 
 ## Version 0.1

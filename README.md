@@ -1,7 +1,35 @@
 # formEngine.js
 
-An easy way to create complex interactive web applications.
+In many cases, application UI can be represented by relatively small set of elements.
+Every element of a certain type should look and behave in a similar way
+within all application or even application suite.
+Of course, the elements will have different data bindings, labels, validation rules etc, 
+but, as usual, all this stuff can be configured using only few properties.
+On the other hand, in a real world application UI is the first target for various changes
+so it could be really beneficial to make it configurable using a kind of DSL (domain specific language).
 
-See documentation in [project's wiki][wiki].
+FormEngine.js represents UI as a set of reusable modular elements.
+The library is based on MVC pattern so application's data are strictly separated from presentation.
+It provides basic services such as rule based message routing,
+data binding, expression evaluation, data validation and change tracking.
+As a result, it become possible to create UI elements implementing quite simple interface
+and configure them using declarative metadata.
+The simplest and the most productive way to deal with metadata is represent them using
+consise and readable text representation (DSL).
+
+FormEngine.js is intended to be used in combination with other,
+lets say, low level libraries such as jQuery UI or Ext JS.
+Such approach allows to create set of feature rich elements required for an application
+spending quit reasonable amount of time.
+There are couple of such element sets (extensions) out of the box, they are used to run [samples][samples].
+You could use this code as a kind of example or template for your own elements.
+
+Complete project documentation is located in [project's wiki][wiki].
+
+Samples to play and take a look at the source code using 'View Page Source' feature of you favorite browser
+are [here][samples].
+
+Enjoy :)
 
 [wiki]: https://github.com/yushchenko/formEngine.js/wiki "formEngine.js wiki on Github"
+[samples]: http://yushchenko.github.com/formEngine.js/ "formEngine.js samples on Github"
