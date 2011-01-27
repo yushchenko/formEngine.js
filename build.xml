@@ -29,6 +29,7 @@
 
 	<concat destfile="${FE}.testable.js" fixlastline="yes" >
       <fileset file="source/fe.js" /> <!--lint,test-->
+      <fileset file="source/fe.dsl.js" /> <!--lint,test-->      
       <fileset file="source/fe.rule.js" /> <!--lint,test-->
       <fileset file="source/fe.trigger.js" /> <!--lint,test-->
       <fileset file="source/fe.engine.js" /> <!--lint,test-->
@@ -43,6 +44,7 @@
 
 	<concat destfile="${FE}.tests.js" fixlastline="yes"> <!-- to estimate test suit size ;) -->
       <fileset file="tests/source/fe.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.dsl.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.rule.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.trigger.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.engine.tests.js" /> <!--lint,test-->

@@ -6,6 +6,7 @@ load:
   - libs/JasmineAdapter.js
   # code & tests
   - ../source/fe.js
+  - ../source/fe.dsl.js
   - ../source/fe.rule.js
   - ../source/fe.trigger.js
   - ../source/fe.engine.js
@@ -17,6 +18,7 @@ load:
   - ../source/fe.expressionParser.js
   - ../source/fe.metadataProvider.js
   - ../tests/source/fe.tests.js
+  - ../tests/source/fe.dsl.tests.js
   - ../tests/source/fe.rule.tests.js
   - ../tests/source/fe.trigger.tests.js
   - ../tests/source/fe.engine.tests.js

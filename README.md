@@ -26,7 +26,7 @@ You could use this code as a kind of example or template for your own elements.
 
 Complete project documentation is located in [project's wiki][wiki].
 
-Samples to play and take a look at the source code using 'View Page Source' of you favorite browser
+Samples to play and take a look at the source code using 'View Page Source' of your favorite browser
 are [here][samples].
 
 Enjoy :)

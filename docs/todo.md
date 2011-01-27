@@ -1,13 +1,6 @@
 ## TODO
 
-* tag version 0.1
 * blog post: "formEngine.js Project"
-
-## Version 0.1
-
-* DONE hidden/readonly for jquery extension
-* DONE basic validation
-* IN PROGRESS documentation, README, blog post
 
 ## Version 0.2
 
