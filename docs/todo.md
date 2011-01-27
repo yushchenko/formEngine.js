@@ -1,6 +1,7 @@
 ## TODO
 
 * blog post: "formEngine.js Project"
+* add script to upgrade project pages
 
 ## Version 0.2
 
@@ -12,6 +13,7 @@
 
 * ? rename children -> elements
 * run unit tests under Rhino
+* add version history to wiki
 
 
 ## Version 0.3

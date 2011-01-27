@@ -25,7 +25,7 @@ describe('fe.element', function() {
 
         expect(e.id).toEqual('test');
         expect(e.properties).toEqual({ test: 'ok', binding: 'a.b.c' });
-        expect(e.children).toEqual([]);
+        expect(e.elements).toEqual([]);
     });
 
     it('should call setValue method on "value" message', function() {
@@ -65,7 +65,7 @@ describe('fe.element', function() {
         expect(function() { element.notifyValueChange(123); }).toThrow(msg.elementWithoutBinding);
     });
 
-    it('should iterate over children', function() {
+    it('should iterate over child elements', function() {
 
         var engine = fe.engine(),
             element = fe.element({ metadata: {}, engine: engine }),
@@ -73,7 +73,7 @@ describe('fe.element', function() {
             child2 = fe.element({ metadata: { id: 'c2' }, engine: engine }),
             ids = [], indexes = [];
 
-        element.children.push(child1, child2);
+        element.elements.push(child1, child2);
 
         element.eachChild(function(child, index) {
             ids.push(child.id);

@@ -5,7 +5,7 @@ describe('formEngine', function() {
         id: 'testForm',
         typeName: 'form',
         hidden: ':customer.secret',
-        children: [
+        elements: [
             {
                 id: 'firstName',
                 typeName: 'textBox',

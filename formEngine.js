@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 27 12:33:09 2011 +0200
+ * Thu Jan 27 12:48:44 2011 +0200
  * 
  */
 
@@ -652,9 +652,9 @@ fe.view = function view (config) {
 
         elementsById[element.id] = element;
         
-        if (metadata.children && metadata.children.length) {
-            for (i = 0, len = metadata.children.length; i < len; i += 1) {
-                element.addElement(createElement(metadata.children[i]));
+        if (metadata.elements && metadata.elements.length) {
+            for (i = 0, len = metadata.elements.length; i < len; i += 1) {
+                element.addElement(createElement(metadata.elements[i]));
             }
         }
         
@@ -690,14 +690,14 @@ fe.element = function element (config) {
 
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
-    that.children = [];
+    that.elements = [];
     that.parent = undefined;
 
     function initialize() {
     }
 
     function addElement(child) {
-        that.children.push(child);
+        that.elements.push(child);
         child.parent = that;
     }
 
@@ -761,8 +761,8 @@ fe.element = function element (config) {
 
     function eachChild(fn) {
         var i, len;
-        for (i =0, len = that.children.length; i < len; i += 1) {
-            fn(that.children[i], i);
+        for (i =0, len = that.elements.length; i < len; i += 1) {
+            fn(that.elements[i], i);
         }
     }
 
@@ -835,14 +835,14 @@ fe.metadataProvider = function metadataProvider (config) {
             rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
-        if (metadata.children && metadata.children.length) {
+        if (metadata.elements && metadata.elements.length) {
 
-            element.children = [];
+            element.elements = [];
 
-            for (i = 0, len = metadata.children.length; i < len; i += 1) {
+            for (i = 0, len = metadata.elements.length; i < len; i += 1) {
                 child = {};
-                parseMetadata(metadata.children[i], child, element);
-                element.children.push(child);
+                parseMetadata(metadata.elements[i], child, element);
+                element.elements.push(child);
             }
         }
     }

@@ -29,14 +29,14 @@ fe.metadataProvider = function metadataProvider (config) {
             rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
-        if (metadata.children && metadata.children.length) {
+        if (metadata.elements && metadata.elements.length) {
 
-            element.children = [];
+            element.elements = [];
 
-            for (i = 0, len = metadata.children.length; i < len; i += 1) {
+            for (i = 0, len = metadata.elements.length; i < len; i += 1) {
                 child = {};
-                parseMetadata(metadata.children[i], child, element);
-                element.children.push(child);
+                parseMetadata(metadata.elements[i], child, element);
+                element.elements.push(child);
             }
         }
     }

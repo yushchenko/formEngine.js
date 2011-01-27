@@ -20,7 +20,7 @@ $(function() {
         id: 'testForm',
         typeName: 'view',
         properties: { viewContainerId: 'view' },
-        children: [
+        elements: [
             {
                 typeName: 'textBox',
                 binding: 'customer.firstName',
@@ -65,7 +65,7 @@ $(function() {
             },
             {
                 typeName: 'toolBar',
-                children: [
+                elements: [
                     {
                         id: 'saveButton',
                         typeName: 'button',

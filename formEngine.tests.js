@@ -789,9 +789,9 @@ describe('fe.view', function() {
          expect(v.element).toBeDefined();
          expect(v.element.id).toEqual('testForm');
 
-         expect(v.element.children.length).toEqual(2);
-         expect(v.element.children[0].id).toEqual('field1');
-         expect(v.element.children[1].properties).toEqual({ p: 'p2' });
+         expect(v.element.elements.length).toEqual(2);
+         expect(v.element.elements[0].id).toEqual('field1');
+         expect(v.element.elements[1].properties).toEqual({ p: 'p2' });
     });
 
     it('should find element by id', function() {
@@ -827,7 +827,7 @@ describe('fe.view', function() {
         return {
             id: 'testForm',
             typeName: 'form',
-            children: [
+            elements: [
                 {
                     id: 'field1',
                     typeName: 'textBox',
@@ -886,7 +886,7 @@ describe('fe.element', function() {
 
         expect(e.id).toEqual('test');
         expect(e.properties).toEqual({ test: 'ok', binding: 'a.b.c' });
-        expect(e.children).toEqual([]);
+        expect(e.elements).toEqual([]);
     });
 
     it('should call setValue method on "value" message', function() {
@@ -926,7 +926,7 @@ describe('fe.element', function() {
         expect(function() { element.notifyValueChange(123); }).toThrow(msg.elementWithoutBinding);
     });
 
-    it('should iterate over children', function() {
+    it('should iterate over child elements', function() {
 
         var engine = fe.engine(),
             element = fe.element({ metadata: {}, engine: engine }),
@@ -934,7 +934,7 @@ describe('fe.element', function() {
             child2 = fe.element({ metadata: { id: 'c2' }, engine: engine }),
             ids = [], indexes = [];
 
-        element.children.push(child1, child2);
+        element.elements.push(child1, child2);
 
         element.eachChild(function(child, index) {
             ids.push(child.id);
@@ -1022,7 +1022,7 @@ describe('fe.metadataProvider', function() {
             id: 'testForm',
             typeName: 'form',
             properties: { header: 'test form' },
-            children: [
+            elements: [
                 {
                     id: 'firstName',
                     typeName: 'textBox',
@@ -1083,7 +1083,7 @@ describe('fe.metadataProvider', function() {
             id: 'testForm',
             typeName: 'form',
             properties: { header: 'test form' },
-            children: [
+            elements: [
                 {
                     id: 'firstName',
                     typeName: 'textBox',
@@ -1113,7 +1113,7 @@ describe('formEngine', function() {
         id: 'testForm',
         typeName: 'form',
         hidden: ':customer.secret',
-        children: [
+        elements: [
             {
                 id: 'firstName',
                 typeName: 'textBox',

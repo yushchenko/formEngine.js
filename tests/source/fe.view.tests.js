@@ -22,9 +22,9 @@ describe('fe.view', function() {
          expect(v.element).toBeDefined();
          expect(v.element.id).toEqual('testForm');
 
-         expect(v.element.children.length).toEqual(2);
-         expect(v.element.children[0].id).toEqual('field1');
-         expect(v.element.children[1].properties).toEqual({ p: 'p2' });
+         expect(v.element.elements.length).toEqual(2);
+         expect(v.element.elements[0].id).toEqual('field1');
+         expect(v.element.elements[1].properties).toEqual({ p: 'p2' });
     });
 
     it('should find element by id', function() {
@@ -60,7 +60,7 @@ describe('fe.view', function() {
         return {
             id: 'testForm',
             typeName: 'form',
-            children: [
+            elements: [
                 {
                     id: 'field1',
                     typeName: 'textBox',

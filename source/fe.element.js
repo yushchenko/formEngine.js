@@ -12,14 +12,14 @@ fe.element = function element (config) {
 
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
-    that.children = [];
+    that.elements = [];
     that.parent = undefined;
 
     function initialize() {
     }
 
     function addElement(child) {
-        that.children.push(child);
+        that.elements.push(child);
         child.parent = that;
     }
 
@@ -83,8 +83,8 @@ fe.element = function element (config) {
 
     function eachChild(fn) {
         var i, len;
-        for (i =0, len = that.children.length; i < len; i += 1) {
-            fn(that.children[i], i);
+        for (i =0, len = that.elements.length; i < len; i += 1) {
+            fn(that.elements[i], i);
         }
     }
 

@@ -23,7 +23,7 @@ describe('fe.metadataProvider', function() {
             id: 'testForm',
             typeName: 'form',
             properties: { header: 'test form' },
-            children: [
+            elements: [
                 {
                     id: 'firstName',
                     typeName: 'textBox',
@@ -84,7 +84,7 @@ describe('fe.metadataProvider', function() {
             id: 'testForm',
             typeName: 'form',
             properties: { header: 'test form' },
-            children: [
+            elements: [
                 {
                     id: 'firstName',
                     typeName: 'textBox',
