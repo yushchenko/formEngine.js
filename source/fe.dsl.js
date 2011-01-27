@@ -13,7 +13,13 @@ fe.dsl.defaultMethods = {
     },
 
     label: function(label) {
-        return fe.dsl.defaultMethods.property('label', label);
+        this.element.properties.label = label;
+        return this.chain;
+    },
+
+    binding: function(binding) {
+        this.element.binding = binding;
+        return this.chain;
     },
 
     hidden: function(hidden) {
@@ -42,8 +48,11 @@ fe.dsl.token = function token(init, methods) {
 
         var element = { properties: {}, validationRules: {}, elements: [] };
 
-        if (typeof init === 'function') {
+        if (typeof init === 'function') { // constructor
             init(element);
+        }
+        else if ( typeof init === 'string') { // only type name
+            element.typeName = init;
         }
 
         function chain() {
@@ -54,6 +63,9 @@ fe.dsl.token = function token(init, methods) {
                 arg = arguments[i];
                 if (typeof arg === 'function' && typeof arg.get === 'function') {
                     element.elements.push(arg.get());
+                }
+                else if (i === 0 && typeof arg === 'string') {
+                    element.binding = arg;
                 }
             }
 

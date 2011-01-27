@@ -26,3 +26,5 @@ fe.jquery.elements.datePicker = function datePicker(config) {
 
     return that;
 };
+
+fe.jquery.dsl.datePicker = fe.dsl.token('datePicker');

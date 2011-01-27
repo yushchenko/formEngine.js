@@ -1,19 +1,17 @@
 ## TODO
 
 * blog post: "formEngine.js Project"
-* add script to upgrade project pages
 
 ## Version 0.2
 
-* JavaScript DSL
+* PROGRESS JavaScript DSL
 * Markup DSL
 * change tracker
 * marking required controls (asterisk)
 * perfomance testing (a big form)
 
-* ? rename children -> elements
 * run unit tests under Rhino
-* add version history to wiki
+* add version history page to wiki
 
 
 ## Version 0.3

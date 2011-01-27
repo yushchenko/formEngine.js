@@ -139,14 +139,20 @@ describe('fe.dsl', function () {
             }
         );
 
-        this.after = function() { delete fe.dsl.test; };
+        fe.dsl.test2 = fe.dsl.token('test2');
+
+        this.after = function() {
+            delete fe.dsl.test;
+            delete fe.dsl.test2;
+        };
 
         var ui = fe.dsl,
-            e = ui.test().method('value').get();
+            e = ui.test().method('value').get(),
+            e2 = ui.test2().get();
 
         expect(e.typeName).toEqual('test');
         expect(e.testValue).toEqual('value');
-        
+        expect(e2.typeName).toEqual('test2');
     });
 });
 

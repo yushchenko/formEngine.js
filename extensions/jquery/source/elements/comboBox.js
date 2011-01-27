@@ -93,3 +93,10 @@ fe.jquery.elements.comboBox = function comboBox(config) {
 
     return that;
 };
+
+fe.jquery.dsl.comboBox = fe.dsl.token('comboBox', {
+    list: function(list) {
+        this.element.properties.list = list;
+        return this.chain;
+    }
+});
