@@ -12,6 +12,11 @@ fe.validators.required = function required(value, properties) {
     return undefined;
 };
 
+fe.dsl.defaultMethods.required = function(arg) {
+    this.element.validationRules.required = arg || true;
+    return this.chain;
+};
+
 fe.validators.minLength = function minLength(value, properties) {
 
     if (value && value.length !== undefined && value.length < properties.length) {
@@ -21,6 +26,11 @@ fe.validators.minLength = function minLength(value, properties) {
     return undefined;
 };
 fe.validators.minLength.defaultProperty = 'length';
+
+fe.dsl.defaultMethods.minLength = function(arg) {
+    this.element.validationRules.minLength = arg;
+    return this.chain;
+};
 
 fe.validators.maxLength = function maxLength(value, properties) {
 
@@ -32,6 +42,11 @@ fe.validators.maxLength = function maxLength(value, properties) {
 };
 fe.validators.maxLength.defaultProperty = 'length';
 
+fe.dsl.defaultMethods.maxLength = function(arg) {
+    this.element.validationRules.maxLength = arg;
+    return this.chain;
+};
+
 fe.validators.minValue = function minValue(value, properties) {
 
     if (value && value < properties.value) {
@@ -42,6 +57,11 @@ fe.validators.minValue = function minValue(value, properties) {
 };
 fe.validators.minValue.defaultProperty = 'value';
 
+fe.dsl.defaultMethods.minValue = function(arg) {
+    this.element.validationRules.minValue = arg;
+    return this.chain;
+};
+
 fe.validators.maxValue = function maxValue(value, properties) {
 
     if (value && value > properties.value) {
@@ -51,6 +71,11 @@ fe.validators.maxValue = function maxValue(value, properties) {
     return undefined;
 };
 fe.validators.maxValue.defaultProperty = 'value';
+
+fe.dsl.defaultMethods.maxValue = function(arg) {
+    this.element.validationRules.maxValue = arg;
+    return this.chain;
+};
 
 fe.validationMessages = {
     required: 'This field is required!',
