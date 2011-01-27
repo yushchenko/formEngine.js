@@ -1,11 +1,11 @@
 /*
- * FormEngine.js 0.0.1 - MVC on steroids :)
+ * FormEngine.js 0.1 - MVC on steroids :)
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 20 14:55:00 2011 +0200
+ * Thu Jan 27 12:48:44 2011 +0200
  * 
  */
 
@@ -109,6 +109,97 @@ var msg = {
     elementWithoutBinding: 'element.notifyValueChange: can\'t send notification if binding property not defined.',
     unknownValidator: 'metadataProvider: unknown validator: '
 };
+fe.dsl = {};
+
+fe.dsl.defaultMethods = {
+
+    id: function(id) {
+        this.element.id = id;
+        return this.chain;
+    },
+
+    property: function(name, value) {
+        this.element.properties[name] = value;
+        return this.chain;
+    },
+
+    label: function(label) {
+        return fe.dsl.defaultMethods.property('label', label);
+    },
+
+    hidden: function(hidden) {
+        this.element.hidden = hidden;
+        return this.chain;
+    },
+
+    readonly: function(readonly) {
+        this.element.readonly = readonly;
+        return this.chain;
+    },
+
+    value: function(value) {
+        this.element.value = value;
+        return this.chain;
+    },
+
+    get: function() {
+        return this.element;
+    }
+};
+
+fe.dsl.token = function token(init, methods) {
+
+    function that() {
+
+        var element = { properties: {}, validationRules: {}, elements: [] };
+
+        if (typeof init === 'function') {
+            init(element);
+        }
+
+        function chain() {
+
+            var i, len = arguments.length, arg;
+
+            for (i = 0; i < len; i += 1) {
+                arg = arguments[i];
+                if (typeof arg === 'function' && typeof arg.get === 'function') {
+                    element.elements.push(arg.get());
+                }
+            }
+
+            return chain;
+        }
+
+        var context = { element: element, chain: chain };
+
+        extend(chain, fe.dsl.defaultMethods, context);
+        extend(chain, methods || {}, context);
+
+        return chain.apply(undefined, arguments);
+    }
+
+    function extend(target, methods, context) {
+
+        var name;
+
+        function addMethod(name, fn) {
+            target[name] = function() {
+                return fn.apply(context, arguments);
+            };
+        }
+
+        for (name in methods) {
+            if (methods.hasOwnProperty(name)) {
+                addMethod(name, methods[name]);
+            }
+        }
+    }
+
+    return that;
+};
+
+fe.dsl.element = fe.dsl.token();
 
 fe.rule = function rule(config) {
 
@@ -473,6 +564,11 @@ fe.validators.required = function required(value, properties) {
     return undefined;
 };
 
+fe.dsl.defaultMethods.required = function(arg) {
+    this.element.validationRules.required = arg || true;
+    return this.chain;
+};
+
 fe.validators.minLength = function minLength(value, properties) {
 
     if (value && value.length !== undefined && value.length < properties.length) {
@@ -482,6 +578,11 @@ fe.validators.minLength = function minLength(value, properties) {
     return undefined;
 };
 fe.validators.minLength.defaultProperty = 'length';
+
+fe.dsl.defaultMethods.minLength = function(arg) {
+    this.element.validationRules.minLength = arg;
+    return this.chain;
+};
 
 fe.validators.maxLength = function maxLength(value, properties) {
 
@@ -493,6 +594,11 @@ fe.validators.maxLength = function maxLength(value, properties) {
 };
 fe.validators.maxLength.defaultProperty = 'length';
 
+fe.dsl.defaultMethods.maxLength = function(arg) {
+    this.element.validationRules.maxLength = arg;
+    return this.chain;
+};
+
 fe.validators.minValue = function minValue(value, properties) {
 
     if (value && value < properties.value) {
@@ -503,6 +609,11 @@ fe.validators.minValue = function minValue(value, properties) {
 };
 fe.validators.minValue.defaultProperty = 'value';
 
+fe.dsl.defaultMethods.minValue = function(arg) {
+    this.element.validationRules.minValue = arg;
+    return this.chain;
+};
+
 fe.validators.maxValue = function maxValue(value, properties) {
 
     if (value && value > properties.value) {
@@ -512,6 +623,11 @@ fe.validators.maxValue = function maxValue(value, properties) {
     return undefined;
 };
 fe.validators.maxValue.defaultProperty = 'value';
+
+fe.dsl.defaultMethods.maxValue = function(arg) {
+    this.element.validationRules.maxValue = arg;
+    return this.chain;
+};
 
 fe.validationMessages = {
     required: 'This field is required!',
@@ -536,9 +652,9 @@ fe.view = function view (config) {
 
         elementsById[element.id] = element;
         
-        if (metadata.children && metadata.children.length) {
-            for (i = 0, len = metadata.children.length; i < len; i += 1) {
-                element.addElement(createElement(metadata.children[i]));
+        if (metadata.elements && metadata.elements.length) {
+            for (i = 0, len = metadata.elements.length; i < len; i += 1) {
+                element.addElement(createElement(metadata.elements[i]));
             }
         }
         
@@ -574,14 +690,14 @@ fe.element = function element (config) {
 
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
-    that.children = [];
+    that.elements = [];
     that.parent = undefined;
 
     function initialize() {
     }
 
     function addElement(child) {
-        that.children.push(child);
+        that.elements.push(child);
         child.parent = that;
     }
 
@@ -645,8 +761,8 @@ fe.element = function element (config) {
 
     function eachChild(fn) {
         var i, len;
-        for (i =0, len = that.children.length; i < len; i += 1) {
-            fn(that.children[i], i);
+        for (i =0, len = that.elements.length; i < len; i += 1) {
+            fn(that.elements[i], i);
         }
     }
 
@@ -719,14 +835,14 @@ fe.metadataProvider = function metadataProvider (config) {
             rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
         }
 
-        if (metadata.children && metadata.children.length) {
+        if (metadata.elements && metadata.elements.length) {
 
-            element.children = [];
+            element.elements = [];
 
-            for (i = 0, len = metadata.children.length; i < len; i += 1) {
+            for (i = 0, len = metadata.elements.length; i < len; i += 1) {
                 child = {};
-                parseMetadata(metadata.children[i], child, element);
-                element.children.push(child);
+                parseMetadata(metadata.elements[i], child, element);
+                element.elements.push(child);
             }
         }
     }

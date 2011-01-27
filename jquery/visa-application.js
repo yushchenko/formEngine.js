@@ -40,7 +40,7 @@ $(function() {
     metadata = {
         typeName: 'view',
         properties: { viewContainerId: 'view' },
-        children: [
+        elements: [
             {
                 typeName: 'header',
                 value: '"Step " + :step.code + ": " + :step.name'
@@ -48,7 +48,7 @@ $(function() {
             {
                 typeName: 'panel',
                 hidden: ':step.code !== "01"',
-                children: [
+                elements: [
                     {
                         typeName: 'textBox',
                         binding: 'applicant.firstName',
@@ -77,7 +77,7 @@ $(function() {
             {
                 typeName: 'panel',
                 hidden: ':step.code !== "02"',
-                children: [
+                elements: [
                     {
                         typeName: 'checkBox',
                         binding: 'applicant.isMarried',
@@ -108,7 +108,7 @@ $(function() {
             {
                 typeName: 'panel',
                 hidden: ':step.code !== "03"',
-                children: [
+                elements: [
                     {
                         typeName: 'comboBox',
                         binding: 'applicant.country',
@@ -138,7 +138,7 @@ $(function() {
             {
                 typeName: 'panel',
                 hidden: ':step.code !== "04"',
-                children: [
+                elements: [
                     {
                         typeName: 'label',
                         value: ':applicant.firstName + " " + :applicant.lastName',
@@ -160,7 +160,7 @@ $(function() {
             },
             {
                 typeName: 'toolBar',
-                children: [
+                elements: [
                     {
                         id: 'back',
                         typeName: 'button',
