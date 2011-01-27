@@ -1,191 +1,117 @@
 $(function() {
 
-    var data = {
-        step: {
-            code: '01',
-            name: 'Personal info'
-        },
-        applicant: {
-            firstName: null,
-            lastName: null,
-            birthDate: null,
-            passport: null,
+    var ui = fe.jquery.dsl,
 
-            isMaried: false,
-            partner: {
+        metadata = ui.view().container('view')(
+
+            ui.header().value('"Step " + :step.code + ": " + :step.name'),
+
+            ui.panel().hidden(':step.code !== "01"')(
+
+                ui.textBox('applicant.firstName').label('First Name')
+                    .required(),
+
+                ui.textBox('applicant.lastName').label('Last Name')
+                    .required(),
+
+                ui.datePicker('applicant.birthDate').label('Birth Date')
+                    .required(),
+
+                ui.textBox('applicant.passport').label('Passport Number')
+            ),
+            ui.panel().hidden(':step.code !== "02"')(
+
+                ui.checkBox('applicant.isMarried').label('Are you married?'),
+
+                ui.textBox('applicant.partner.firstName').label('Your Partner\'s First Name')
+                    .hidden('!:applicant.isMarried')
+                    .required(),
+
+                ui.textBox('applicant.partner.lastName').label('Your Partner\'s Last Name')
+                    .hidden('!:applicant.isMarried')
+                    .required(),
+
+                ui.datePicker('applicant.partner.birthDate').label('Your Partner\'s Birth Date')
+                    .hidden('!:applicant.isMarried')
+                    .required()
+            ),
+            ui.panel().hidden(':step.code !== "03"')(
+
+                ui.comboBox('applicant.country').label('Country')
+                    .list('countries')
+                    .required(),
+
+                ui.textBox('applicant.city').label('City')
+                    .required(),
+
+                ui.textBox('applicant.address').label('Address')
+                    .required(),
+
+                ui.textBox('applicant.phone').label('Phone')
+            ),
+            ui.panel().hidden(':step.code !== "04"')(
+
+                ui.label().label('Full Name')
+                    .value(':applicant.firstName + " " + :applicant.lastName'),
+
+                ui.label().label('Partner\'s Full Name')
+                    .value(':applicant.partner.firstName + " " + :applicant.partner.lastName')
+                    .hidden('!:applicant.isMarried'),
+
+                ui.label().label('Your Address')
+                    .value(':applicant.address + ", " + :applicant.city + ", " + :applicant.country.name')
+            ),
+            ui.toolBar(
+
+                ui.button().id('back').label('Back').icon('ui-icon-circle-triangle-w')
+                    .hidden(':step.code === "01"'),
+
+                ui.button().id('next').label('Next').icon('ui-icon-circle-triangle-e')
+                    .hidden(':step.code === "04"'),
+
+                ui.button().id('apply').label('Apply').icon('ui-icon-check')
+                    .hidden(':step.code !== "04"')
+            )
+        ).get(),
+
+        data = {
+            step: {
+                code: '01',
+                name: 'Personal info'
+            },
+            applicant: {
                 firstName: null,
                 lastName: null,
-                birthDate: null
+                birthDate: null,
+                passport: null,
+    
+                isMaried: false,
+                partner: {
+                    firstName: null,
+                    lastName: null,
+                    birthDate: null
+                },
+    
+                country: null,
+                city: null,
+                address: null,
+                phone: null
             },
-
-            country: null,
-            city: null,
-            address: null,
-            phone: null
+            countries: [
+                { id: 1, name: 'Great Britain' },
+                { id: 2, name: 'Australia' },
+                { id: 3, name: 'USA' }
+            ]
         },
-        countries: [
-            { id: 1, name: 'Great Britain' },
-            { id: 2, name: 'Australia' },
-            { id: 3, name: 'USA' }
-        ]
-    },
 
-    steps = [
-        { code: '01', name: 'Personal Info' },
-        { code: '02', name: 'Family' },
-        { code: '03', name: 'Contact Details' },
-        { code: '04', name: 'Check Your Application'}
-    ],
+        steps = [
+            { code: '01', name: 'Personal Info' },
+            { code: '02', name: 'Family' },
+            { code: '03', name: 'Contact Details' },
+            { code: '04', name: 'Check Your Application'}
+        ],
 
-    metadata = {
-        typeName: 'view',
-        properties: { viewContainerId: 'view' },
-        elements: [
-            {
-                typeName: 'header',
-                value: '"Step " + :step.code + ": " + :step.name'
-            },
-            {
-                typeName: 'panel',
-                hidden: ':step.code !== "01"',
-                elements: [
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.firstName',
-                        properties: { label: 'First Name' },
-                        validationRules: { required: true }
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.lastName',
-                        properties: { label: 'Last Name' },
-                        validationRules: { required: true }
-                    },
-                    {
-                        typeName: 'datePicker',
-                        binding: 'applicant.birthDate',
-                        properties: { label: 'Birth Date' }
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.Passport',
-                        properties: { label: 'Passport Number' }
-                    }
-
-                ]
-            },
-            {
-                typeName: 'panel',
-                hidden: ':step.code !== "02"',
-                elements: [
-                    {
-                        typeName: 'checkBox',
-                        binding: 'applicant.isMarried',
-                        properties: { label: 'Are you married?' }
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.partner.firstName',
-                        hidden: '!:applicant.isMarried',
-                        properties: { label: 'Your Partner\'s First Name' },
-                        validationRules: { required: true }
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.partner.lastName',
-                        hidden: '!:applicant.isMarried',
-                        properties: { label: 'Your Partner\'s Last Name ' },
-                        validationRules: { required: true }
-                    },
-                    {
-                        typeName: 'datePicker',
-                        binding: 'applicant.partner.birthDate',
-                        hidden: '!:applicant.isMarried',
-                        properties: { label: 'Your Partner\'s Birth Date' }
-                    }
-                ]
-            },
-            {
-                typeName: 'panel',
-                hidden: ':step.code !== "03"',
-                elements: [
-                    {
-                        typeName: 'comboBox',
-                        binding: 'applicant.country',
-                        properties: { list: 'countries', label: 'Country' },
-                        validationRules: { required: true }
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.city',
-                        properties: { label: 'City' },
-                        validationRules: { required: true }                        
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.address',
-                        properties: { label: 'Address' },
-                        validationRules: { required: true }
-                    },
-                    {
-                        typeName: 'textBox',
-                        binding: 'applicant.phone',
-                        properties: { label: 'Phone' }
-                    }
-
-                ]
-            },
-            {
-                typeName: 'panel',
-                hidden: ':step.code !== "04"',
-                elements: [
-                    {
-                        typeName: 'label',
-                        value: ':applicant.firstName + " " + :applicant.lastName',
-                        properties: { label: 'Full Name' }
-                    },
-                    {
-                        typeName: 'label',
-                        value: ':applicant.partner.firstName + " " + :applicant.partner.lastName',
-                        hidden: '!:applicant.isMarried',
-                        properties: { label: 'Partner\'s Full Name' }
-                    },
-                    {
-                        typeName: 'label',
-                        value: ':applicant.address + ", " + :applicant.city + ", " + :applicant.country.name',
-                        properties: { label: 'Your Address' }
-                    }
-
-                ]
-            },
-            {
-                typeName: 'toolBar',
-                elements: [
-                    {
-                        id: 'back',
-                        typeName: 'button',
-                        hidden: ':step.code === "01"',
-                        properties: { label: 'Back', icon: 'ui-icon-circle-triangle-w' }
-                    },
-                    {
-                        id: 'next',
-                        typeName: 'button',
-                        hidden: ':step.code === "04"',
-                        properties: { label: 'Next', icon: 'ui-icon-circle-triangle-e' }
-                    },
-                    {
-                        id: 'apply',
-                        typeName: 'button',
-                        hidden: ':step.code !== "04"',
-                        properties: { label: 'Apply', icon: 'ui-icon-check' }
-                    }
-
-                ]
-            }
-        ]
-    };
-
-    var app = fe.jquery.runSimpleApp(metadata, data);
+        app = fe.jquery.runSimpleApp(metadata, data);
 
     app.engine.subscribe({ senderId: ['back','next'], signal: 'click' }, function (msg) {
 

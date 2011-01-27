@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 27 12:48:44 2011 +0200
+ * Thu Jan 27 14:04:47 2011 +0200
  * 
  */
 
@@ -13,6 +13,7 @@
 
 fe.jquery = {};
 fe.jquery.elements = {};
+fe.jquery.dsl = {};
 
 function template(str, data) { // Stolen from Underscore.js ;)
 
@@ -191,6 +192,13 @@ fe.jquery.elements.view = function view(config) {
     return that;
 };
 
+fe.jquery.dsl.view = fe.dsl.token('view', {
+    container: function(containerId) {
+        this.element.properties.viewContainerId = containerId;
+        return this.chain;
+    }
+});
+
 fe.jquery.elements.textBox = function textBox(config) {
 
     var that = fe.jquery.element(config);
@@ -215,6 +223,8 @@ fe.jquery.elements.textBox = function textBox(config) {
 
     return that;
 };
+
+fe.jquery.dsl.textBox = fe.dsl.token('textBox');
 
 fe.jquery.elements.comboBox = function comboBox(config) {
 
@@ -311,6 +321,13 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     return that;
 };
 
+fe.jquery.dsl.comboBox = fe.dsl.token('comboBox', {
+    list: function(list) {
+        this.element.properties.list = list;
+        return this.chain;
+    }
+});
+
 fe.jquery.elements.checkBox = function checkBox(config) {
 
     var that = fe.jquery.element(config);
@@ -336,6 +353,8 @@ fe.jquery.elements.checkBox = function checkBox(config) {
     return that;
 };
 
+fe.jquery.dsl.checkBox = fe.dsl.token('checkBox');
+
 fe.jquery.elements.toolBar = function toolBar(config) {
 
     var that = fe.jquery.element(config);
@@ -344,6 +363,8 @@ fe.jquery.elements.toolBar = function toolBar(config) {
 
     return that;
 };
+
+fe.jquery.dsl.toolBar = fe.dsl.token('toolBar');
 
 fe.jquery.elements.button = function button(config) {
 
@@ -371,6 +392,13 @@ fe.jquery.elements.button = function button(config) {
     return that;
 };
 
+fe.jquery.dsl.button = fe.dsl.token('button', {
+    icon: function(icon) {
+        this.element.properties.icon = icon;
+        return this.chain;
+    }
+});
+
 fe.jquery.elements.label = function label(config) {
 
     var that = fe.jquery.element(config);
@@ -389,6 +417,8 @@ fe.jquery.elements.label = function label(config) {
     return that;
 };
 
+fe.jquery.dsl.label = fe.dsl.token('label');
+
 fe.jquery.elements.panel = function panel(config) {
 
     var that = fe.jquery.element(config);
@@ -397,6 +427,8 @@ fe.jquery.elements.panel = function panel(config) {
 
     return that;
 };
+
+fe.jquery.dsl.panel = fe.dsl.token('panel');
 
 fe.jquery.elements.header = function header(config) {
 
@@ -414,6 +446,8 @@ fe.jquery.elements.header = function header(config) {
 
     return that;
 };
+
+fe.jquery.dsl.header = fe.dsl.token('header');
 
 fe.jquery.elements.datePicker = function datePicker(config) {
 
@@ -442,6 +476,8 @@ fe.jquery.elements.datePicker = function datePicker(config) {
 
     return that;
 };
+
+fe.jquery.dsl.datePicker = fe.dsl.token('datePicker');
 
 fe.jquery.elements.numberEditor = function numberEditor(config) {
 
@@ -481,5 +517,7 @@ fe.jquery.elements.numberEditor = function numberEditor(config) {
 
     return that;
 };
+
+fe.jquery.dsl.numberEditor = fe.dsl.token('numberEditor');
 
 })((function () { return this; })());
