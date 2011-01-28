@@ -19,7 +19,7 @@ fe.jquery.elements.view = function view(config) {
     return that;
 };
 
-fe.jquery.dsl.view = fe.dsl.token('view', {
+fe.jquery.dsl.view = fe.dsl.elementConstructor('view', {}, {
     container: function(containerId) {
         this.element.properties.viewContainerId = containerId;
         return this.chain;

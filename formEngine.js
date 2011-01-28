@@ -5,7 +5,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 27 14:04:47 2011 +0200
+ * Thu Jan 27 18:04:05 2011 +0200
  * 
  */
 
@@ -111,7 +111,7 @@ var msg = {
 };
 fe.dsl = {};
 
-fe.dsl.defaultMethods = {
+fe.dsl.defaultElementProperties = {
 
     id: function(id) {
         this.element.id = id;
@@ -149,22 +149,22 @@ fe.dsl.defaultMethods = {
     },
 
     get: function() {
+        if (typeof this.params.validate === 'function') {
+            this.params.validate.apply({ element: this.element });
+        }
         return this.element;
     }
 };
 
-fe.dsl.token = function token(init, methods) {
+fe.dsl.elementConstructor = function elementConstructor(typeName, params, properties) {
+
+    params = params || {};
+    params.defaultProperty = params.defaultProperty || 'binding';
+    properties = properties || {};
 
     function that() {
 
-        var element = { properties: {}, validationRules: {}, elements: [] };
-
-        if (typeof init === 'function') { // constructor
-            init(element);
-        }
-        else if ( typeof init === 'string') { // only type name
-            element.typeName = init;
-        }
+        var element = { typeName: typeName, properties: {}, validationRules: {}, elements: [] };
 
         function chain() {
 
@@ -173,20 +173,25 @@ fe.dsl.token = function token(init, methods) {
             for (i = 0; i < len; i += 1) {
                 arg = arguments[i];
                 if (typeof arg === 'function' && typeof arg.get === 'function') {
+                    
                     element.elements.push(arg.get());
                 }
-                else if (i === 0 && typeof arg === 'string') {
-                    element.binding = arg;
+                else if (i === 0 && typeof params.defaultProperty === 'string') {
+                    element[params.defaultProperty] = arg;
                 }
             }
 
             return chain;
         }
 
-        var context = { element: element, chain: chain };
+        var context = { element: element, chain: chain, params: params };
 
-        extend(chain, fe.dsl.defaultMethods, context);
-        extend(chain, methods || {}, context);
+        if (typeof params.initialize === 'function') {
+            params.initialize.apply(context);
+        }
+
+        extend(chain, fe.dsl.defaultElementProperties, context);
+        extend(chain, properties, context);
 
         return chain.apply(undefined, arguments);
     }
@@ -210,8 +215,6 @@ fe.dsl.token = function token(init, methods) {
 
     return that;
 };
-
-fe.dsl.element = fe.dsl.token();
 
 fe.rule = function rule(config) {
 
@@ -576,7 +579,7 @@ fe.validators.required = function required(value, properties) {
     return undefined;
 };
 
-fe.dsl.defaultMethods.required = function(arg) {
+fe.dsl.defaultElementProperties.required = function(arg) {
     this.element.validationRules.required = arg || true;
     return this.chain;
 };
@@ -591,7 +594,7 @@ fe.validators.minLength = function minLength(value, properties) {
 };
 fe.validators.minLength.defaultProperty = 'length';
 
-fe.dsl.defaultMethods.minLength = function(arg) {
+fe.dsl.defaultElementProperties.minLength = function(arg) {
     this.element.validationRules.minLength = arg;
     return this.chain;
 };
@@ -606,7 +609,7 @@ fe.validators.maxLength = function maxLength(value, properties) {
 };
 fe.validators.maxLength.defaultProperty = 'length';
 
-fe.dsl.defaultMethods.maxLength = function(arg) {
+fe.dsl.defaultElementProperties.maxLength = function(arg) {
     this.element.validationRules.maxLength = arg;
     return this.chain;
 };
@@ -621,7 +624,7 @@ fe.validators.minValue = function minValue(value, properties) {
 };
 fe.validators.minValue.defaultProperty = 'value';
 
-fe.dsl.defaultMethods.minValue = function(arg) {
+fe.dsl.defaultElementProperties.minValue = function(arg) {
     this.element.validationRules.minValue = arg;
     return this.chain;
 };
@@ -636,7 +639,7 @@ fe.validators.maxValue = function maxValue(value, properties) {
 };
 fe.validators.maxValue.defaultProperty = 'value';
 
-fe.dsl.defaultMethods.maxValue = function(arg) {
+fe.dsl.defaultElementProperties.maxValue = function(arg) {
     this.element.validationRules.maxValue = arg;
     return this.chain;
 };

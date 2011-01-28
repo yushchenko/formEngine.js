@@ -1,6 +1,6 @@
 fe.dsl = {};
 
-fe.dsl.defaultMethods = {
+fe.dsl.defaultElementProperties = {
 
     id: function(id) {
         this.element.id = id;
@@ -38,22 +38,22 @@ fe.dsl.defaultMethods = {
     },
 
     get: function() {
+        if (typeof this.params.validate === 'function') {
+            this.params.validate.apply({ element: this.element });
+        }
         return this.element;
     }
 };
 
-fe.dsl.token = function token(init, methods) {
+fe.dsl.elementConstructor = function elementConstructor(typeName, params, properties) {
+
+    params = params || {};
+    params.defaultProperty = params.defaultProperty || 'binding';
+    properties = properties || {};
 
     function that() {
 
-        var element = { properties: {}, validationRules: {}, elements: [] };
-
-        if (typeof init === 'function') { // constructor
-            init(element);
-        }
-        else if ( typeof init === 'string') { // only type name
-            element.typeName = init;
-        }
+        var element = { typeName: typeName, properties: {}, validationRules: {}, elements: [] };
 
         function chain() {
 
@@ -62,20 +62,25 @@ fe.dsl.token = function token(init, methods) {
             for (i = 0; i < len; i += 1) {
                 arg = arguments[i];
                 if (typeof arg === 'function' && typeof arg.get === 'function') {
+                    
                     element.elements.push(arg.get());
                 }
-                else if (i === 0 && typeof arg === 'string') {
-                    element.binding = arg;
+                else if (i === 0 && typeof params.defaultProperty === 'string') {
+                    element[params.defaultProperty] = arg;
                 }
             }
 
             return chain;
         }
 
-        var context = { element: element, chain: chain };
+        var context = { element: element, chain: chain, params: params };
 
-        extend(chain, fe.dsl.defaultMethods, context);
-        extend(chain, methods || {}, context);
+        if (typeof params.initialize === 'function') {
+            params.initialize.apply(context);
+        }
+
+        extend(chain, fe.dsl.defaultElementProperties, context);
+        extend(chain, properties, context);
 
         return chain.apply(undefined, arguments);
     }
@@ -99,5 +104,3 @@ fe.dsl.token = function token(init, methods) {
 
     return that;
 };
-
-fe.dsl.element = fe.dsl.token();

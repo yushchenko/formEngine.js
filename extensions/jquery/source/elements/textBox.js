@@ -24,4 +24,4 @@ fe.jquery.elements.textBox = function textBox(config) {
     return that;
 };
 
-fe.jquery.dsl.textBox = fe.dsl.token('textBox');
+fe.jquery.dsl.textBox = fe.dsl.elementConstructor('textBox');

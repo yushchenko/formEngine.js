@@ -16,4 +16,4 @@ fe.jquery.elements.header = function header(config) {
     return that;
 };
 
-fe.jquery.dsl.header = fe.dsl.token('header');
+fe.jquery.dsl.header = fe.dsl.elementConstructor('header');

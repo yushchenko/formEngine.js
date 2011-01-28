@@ -8,4 +8,4 @@ fe.jquery.elements.panel = function panel(config) {
     return that;
 };
 
-fe.jquery.dsl.panel = fe.dsl.token('panel');
+fe.jquery.dsl.panel = fe.dsl.elementConstructor('panel');

@@ -1,6 +1,9 @@
 ## TODO
 
 * add JavaScriptDSL page
+* add ability to check metadata
+* binding, hidden, readonly -> properties
+
 * blog post: "formEngine.js Project"
 
 ## Version 0.2

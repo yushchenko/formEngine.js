@@ -8,4 +8,4 @@ fe.jquery.elements.toolBar = function toolBar(config) {
     return that;
 };
 
-fe.jquery.dsl.toolBar = fe.dsl.token('toolBar');
+fe.jquery.dsl.toolBar = fe.dsl.elementConstructor('toolBar');

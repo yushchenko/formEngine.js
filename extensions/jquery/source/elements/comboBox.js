@@ -94,9 +94,18 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     return that;
 };
 
-fe.jquery.dsl.comboBox = fe.dsl.token('comboBox', {
-    list: function(list) {
-        this.element.properties.list = list;
-        return this.chain;
+fe.jquery.dsl.comboBox = fe.dsl.elementConstructor('comboBox',
+    {
+        validate: function() {
+            if(typeof this.element.properties.list !== 'string') {
+                throw new Error('comboBox (' + this.element.binding + ') must have list property!');
+            }
+        }
+    },
+    {
+        list: function(list) {
+            this.element.properties.list = list;
+            return this.chain;
+        }
     }
-});
+);

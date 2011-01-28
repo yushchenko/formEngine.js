@@ -12,7 +12,7 @@ fe.validators.required = function required(value, properties) {
     return undefined;
 };
 
-fe.dsl.defaultMethods.required = function(arg) {
+fe.dsl.defaultElementProperties.required = function(arg) {
     this.element.validationRules.required = arg || true;
     return this.chain;
 };
@@ -27,7 +27,7 @@ fe.validators.minLength = function minLength(value, properties) {
 };
 fe.validators.minLength.defaultProperty = 'length';
 
-fe.dsl.defaultMethods.minLength = function(arg) {
+fe.dsl.defaultElementProperties.minLength = function(arg) {
     this.element.validationRules.minLength = arg;
     return this.chain;
 };
@@ -42,7 +42,7 @@ fe.validators.maxLength = function maxLength(value, properties) {
 };
 fe.validators.maxLength.defaultProperty = 'length';
 
-fe.dsl.defaultMethods.maxLength = function(arg) {
+fe.dsl.defaultElementProperties.maxLength = function(arg) {
     this.element.validationRules.maxLength = arg;
     return this.chain;
 };
@@ -57,7 +57,7 @@ fe.validators.minValue = function minValue(value, properties) {
 };
 fe.validators.minValue.defaultProperty = 'value';
 
-fe.dsl.defaultMethods.minValue = function(arg) {
+fe.dsl.defaultElementProperties.minValue = function(arg) {
     this.element.validationRules.minValue = arg;
     return this.chain;
 };
@@ -72,7 +72,7 @@ fe.validators.maxValue = function maxValue(value, properties) {
 };
 fe.validators.maxValue.defaultProperty = 'value';
 
-fe.dsl.defaultMethods.maxValue = function(arg) {
+fe.dsl.defaultElementProperties.maxValue = function(arg) {
     this.element.validationRules.maxValue = arg;
     return this.chain;
 };

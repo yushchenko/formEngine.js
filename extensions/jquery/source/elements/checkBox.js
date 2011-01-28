@@ -24,4 +24,4 @@ fe.jquery.elements.checkBox = function checkBox(config) {
     return that;
 };
 
-fe.jquery.dsl.checkBox = fe.dsl.token('checkBox');
+fe.jquery.dsl.checkBox = fe.dsl.elementConstructor('checkBox');

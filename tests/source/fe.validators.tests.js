@@ -101,8 +101,8 @@ describe('fe.validators', function() {
 
     it('should extend javascript dsl', function() {
 
-        var ui = fe.dsl,
-            e = ui.element().required().minLength(1).maxLength(30).minValue(1).maxValue(30).get();
+        var element = fe.dsl.elementConstructor(),
+            e = element().required().minLength(1).maxLength(30).minValue(1).maxValue(30).get();
 
         expect(e.validationRules).toEqual({ required: true, minLength: 1, maxLength: 30,
                                             minValue: 1, maxValue: 30 });

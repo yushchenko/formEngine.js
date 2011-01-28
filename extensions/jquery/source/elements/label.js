@@ -17,4 +17,4 @@ fe.jquery.elements.label = function label(config) {
     return that;
 };
 
-fe.jquery.dsl.label = fe.dsl.token('label');
+fe.jquery.dsl.label = fe.dsl.elementConstructor('label');

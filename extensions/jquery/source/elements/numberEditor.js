@@ -38,4 +38,4 @@ fe.jquery.elements.numberEditor = function numberEditor(config) {
     return that;
 };
 
-fe.jquery.dsl.numberEditor = fe.dsl.token('numberEditor');
+fe.jquery.dsl.numberEditor = fe.dsl.elementConstructor('numberEditor');
