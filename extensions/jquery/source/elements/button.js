@@ -25,7 +25,7 @@ fe.jquery.elements.button = function button(config) {
     return that;
 };
 
-fe.jquery.dsl.button = fe.dsl.elementConstructor('button', {}, {
+fe.jquery.dsl.button = fe.dsl.elementConstructor('button', { defaultProperty: 'id' }, {
     icon: function(icon) {
         this.element.properties.icon = icon;
         return this.chain;

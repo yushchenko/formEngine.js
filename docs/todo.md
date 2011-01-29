@@ -1,21 +1,20 @@
 ## TODO
 
-* add JavaScriptDSL page
-* add ability to check metadata
 * binding, hidden, readonly -> properties
 
 * blog post: "formEngine.js Project"
+* ? JSDoc
 
 ## Version 0.2
 
-* PROGRESS JavaScript DSL
-* Markup DSL
+* DONE JavaScript DSL
+* Markup DSL (jQuery)
 * change tracker
-* marking required controls (asterisk)
+* inactive validation rules, marking required controls (asterisk)
 * perfomance testing (a big form)
 
-* run unit tests under Rhino
-* add version history page to wiki
+* wiki version history page
+* wiki build page
 
 
 ## Version 0.3

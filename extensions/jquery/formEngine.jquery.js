@@ -5,7 +5,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 27 18:04:05 2011 +0200
+ * Fri Jan 28 16:17:28 2011 +0200
  * 
  */
 
@@ -401,7 +401,7 @@ fe.jquery.elements.button = function button(config) {
     return that;
 };
 
-fe.jquery.dsl.button = fe.dsl.elementConstructor('button', {}, {
+fe.jquery.dsl.button = fe.dsl.elementConstructor('button', { defaultProperty: 'id' }, {
     icon: function(icon) {
         this.element.properties.icon = icon;
         return this.chain;

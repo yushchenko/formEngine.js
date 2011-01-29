@@ -63,13 +63,13 @@ $(function() {
             ),
             ui.toolBar(
 
-                ui.button().id('back').label('Back').icon('ui-icon-circle-triangle-w')
+                ui.button('back').label('Back').icon('ui-icon-circle-triangle-w')
                     .hidden(':step.code === "01"'),
 
-                ui.button().id('next').label('Next').icon('ui-icon-circle-triangle-e')
+                ui.button('next').label('Next').icon('ui-icon-circle-triangle-e')
                     .hidden(':step.code === "04"'),
 
-                ui.button().id('apply').label('Apply').icon('ui-icon-check')
+                ui.button('apply').label('Apply').icon('ui-icon-check')
                     .hidden(':step.code !== "04"')
             )
         ).get(),
