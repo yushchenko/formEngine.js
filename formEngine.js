@@ -1,11 +1,12 @@
 /*
- * FormEngine.js 0.1 - MVC on steroids :)
+ * FormEngine.js 0.2pre
+ - MVC on steroids :)
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Jan 29 10:49:58 2011 +0200
+ * Thu Feb 3 14:08:50 2011 +0200
  * 
  */
 
@@ -452,7 +453,8 @@ fe.model = function model(config) {
         id = config.id || getUniqueId(),
         engine = config.engine,
         data = {},
-        validationRules = [];
+        validationRules = [],
+        changeTracker = fe.changeTracker();
 
     function initialize() {
 
@@ -472,8 +474,14 @@ fe.model = function model(config) {
     }
 
     function receiveMessage(msg) {
+
         if (msg.signal === 'value' && typeof msg.path === 'string') {
+
+            changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
+            notifyChange(msg.path);
+
             setByPath(data, msg.path, msg.data);
+
             validate(msg.path);
         }
     }
@@ -542,6 +550,30 @@ fe.model = function model(config) {
         return result;
     }
 
+    function undo() {
+        move('back');
+    }
+
+    function redo() {
+        move('forward');
+    }
+
+    function move(direction) {
+        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+        if (change) {
+            set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
+            notifyChange(change.path);
+        }
+    }
+
+    function getUndoCount() {
+        return changeTracker.getBackCount();
+    }
+
+    function getRedoCount() {
+        return changeTracker.getForwardCount();
+    }
+
     /* Utilities
      ****************************************************************/
 
@@ -553,10 +585,19 @@ fe.model = function model(config) {
         engine.sendMessage({ senderId: id, path: path, signal: 'error', data: messages });
     }
 
+    function notifyChange(path) {
+        engine.sendMessage({ senderId: id, path: path, signal: 'change',
+                             data: changeTracker.getStatus(path) });
+    }
+
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
     that.validate = validate;
+    that.undo = undo;
+    that.redo = redo;
+    that.getUndoCount = getUndoCount;
+    that.getRedoCount = getRedoCount;
 
     initialize();
     engine.addReceiver(id, that);
@@ -696,7 +737,15 @@ fe.changeTracker = function(config) {
     }
 
     function getStatus(path) {
-        
+
+        var i;
+
+        for ( i = currentChange; i >= 0; i -= 1 ) {
+            if (changes[i].path === path) {
+                return 'changed';
+            }
+        }
+        return 'default';
     }
 
     that.push = push;

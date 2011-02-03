@@ -43,7 +43,15 @@ fe.changeTracker = function(config) {
     }
 
     function getStatus(path) {
-        
+
+        var i;
+
+        for ( i = currentChange; i >= 0; i -= 1 ) {
+            if (changes[i].path === path) {
+                return 'changed';
+            }
+        }
+        return 'default';
     }
 
     that.push = push;

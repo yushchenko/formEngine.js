@@ -469,6 +469,10 @@ describe('fe.model', function() {
         expect(typeof m.set).toEqual('function');
         expect(typeof m.get).toEqual('function');
         expect(typeof m.validate).toEqual('function');
+        expect(typeof m.undo).toEqual('function');
+        expect(typeof m.redo).toEqual('function');
+        expect(typeof m.getUndoCount).toEqual('function');
+        expect(typeof m.getRedoCount).toEqual('function');
     });
 
     it('should provide access to data', function() {
@@ -621,6 +625,80 @@ describe('fe.model', function() {
         m.validate();
 
         expect(fe.validators.test).toHaveBeenCalledWith(undefined, { testProperty: 1 });
+    });
+
+    it('should notify changes', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e }),
+            changes = [];
+
+        e.subscribe({ signal: 'change' }, function(msg) {
+            changes.push(msg.data);
+        });
+
+        e.sendMessage({ senderId: 's', path: 'a.b.c', signal: 'value', data: 1 });
+
+        expect(changes).toEqual(['changed']);
+    });
+
+    it('should undo/redo changes', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e });
+
+        m.set({ x: { y: 1 } });
+
+        e.sendMessage({ senderId: 's', path: 'x.y', signal: 'value', data: 2 });
+        expect(m.get('x.y')).toEqual(2);
+
+        m.undo();
+        expect(m.get('x.y')).toEqual(1);
+
+        m.redo();
+        expect(m.get('x.y')).toEqual(2);
+    });
+
+    it('should notify change on undo/redo', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e }),
+            commands = [];
+
+        e.subscribe({ signal: 'change' }, function(msg) {
+            commands.push(msg.data);
+        });
+
+        m.set({ x: { y: 1 } });
+
+        e.sendMessage({ senderId: 's', path: 'x.y', signal: 'value', data: 2 });
+        expect(commands).toEqual(['changed']);
+
+        m.undo();
+        expect(commands).toEqual(['changed', 'default']);
+
+        m.redo();
+        expect(commands).toEqual(['changed', 'default', 'changed']);
+    });
+
+    it('should return undo/redo counts', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e });
+
+        m.set({ x: { y: 1 } });
+
+        e.sendMessage({ senderId: 's', path: 'x.y', signal: 'value', data: 2 });
+        expect(m.getUndoCount()).toEqual(1);
+        expect(m.getRedoCount()).toEqual(0);
+
+        m.undo();
+        expect(m.getUndoCount()).toEqual(0);
+        expect(m.getRedoCount()).toEqual(1);
+
+        m.redo();
+        expect(m.getUndoCount()).toEqual(1);
+        expect(m.getRedoCount()).toEqual(0);
     });
 
 });
@@ -837,6 +915,23 @@ describe('fe.changeTracker', function() {
 
         expect(t.getForwardCount()).toEqual(0);
         expect(t.moveForward()).toEqual(undefined);
+    });
+
+    it('should return status by path', function() {
+
+        var t = fe.changeTracker();
+
+        t.push({ path: 'a.b.c' });
+
+        expect(t.getStatus('a.b.c')).toEqual('changed');
+        expect(t.getStatus('x.y.z')).toEqual('default');
+
+        t.moveBack();
+
+        expect(t.getStatus('a.b.c')).toEqual('default');
+
+        t.moveForward();
+        expect(t.getStatus('a.b.c')).toEqual('changed');
     });
     
 });

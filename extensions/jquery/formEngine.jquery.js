@@ -1,11 +1,12 @@
 /*
- * Default jQuery extension for FormEngine.js 0.1
+ * Default jQuery extension for FormEngine.js 0.2pre
+
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Jan 29 10:49:58 2011 +0200
+ * Thu Feb 3 14:08:50 2011 +0200
  * 
  */
 

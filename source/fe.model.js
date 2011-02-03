@@ -6,7 +6,8 @@ fe.model = function model(config) {
         id = config.id || getUniqueId(),
         engine = config.engine,
         data = {},
-        validationRules = [];
+        validationRules = [],
+        changeTracker = fe.changeTracker();
 
     function initialize() {
 
@@ -26,8 +27,14 @@ fe.model = function model(config) {
     }
 
     function receiveMessage(msg) {
+
         if (msg.signal === 'value' && typeof msg.path === 'string') {
+
+            changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
+            notifyChange(msg.path);
+
             setByPath(data, msg.path, msg.data);
+
             validate(msg.path);
         }
     }
@@ -96,6 +103,30 @@ fe.model = function model(config) {
         return result;
     }
 
+    function undo() {
+        move('back');
+    }
+
+    function redo() {
+        move('forward');
+    }
+
+    function move(direction) {
+        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+        if (change) {
+            set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
+            notifyChange(change.path);
+        }
+    }
+
+    function getUndoCount() {
+        return changeTracker.getBackCount();
+    }
+
+    function getRedoCount() {
+        return changeTracker.getForwardCount();
+    }
+
     /* Utilities
      ****************************************************************/
 
@@ -107,10 +138,19 @@ fe.model = function model(config) {
         engine.sendMessage({ senderId: id, path: path, signal: 'error', data: messages });
     }
 
+    function notifyChange(path) {
+        engine.sendMessage({ senderId: id, path: path, signal: 'change',
+                             data: changeTracker.getStatus(path) });
+    }
+
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
     that.validate = validate;
+    that.undo = undo;
+    that.redo = redo;
+    that.getUndoCount = getUndoCount;
+    that.getRedoCount = getRedoCount;
 
     initialize();
     engine.addReceiver(id, that);

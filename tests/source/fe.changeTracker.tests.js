@@ -61,5 +61,22 @@ describe('fe.changeTracker', function() {
         expect(t.getForwardCount()).toEqual(0);
         expect(t.moveForward()).toEqual(undefined);
     });
+
+    it('should return status by path', function() {
+
+        var t = fe.changeTracker();
+
+        t.push({ path: 'a.b.c' });
+
+        expect(t.getStatus('a.b.c')).toEqual('changed');
+        expect(t.getStatus('x.y.z')).toEqual('default');
+
+        t.moveBack();
+
+        expect(t.getStatus('a.b.c')).toEqual('default');
+
+        t.moveForward();
+        expect(t.getStatus('a.b.c')).toEqual('changed');
+    });
     
 });
