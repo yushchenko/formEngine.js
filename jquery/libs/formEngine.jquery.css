@@ -4,9 +4,10 @@
 
 .fe-element {
     width: 500px;
-    margin-bottom: 5px;
     font-family: Verdana, Arial, sans-serif;
     font-size: small;
+    border-left: 2px solid white;
+    padding: 2px 0 2px 4px;
 }
 
 .fe-element .fe-editor-wide {
@@ -34,6 +35,14 @@
     margin-left: 200px;
     font-size: x-small;
     margin-top: 3px;
+}
+
+.fe-element.fe-changed {
+    border-left: 2px solid yellow;
+}
+
+.fe-element.fe-saved {
+    border-left: 2px solid green;
 }
 
 .fe-toolbar {

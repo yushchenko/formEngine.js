@@ -1,11 +1,12 @@
 /*
- * FormEngine.js 0.1 - MVC on steroids :)
+ * FormEngine.js 0.2pre
+ - MVC on steroids :)
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 27 14:04:47 2011 +0200
+ * Thu Feb 3 18:46:43 2011 +0200
  * 
  */
 
@@ -111,7 +112,7 @@ var msg = {
 };
 fe.dsl = {};
 
-fe.dsl.defaultMethods = {
+fe.dsl.defaultElementProperties = {
 
     id: function(id) {
         this.element.id = id;
@@ -149,22 +150,22 @@ fe.dsl.defaultMethods = {
     },
 
     get: function() {
+        if (typeof this.params.validate === 'function') {
+            this.params.validate.apply({ element: this.element });
+        }
         return this.element;
     }
 };
 
-fe.dsl.token = function token(init, methods) {
+fe.dsl.elementConstructor = function elementConstructor(typeName, params, properties) {
+
+    params = params || {};
+    params.defaultProperty = params.defaultProperty || 'binding';
+    properties = properties || {};
 
     function that() {
 
-        var element = { properties: {}, validationRules: {}, elements: [] };
-
-        if (typeof init === 'function') { // constructor
-            init(element);
-        }
-        else if ( typeof init === 'string') { // only type name
-            element.typeName = init;
-        }
+        var element = { typeName: typeName, properties: {}, validationRules: {}, elements: [] };
 
         function chain() {
 
@@ -173,20 +174,25 @@ fe.dsl.token = function token(init, methods) {
             for (i = 0; i < len; i += 1) {
                 arg = arguments[i];
                 if (typeof arg === 'function' && typeof arg.get === 'function') {
+                    
                     element.elements.push(arg.get());
                 }
-                else if (i === 0 && typeof arg === 'string') {
-                    element.binding = arg;
+                else if (i === 0 && typeof params.defaultProperty === 'string') {
+                    element[params.defaultProperty] = arg;
                 }
             }
 
             return chain;
         }
 
-        var context = { element: element, chain: chain };
+        var context = { element: element, chain: chain, params: params };
 
-        extend(chain, fe.dsl.defaultMethods, context);
-        extend(chain, methods || {}, context);
+        if (typeof params.initialize === 'function') {
+            params.initialize.apply(context);
+        }
+
+        extend(chain, fe.dsl.defaultElementProperties, context);
+        extend(chain, properties, context);
 
         return chain.apply(undefined, arguments);
     }
@@ -210,8 +216,6 @@ fe.dsl.token = function token(init, methods) {
 
     return that;
 };
-
-fe.dsl.element = fe.dsl.token();
 
 fe.rule = function rule(config) {
 
@@ -449,7 +453,8 @@ fe.model = function model(config) {
         id = config.id || getUniqueId(),
         engine = config.engine,
         data = {},
-        validationRules = [];
+        validationRules = [],
+        changeTracker = fe.changeTracker();
 
     function initialize() {
 
@@ -469,8 +474,14 @@ fe.model = function model(config) {
     }
 
     function receiveMessage(msg) {
+
         if (msg.signal === 'value' && typeof msg.path === 'string') {
+
+            changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
+            notifyChange(msg.path);
+
             setByPath(data, msg.path, msg.data);
+
             validate(msg.path);
         }
     }
@@ -539,6 +550,30 @@ fe.model = function model(config) {
         return result;
     }
 
+    function undo() {
+        move('back');
+    }
+
+    function redo() {
+        move('forward');
+    }
+
+    function move(direction) {
+        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+        if (change) {
+            set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
+            notifyChange(change.path);
+        }
+    }
+
+    function getUndoCount() {
+        return changeTracker.getBackCount();
+    }
+
+    function getRedoCount() {
+        return changeTracker.getForwardCount();
+    }
+
     /* Utilities
      ****************************************************************/
 
@@ -550,10 +585,19 @@ fe.model = function model(config) {
         engine.sendMessage({ senderId: id, path: path, signal: 'error', data: messages });
     }
 
+    function notifyChange(path) {
+        engine.sendMessage({ senderId: id, path: path, signal: 'change',
+                             data: changeTracker.getStatus(path) });
+    }
+
     that.receiveMessage = receiveMessage;
     that.set = set;
     that.get = get;
     that.validate = validate;
+    that.undo = undo;
+    that.redo = redo;
+    that.getUndoCount = getUndoCount;
+    that.getRedoCount = getRedoCount;
 
     initialize();
     engine.addReceiver(id, that);
@@ -576,7 +620,7 @@ fe.validators.required = function required(value, properties) {
     return undefined;
 };
 
-fe.dsl.defaultMethods.required = function(arg) {
+fe.dsl.defaultElementProperties.required = function(arg) {
     this.element.validationRules.required = arg || true;
     return this.chain;
 };
@@ -591,7 +635,7 @@ fe.validators.minLength = function minLength(value, properties) {
 };
 fe.validators.minLength.defaultProperty = 'length';
 
-fe.dsl.defaultMethods.minLength = function(arg) {
+fe.dsl.defaultElementProperties.minLength = function(arg) {
     this.element.validationRules.minLength = arg;
     return this.chain;
 };
@@ -606,7 +650,7 @@ fe.validators.maxLength = function maxLength(value, properties) {
 };
 fe.validators.maxLength.defaultProperty = 'length';
 
-fe.dsl.defaultMethods.maxLength = function(arg) {
+fe.dsl.defaultElementProperties.maxLength = function(arg) {
     this.element.validationRules.maxLength = arg;
     return this.chain;
 };
@@ -621,7 +665,7 @@ fe.validators.minValue = function minValue(value, properties) {
 };
 fe.validators.minValue.defaultProperty = 'value';
 
-fe.dsl.defaultMethods.minValue = function(arg) {
+fe.dsl.defaultElementProperties.minValue = function(arg) {
     this.element.validationRules.minValue = arg;
     return this.chain;
 };
@@ -636,7 +680,7 @@ fe.validators.maxValue = function maxValue(value, properties) {
 };
 fe.validators.maxValue.defaultProperty = 'value';
 
-fe.dsl.defaultMethods.maxValue = function(arg) {
+fe.dsl.defaultElementProperties.maxValue = function(arg) {
     this.element.validationRules.maxValue = arg;
     return this.chain;
 };
@@ -647,6 +691,71 @@ fe.validationMessages = {
     maxLenght: 'This field should contain less that {length} symbols!',
     minValue: 'This field should have value more that {value}!',
     maxValue: 'This field should have value less that {value}!'
+};
+fe.changeTracker = function(config) {
+
+    var that = {},
+        changes = [],
+        currentChange = -1;
+
+    function push(change) {
+
+        if (currentChange < changes.length - 1) {
+            changes.splice(currentChange + 1);
+        }
+
+        changes.push(change);
+        currentChange += 1;
+    }
+
+    function moveBack() {
+
+        if (currentChange >= 0){
+            currentChange -= 1;
+            return changes[currentChange + 1];
+        }
+        return undefined;
+    }
+
+    function moveForward() {
+
+        var nextChange = changes[currentChange + 1];
+
+        if(nextChange) {
+            currentChange += 1;
+            return nextChange;
+        }
+        return undefined;
+    }
+
+    function getBackCount() {
+        return currentChange + 1;
+    }
+
+    function getForwardCount() {
+        return changes.length - currentChange - 1;
+    }
+
+    function getStatus(path) {
+
+        var i;
+
+        for ( i = currentChange; i >= 0; i -= 1 ) {
+            if (changes[i].path === path) {
+                return 'changed';
+            }
+        }
+        return 'default';
+    }
+
+    that.push = push;
+    that.moveBack = moveBack;
+    that.moveForward = moveForward;
+    that.getBackCount = getBackCount;
+    that.getForwardCount = getForwardCount;
+    that.getStatus = getStatus;
+
+    return that;
 };
 fe.view = function view (config) {
 
@@ -697,7 +806,8 @@ fe.element = function element (config) {
             value: 'setValue',
             hidden: 'setHidden',
             readonly: 'setReadonly',
-            error: 'showErrors'
+            error: 'showErrors',
+            change: 'setStatus'
         };
 
     that.id =  metadata.id || getUniqueId();
@@ -844,7 +954,7 @@ fe.metadataProvider = function metadataProvider (config) {
             // validation rules make sense only for data bound fields
             parseValidationRules(metadata, element);
 
-            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
+            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error', 'change'] });
         }
 
         if (metadata.elements && metadata.elements.length) {

@@ -1,11 +1,12 @@
 /*
- * Default jQuery extension for FormEngine.js 0.1
+ * Default jQuery extension for FormEngine.js 0.2pre
+
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Jan 27 14:04:47 2011 +0200
+ * Thu Feb 3 18:46:43 2011 +0200
  * 
  */
 
@@ -158,6 +159,13 @@ fe.jquery.element = function jqueryElement(config) {
         }
     }
 
+    function setStatus(status) {
+        var container = that.getContainer();
+        if (container) {
+            container.toggleClass('fe-changed', status === 'changed');
+        }
+    }
+
     that.initialize = initialize;
     that.getMarkup = getMarkup;
 
@@ -168,6 +176,7 @@ fe.jquery.element = function jqueryElement(config) {
     that.setHidden = setHidden;
     that.setReadonly = setReadonly;
     that.showErrors = showErrors;
+    that.setStatus = setStatus;
 
     return that;
 };
@@ -192,7 +201,7 @@ fe.jquery.elements.view = function view(config) {
     return that;
 };
 
-fe.jquery.dsl.view = fe.dsl.token('view', {
+fe.jquery.dsl.view = fe.dsl.elementConstructor('view', {}, {
     container: function(containerId) {
         this.element.properties.viewContainerId = containerId;
         return this.chain;
@@ -224,7 +233,7 @@ fe.jquery.elements.textBox = function textBox(config) {
     return that;
 };
 
-fe.jquery.dsl.textBox = fe.dsl.token('textBox');
+fe.jquery.dsl.textBox = fe.dsl.elementConstructor('textBox');
 
 fe.jquery.elements.comboBox = function comboBox(config) {
 
@@ -321,12 +330,21 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     return that;
 };
 
-fe.jquery.dsl.comboBox = fe.dsl.token('comboBox', {
-    list: function(list) {
-        this.element.properties.list = list;
-        return this.chain;
+fe.jquery.dsl.comboBox = fe.dsl.elementConstructor('comboBox',
+    {
+        validate: function() {
+            if(typeof this.element.properties.list !== 'string') {
+                throw new Error('comboBox (' + this.element.binding + ') must have list property!');
+            }
+        }
+    },
+    {
+        list: function(list) {
+            this.element.properties.list = list;
+            return this.chain;
+        }
     }
-});
+);
 
 fe.jquery.elements.checkBox = function checkBox(config) {
 
@@ -353,7 +371,7 @@ fe.jquery.elements.checkBox = function checkBox(config) {
     return that;
 };
 
-fe.jquery.dsl.checkBox = fe.dsl.token('checkBox');
+fe.jquery.dsl.checkBox = fe.dsl.elementConstructor('checkBox');
 
 fe.jquery.elements.toolBar = function toolBar(config) {
 
@@ -364,7 +382,7 @@ fe.jquery.elements.toolBar = function toolBar(config) {
     return that;
 };
 
-fe.jquery.dsl.toolBar = fe.dsl.token('toolBar');
+fe.jquery.dsl.toolBar = fe.dsl.elementConstructor('toolBar');
 
 fe.jquery.elements.button = function button(config) {
 
@@ -392,7 +410,7 @@ fe.jquery.elements.button = function button(config) {
     return that;
 };
 
-fe.jquery.dsl.button = fe.dsl.token('button', {
+fe.jquery.dsl.button = fe.dsl.elementConstructor('button', { defaultProperty: 'id' }, {
     icon: function(icon) {
         this.element.properties.icon = icon;
         return this.chain;
@@ -417,7 +435,7 @@ fe.jquery.elements.label = function label(config) {
     return that;
 };
 
-fe.jquery.dsl.label = fe.dsl.token('label');
+fe.jquery.dsl.label = fe.dsl.elementConstructor('label');
 
 fe.jquery.elements.panel = function panel(config) {
 
@@ -428,7 +446,7 @@ fe.jquery.elements.panel = function panel(config) {
     return that;
 };
 
-fe.jquery.dsl.panel = fe.dsl.token('panel');
+fe.jquery.dsl.panel = fe.dsl.elementConstructor('panel');
 
 fe.jquery.elements.header = function header(config) {
 
@@ -447,7 +465,7 @@ fe.jquery.elements.header = function header(config) {
     return that;
 };
 
-fe.jquery.dsl.header = fe.dsl.token('header');
+fe.jquery.dsl.header = fe.dsl.elementConstructor('header');
 
 fe.jquery.elements.datePicker = function datePicker(config) {
 
@@ -477,7 +495,7 @@ fe.jquery.elements.datePicker = function datePicker(config) {
     return that;
 };
 
-fe.jquery.dsl.datePicker = fe.dsl.token('datePicker');
+fe.jquery.dsl.datePicker = fe.dsl.elementConstructor('datePicker');
 
 fe.jquery.elements.numberEditor = function numberEditor(config) {
 
@@ -518,6 +536,6 @@ fe.jquery.elements.numberEditor = function numberEditor(config) {
     return that;
 };
 
-fe.jquery.dsl.numberEditor = fe.dsl.token('numberEditor');
+fe.jquery.dsl.numberEditor = fe.dsl.elementConstructor('numberEditor');
 
 })((function () { return this; })());
