@@ -27,6 +27,8 @@ $(function() {
                 .required().minValue(0).maxValue(100),
 
             ui.toolBar(
+                ui.button('undo').label('Undo').icon('ui-icon-arrowreturnthick-1-w'),
+                ui.button('redo').label('Redo').icon('ui-icon-arrowreturnthick-1-e'),
                 ui.button().id('saveButton').label('Save').icon('ui-icon-disk')
             )
                     
@@ -54,6 +56,10 @@ $(function() {
         if (app.model.validate()) {
             showData($('#dialog'), app.model.get('customer'));
         }
+    });
+
+    app.engine.subscribe({ senderId: ['undo', 'redo'], signal: 'click' }, function(msg) {
+        app.model[msg.senderId]();
     });
 
     window.model = app.model; // to play with data binding from console ;)

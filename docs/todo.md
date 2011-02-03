@@ -1,5 +1,9 @@
 ## TODO
 
+* changeTracker: markSave
+* changeTracker: change for element with calculated values
+* changeTracker: upgrade documentation
+
 * binding, hidden, readonly -> properties
 
 * blog post: "formEngine.js Project"
@@ -14,9 +18,9 @@
 
 ## Version 0.2
 
-* DONE JavaScript DSL
-* POSTPONED Markup DSL (jQuery)
-* IN PROGRESS change tracker
+* *DONE* JavaScript DSL
+* *POSTPONED* Markup DSL (jQuery)
+* *PROGRESS* change tracker
 * inactive validation rules, marking required controls (asterisk)
 * perfomance testing (a big form)
 

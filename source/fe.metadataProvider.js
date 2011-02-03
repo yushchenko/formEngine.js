@@ -26,7 +26,7 @@ fe.metadataProvider = function metadataProvider (config) {
             // validation rules make sense only for data bound fields
             parseValidationRules(metadata, element);
 
-            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
+            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error', 'change'] });
         }
 
         if (metadata.elements && metadata.elements.length) {

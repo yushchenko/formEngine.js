@@ -91,6 +91,13 @@ fe.jquery.element = function jqueryElement(config) {
         }
     }
 
+    function setStatus(status) {
+        var container = that.getContainer();
+        if (container) {
+            container.toggleClass('fe-changed', status === 'changed');
+        }
+    }
+
     that.initialize = initialize;
     that.getMarkup = getMarkup;
 
@@ -101,6 +108,7 @@ fe.jquery.element = function jqueryElement(config) {
     that.setHidden = setHidden;
     that.setReadonly = setReadonly;
     that.showErrors = showErrors;
+    that.setStatus = setStatus;
 
     return that;
 };

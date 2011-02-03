@@ -7,7 +7,8 @@ fe.element = function element (config) {
             value: 'setValue',
             hidden: 'setHidden',
             readonly: 'setReadonly',
-            error: 'showErrors'
+            error: 'showErrors',
+            change: 'setStatus'
         };
 
     that.id =  metadata.id || getUniqueId();

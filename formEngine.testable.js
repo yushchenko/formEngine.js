@@ -793,7 +793,8 @@ fe.element = function element (config) {
             value: 'setValue',
             hidden: 'setHidden',
             readonly: 'setReadonly',
-            error: 'showErrors'
+            error: 'showErrors',
+            change: 'setStatus'
         };
 
     that.id =  metadata.id || getUniqueId();
@@ -940,7 +941,7 @@ fe.metadataProvider = function metadataProvider (config) {
             // validation rules make sense only for data bound fields
             parseValidationRules(metadata, element);
 
-            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error'] });
+            rules.push({ receiverId: element.id, path: metadata.binding, signal: ['value', 'error', 'change'] });
         }
 
         if (metadata.elements && metadata.elements.length) {

@@ -52,7 +52,7 @@ describe('fe.metadataProvider', function() {
         expect(rules.length).toEqual(elementCount + 2*exprCount + ruleCount);
 
         expect(rules.slice(0,1)).toEqual([
-            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error'] }
+            { receiverId: 'firstName', path: 'customer.firstName', signal: ['value', 'error', 'change'] }
         ]);
 
     });
