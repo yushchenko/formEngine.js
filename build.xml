@@ -35,7 +35,8 @@
       <fileset file="source/fe.engine.js" /> <!--lint,test-->
       <fileset file="source/fe.validationRule.js" /> <!--lint,test-->
       <fileset file="source/fe.model.js" /> <!--lint,test-->
-      <fileset file="source/fe.validators.js" /> <!--lint,test-->      
+      <fileset file="source/fe.validators.js" /> <!--lint,test-->
+      <fileset file="source/fe.changeTracker.js" /> <!--lint,test-->            
       <fileset file="source/fe.view.js" /> <!--lint,test-->
       <fileset file="source/fe.element.js" /> <!--lint,test-->
       <fileset file="source/fe.expressionParser.js" /> <!--lint,test-->
@@ -51,6 +52,7 @@
       <fileset file="tests/source/fe.model.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.validationRule.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.validators.tests.js" /> <!--lint,test-->
+      <fileset file="tests/source/fe.changeTracker.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.view.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.element.tests.js" /> <!--lint,test-->
       <fileset file="tests/source/fe.expressionParser.tests.js" /> <!--lint,test-->

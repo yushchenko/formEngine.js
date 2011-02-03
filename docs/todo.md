@@ -3,13 +3,20 @@
 * binding, hidden, readonly -> properties
 
 * blog post: "formEngine.js Project"
-* ? JSDoc
+
+## Upgrades and Extensions
+
+* build using node.js
+* JSDoc
+* https://github.com/mishoo/UglifyJS
+* http://seleniumhq.org/ - test samples
+* jQuery 1.5
 
 ## Version 0.2
 
 * DONE JavaScript DSL
-* Markup DSL (jQuery)
-* change tracker
+* POSTPONED Markup DSL (jQuery)
+* IN PROGRESS change tracker
 * inactive validation rules, marking required controls (asterisk)
 * perfomance testing (a big form)
 

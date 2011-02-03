@@ -13,6 +13,7 @@ load:
   - ../source/fe.validationRule.js
   - ../source/fe.model.js
   - ../source/fe.validators.js
+  - ../source/fe.changeTracker.js
   - ../source/fe.view.js
   - ../source/fe.element.js
   - ../source/fe.expressionParser.js
@@ -25,6 +26,7 @@ load:
   - ../tests/source/fe.model.tests.js
   - ../tests/source/fe.validationRule.tests.js
   - ../tests/source/fe.validators.tests.js
+  - ../tests/source/fe.changeTracker.tests.js
   - ../tests/source/fe.view.tests.js
   - ../tests/source/fe.element.tests.js
   - ../tests/source/fe.expressionParser.tests.js
