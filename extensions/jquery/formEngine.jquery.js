@@ -6,7 +6,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Feb 4 10:56:33 2011 +0200
+ * Fri Feb 4 13:57:02 2011 +0200
  * 
  */
 
@@ -37,13 +37,17 @@ function template(str, data) { // Stolen from Underscore.js ;)
     return data ? fn(data) : fn;
 }
 
-function runSimpleApp(metadata, data) {
+function runSimpleApp(config) {
 
     var app = {};
 
-    app.provider = fe.metadataProvider({ metadata: metadata });
+    app.provider = fe.metadataProvider({ metadata: config.metadata });
     app.engine = fe.engine();
-    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine, trackChanges: true });
+    app.model = fe.model({
+                             metadata: app.provider.getModelMetadata(),
+                             engine: app.engine,
+                             trackChanges: config.trackChanges || false
+                         });
     app.view = fe.view({
                            metadata: app.provider.getViewMetadata(),
                            elementTypes: fe.jquery.elements,
@@ -56,7 +60,7 @@ function runSimpleApp(metadata, data) {
 
     app.view.initialize();
 
-    app.model.set(data);
+    app.model.set(config.data);
 
     return app;
 }

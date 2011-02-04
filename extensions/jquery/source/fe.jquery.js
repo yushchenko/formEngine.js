@@ -24,13 +24,17 @@ function template(str, data) { // Stolen from Underscore.js ;)
     return data ? fn(data) : fn;
 }
 
-function runSimpleApp(metadata, data) {
+function runSimpleApp(config) {
 
     var app = {};
 
-    app.provider = fe.metadataProvider({ metadata: metadata });
+    app.provider = fe.metadataProvider({ metadata: config.metadata });
     app.engine = fe.engine();
-    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine, trackChanges: true });
+    app.model = fe.model({
+                             metadata: app.provider.getModelMetadata(),
+                             engine: app.engine,
+                             trackChanges: config.trackChanges || false
+                         });
     app.view = fe.view({
                            metadata: app.provider.getViewMetadata(),
                            elementTypes: fe.jquery.elements,
@@ -43,7 +47,7 @@ function runSimpleApp(metadata, data) {
 
     app.view.initialize();
 
-    app.model.set(data);
+    app.model.set(config.data);
 
     return app;
 }

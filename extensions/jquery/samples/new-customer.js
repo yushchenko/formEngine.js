@@ -50,11 +50,14 @@ $(function() {
             ]
         },
 
-        app = fe.jquery.runSimpleApp(metadata, data);
+        app = fe.jquery.runSimpleApp({ metadata: metadata, data: data, trackChanges: true });
 
     app.engine.subscribe({ senderId: 'saveButton', signal: 'click' }, function (msg) {
+
         if (app.model.validate()) {
+
             showData($('#dialog'), app.model.get('customer'));
+
             app.model.markSave();
         }
     });
