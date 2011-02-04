@@ -1,7 +1,8 @@
 
-fe.jquery = {};
-fe.jquery.elements = {};
-fe.jquery.dsl = {};
+fe.jquery = {
+    elements: {},
+    dsl: {}
+};
 
 function template(str, data) { // Stolen from Underscore.js ;)
 

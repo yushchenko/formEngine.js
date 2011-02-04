@@ -66,5 +66,21 @@ $(function() {
         app.model[msg.senderId]();
     });
 
+    app.engine.subscribe({ signal: 'change' }, function(msg) {
+        setupButtons();
+    });
+
+    function setupButtons() {
+
+        function set(id, method) {
+            app.view.getElementById(id).setReadonly(app.model[method]() === 0);
+        }
+
+        set('undo', 'getUndoCount');
+        set('redo', 'getRedoCount');
+    }
+
+    setupButtons();
+
     window.model = app.model; // to play with data binding from console ;)
 });
