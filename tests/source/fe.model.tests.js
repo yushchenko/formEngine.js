@@ -246,4 +246,25 @@ describe('fe.model', function() {
         expect(m.getRedoCount()).toEqual(0);
     });
 
+    it('should mark saved elements', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e }),
+            commands = [];
+
+        m.set({ x: { y: 1 } });
+
+        e.subscribe({ signal: 'change' }, function(msg) {
+            commands.push(msg.data);
+        });
+
+        e.sendMessage({ senderId: 's', path: 'x.y', signal: 'value', data: 2 });
+
+        expect(commands).toEqual(['changed']);
+
+        m.markSave();
+
+        expect(commands).toEqual(['changed', 'saved']);
+    });
+
 });

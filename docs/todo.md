@@ -1,8 +1,8 @@
 ## TODO
 
-* changeTracker: markSave
-* changeTracker: change for element with calculated values
 * changeTracker: upgrade documentation
+* changeTracker: lock undo/redo buttons
+* changeTracker: change for element with calculated values
 
 * binding, hidden, readonly -> properties
 

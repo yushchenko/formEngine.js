@@ -6,7 +6,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Feb 3 18:46:43 2011 +0200
+ * Thu Feb 3 19:58:08 2011 +0200
  * 
  */
 
@@ -162,7 +162,8 @@ fe.jquery.element = function jqueryElement(config) {
     function setStatus(status) {
         var container = that.getContainer();
         if (container) {
-            container.toggleClass('fe-changed', status === 'changed');
+            container.toggleClass('fe-changed', status === 'changed')
+                     .toggleClass('fe-saved', status === 'saved');
         }
     }
 

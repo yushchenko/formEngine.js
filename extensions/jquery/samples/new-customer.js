@@ -55,6 +55,7 @@ $(function() {
     app.engine.subscribe({ senderId: 'saveButton', signal: 'click' }, function (msg) {
         if (app.model.validate()) {
             showData($('#dialog'), app.model.get('customer'));
+            app.model.markSave();
         }
     });
 

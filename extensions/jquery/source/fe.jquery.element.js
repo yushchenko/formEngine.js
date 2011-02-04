@@ -94,7 +94,8 @@ fe.jquery.element = function jqueryElement(config) {
     function setStatus(status) {
         var container = that.getContainer();
         if (container) {
-            container.toggleClass('fe-changed', status === 'changed');
+            container.toggleClass('fe-changed', status === 'changed')
+                     .toggleClass('fe-saved', status === 'saved');
         }
     }
 

@@ -701,6 +701,27 @@ describe('fe.model', function() {
         expect(m.getRedoCount()).toEqual(0);
     });
 
+    it('should mark saved elements', function() {
+
+        var e = fe.engine(),
+            m = fe.model({ engine: e }),
+            commands = [];
+
+        m.set({ x: { y: 1 } });
+
+        e.subscribe({ signal: 'change' }, function(msg) {
+            commands.push(msg.data);
+        });
+
+        e.sendMessage({ senderId: 's', path: 'x.y', signal: 'value', data: 2 });
+
+        expect(commands).toEqual(['changed']);
+
+        m.markSave();
+
+        expect(commands).toEqual(['changed', 'saved']);
+    });
+
 });
 
 describe('fe.validationRule', function () {
@@ -867,6 +888,7 @@ describe('fe.changeTracker', function() {
         expect(typeof t.getBackCount).toEqual('function');
         expect(typeof t.getForwardCount).toEqual('function');
         expect(typeof t.getStatus).toEqual('function');           
+        expect(typeof t.markSave).toEqual('function');
     });
 
     it('should store changes', function() {
@@ -932,6 +954,35 @@ describe('fe.changeTracker', function() {
 
         t.moveForward();
         expect(t.getStatus('a.b.c')).toEqual('changed');
+    });
+
+    it('should return saved status after markSave', function() {
+
+        var t = fe.changeTracker();
+
+        t.push({ path: 'a.b.c1' });
+        t.markSave();
+        t.push({ path: 'a.b.c2' });
+
+        expect(t.getStatus('a.b.c1')).toEqual('saved');
+        expect(t.getStatus('a.b.c2')).toEqual('changed');
+        expect(t.getStatus('x.y.z')).toEqual('default');
+    });
+
+    it('should return saved paths', function() {
+
+        var t = fe.changeTracker();
+
+        t.push({ path: 'C1' });
+        t.push({ path: 'C2' });
+
+        expect(t.markSave()).toEqual(['C1', 'C2']);
+
+        t.push({ path: 'C3' });
+        t.push({ path: 'C4' });
+        t.moveBack();
+
+        expect(t.markSave()).toEqual(['C3']);
     });
     
 });

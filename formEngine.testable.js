@@ -561,6 +561,15 @@ fe.model = function model(config) {
         return changeTracker.getForwardCount();
     }
 
+    function markSave() {
+
+        var i, saved = changeTracker.markSave();
+
+        for (i = 0; i < saved.length; i += 1) {
+            notifyChange(saved[i], 'saved');
+        }
+    }
+
     /* Utilities
      ****************************************************************/
 
@@ -572,9 +581,9 @@ fe.model = function model(config) {
         engine.sendMessage({ senderId: id, path: path, signal: 'error', data: messages });
     }
 
-    function notifyChange(path) {
+    function notifyChange(path, status) {
         engine.sendMessage({ senderId: id, path: path, signal: 'change',
-                             data: changeTracker.getStatus(path) });
+                             data: status || changeTracker.getStatus(path) });
     }
 
     that.receiveMessage = receiveMessage;
@@ -585,6 +594,7 @@ fe.model = function model(config) {
     that.redo = redo;
     that.getUndoCount = getUndoCount;
     that.getRedoCount = getRedoCount;
+    that.markSave = markSave;
 
     initialize();
     engine.addReceiver(id, that);
@@ -683,7 +693,8 @@ fe.changeTracker = function(config) {
 
     var that = {},
         changes = [],
-        currentChange = -1;
+        currentChange = -1,
+        savedChange = -1;
 
     function push(change) {
 
@@ -729,10 +740,22 @@ fe.changeTracker = function(config) {
 
         for ( i = currentChange; i >= 0; i -= 1 ) {
             if (changes[i].path === path) {
-                return 'changed';
+                return (i <= savedChange) ? 'saved' : 'changed';
             }
         }
         return 'default';
+    }
+
+    function markSave() {
+
+        var i, saved = [];
+
+        for (i = savedChange + 1; i <= currentChange; i += 1) {
+            saved.push(changes[i].path);
+        }
+
+        savedChange = currentChange;
+        return saved;
     }
 
     that.push = push;
@@ -741,6 +764,7 @@ fe.changeTracker = function(config) {
     that.getBackCount = getBackCount;
     that.getForwardCount = getForwardCount;
     that.getStatus = getStatus;
+    that.markSave = markSave;
 
     return that;
 };
