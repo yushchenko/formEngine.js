@@ -1,6 +1,5 @@
 ## TODO
 
-* changeTracker: validation on undo/redo
 * changeTracker: lock undo/redo buttons
 * changeTracker: change for element with calculated values
 
@@ -11,7 +10,7 @@
 ## Upgrades and Extensions
 
 * build using node.js
-* JSDoc
+* JSDoc - api documentation
 * https://github.com/mishoo/UglifyJS
 * http://seleniumhq.org/ - test samples
 * jQuery 1.5
@@ -30,11 +29,11 @@
 
 ## Version 0.3
 
-* jQuery Mobile extension
-* Ext JS extension (with grids)
-* master/detail
-* localization for jquery sample
+* Ext JS extension (grids)
+* master/detail samples
+* jquery sample: localization support
 
 ## Version X
 
+* jQuery Mobile extension
 * bookmarkability support

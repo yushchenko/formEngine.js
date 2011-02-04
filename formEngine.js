@@ -6,7 +6,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Feb 4 09:31:13 2011 +0200
+ * Fri Feb 4 10:56:33 2011 +0200
  * 
  */
 
@@ -566,11 +566,14 @@ fe.model = function model(config) {
             return;
         }
 
-        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]](),
+            path;
 
         if (change) {
-            set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
-            notifyChange(change.path);
+            path = change.path;
+            set(path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
+            notifyChange(path);
+            validate(path);
         }
     }
 

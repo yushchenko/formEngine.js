@@ -553,11 +553,14 @@ fe.model = function model(config) {
             return;
         }
 
-        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]](),
+            path;
 
         if (change) {
-            set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
-            notifyChange(change.path);
+            path = change.path;
+            set(path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
+            notifyChange(path);
+            validate(path);
         }
     }
 

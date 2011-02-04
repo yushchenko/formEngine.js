@@ -722,6 +722,32 @@ describe('fe.model', function() {
         expect(commands).toEqual(['changed', 'saved']);
     });
 
+    it('should validate data on undo/redo', function() {
+
+        var e = fe.engine(),
+            rules = [
+                { path: 'x.y', validatorName: 'required' }
+            ],
+            m = fe.model({ engine: e, metadata: { validationRules: rules }, trackChanges: true }),
+            count = 0;
+
+        m.set({ x: { y: 1 } });
+
+        e.subscribe({ signal: 'error' }, function(msg) {
+            count += 1;
+        });
+
+        e.sendMessage({ senderId: 's', path: 'x.y', signal: 'value', data: 2 });
+
+        expect(count).toEqual(1);
+
+        m.undo();
+        expect(count).toEqual(2);
+
+        m.redo();
+        expect(count).toEqual(3);
+    });
+
 });
 
 describe('fe.validationRule', function () {
