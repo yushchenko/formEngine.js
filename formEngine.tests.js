@@ -630,7 +630,7 @@ describe('fe.model', function() {
     it('should notify changes', function() {
 
         var e = fe.engine(),
-            m = fe.model({ engine: e }),
+            m = fe.model({ engine: e, trackChanges: true }),
             changes = [];
 
         e.subscribe({ signal: 'change' }, function(msg) {
@@ -645,7 +645,7 @@ describe('fe.model', function() {
     it('should undo/redo changes', function() {
 
         var e = fe.engine(),
-            m = fe.model({ engine: e });
+            m = fe.model({ engine: e, trackChanges: true });
 
         m.set({ x: { y: 1 } });
 
@@ -662,7 +662,7 @@ describe('fe.model', function() {
     it('should notify change on undo/redo', function() {
 
         var e = fe.engine(),
-            m = fe.model({ engine: e }),
+            m = fe.model({ engine: e, trackChanges: true }),
             commands = [];
 
         e.subscribe({ signal: 'change' }, function(msg) {
@@ -684,7 +684,7 @@ describe('fe.model', function() {
     it('should return undo/redo counts', function() {
 
         var e = fe.engine(),
-            m = fe.model({ engine: e });
+            m = fe.model({ engine: e, trackChanges: true });
 
         m.set({ x: { y: 1 } });
 
@@ -704,7 +704,7 @@ describe('fe.model', function() {
     it('should mark saved elements', function() {
 
         var e = fe.engine(),
-            m = fe.model({ engine: e }),
+            m = fe.model({ engine: e, trackChanges: true }),
             commands = [];
 
         m.set({ x: { y: 1 } });

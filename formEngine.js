@@ -6,7 +6,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Feb 3 19:58:08 2011 +0200
+ * Fri Feb 4 09:31:13 2011 +0200
  * 
  */
 
@@ -454,7 +454,7 @@ fe.model = function model(config) {
         engine = config.engine,
         data = {},
         validationRules = [],
-        changeTracker = fe.changeTracker();
+        changeTracker = config.trackChanges ? fe.changeTracker() : undefined;
 
     function initialize() {
 
@@ -477,8 +477,10 @@ fe.model = function model(config) {
 
         if (msg.signal === 'value' && typeof msg.path === 'string') {
 
-            changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
-            notifyChange(msg.path);
+            if (changeTracker) {
+                changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
+                notifyChange(msg.path);
+            }
 
             setByPath(data, msg.path, msg.data);
 
@@ -559,7 +561,13 @@ fe.model = function model(config) {
     }
 
     function move(direction) {
+
+        if (!changeTracker) {
+            return;
+        }
+
         var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+
         if (change) {
             set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
             notifyChange(change.path);
@@ -567,14 +575,28 @@ fe.model = function model(config) {
     }
 
     function getUndoCount() {
+
+        if (!changeTracker) {
+            return undefined;
+        }
+
         return changeTracker.getBackCount();
     }
 
     function getRedoCount() {
+
+        if (!changeTracker) {
+            return undefined;
+        }
+
         return changeTracker.getForwardCount();
     }
 
     function markSave() {
+
+        if (!changeTracker) {
+            return;
+        }
 
         var i, saved = changeTracker.markSave();
 

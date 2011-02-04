@@ -6,7 +6,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Feb 3 19:58:08 2011 +0200
+ * Fri Feb 4 09:31:13 2011 +0200
  * 
  */
 
@@ -43,7 +43,7 @@ function runSimpleApp(metadata, data) {
 
     app.provider = fe.metadataProvider({ metadata: metadata });
     app.engine = fe.engine();
-    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine });
+    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine, trackChanges: true });
     app.view = fe.view({
                            metadata: app.provider.getViewMetadata(),
                            elementTypes: fe.jquery.elements,

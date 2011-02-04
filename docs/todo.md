@@ -1,6 +1,6 @@
 ## TODO
 
-* changeTracker: upgrade documentation
+* changeTracker: validation on undo/redo
 * changeTracker: lock undo/redo buttons
 * changeTracker: change for element with calculated values
 

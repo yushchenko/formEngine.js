@@ -30,7 +30,7 @@ function runSimpleApp(metadata, data) {
 
     app.provider = fe.metadataProvider({ metadata: metadata });
     app.engine = fe.engine();
-    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine });
+    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine, trackChanges: true });
     app.view = fe.view({
                            metadata: app.provider.getViewMetadata(),
                            elementTypes: fe.jquery.elements,
