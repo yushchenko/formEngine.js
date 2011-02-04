@@ -6,7 +6,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Feb 3 18:46:43 2011 +0200
+ * Fri Feb 4 14:23:15 2011 +0200
  * 
  */
 
@@ -454,7 +454,7 @@ fe.model = function model(config) {
         engine = config.engine,
         data = {},
         validationRules = [],
-        changeTracker = fe.changeTracker();
+        changeTracker = config.trackChanges ? fe.changeTracker() : undefined;
 
     function initialize() {
 
@@ -477,8 +477,10 @@ fe.model = function model(config) {
 
         if (msg.signal === 'value' && typeof msg.path === 'string') {
 
-            changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
-            notifyChange(msg.path);
+            if (changeTracker) {
+                changeTracker.push({ path: msg.path, oldValue: get(msg.path), newValue: msg.data });
+                notifyChange(msg.path);
+            }
 
             setByPath(data, msg.path, msg.data);
 
@@ -559,19 +561,51 @@ fe.model = function model(config) {
     }
 
     function move(direction) {
-        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]]();
+
+        if (!changeTracker) {
+            return;
+        }
+
+        var change = changeTracker[{back: 'moveBack', forward: 'moveForward'}[direction]](),
+            path;
+
         if (change) {
-            set(change.path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
-            notifyChange(change.path);
+            path = change.path;
+            set(path, change[{back: 'oldValue', forward: 'newValue'}[direction]]);
+            notifyChange(path);
+            validate(path);
         }
     }
 
     function getUndoCount() {
+
+        if (!changeTracker) {
+            return undefined;
+        }
+
         return changeTracker.getBackCount();
     }
 
     function getRedoCount() {
+
+        if (!changeTracker) {
+            return undefined;
+        }
+
         return changeTracker.getForwardCount();
+    }
+
+    function markSave() {
+
+        if (!changeTracker) {
+            return;
+        }
+
+        var i, saved = changeTracker.markSave();
+
+        for (i = 0; i < saved.length; i += 1) {
+            notifyChange(saved[i], 'saved');
+        }
     }
 
     /* Utilities
@@ -585,9 +619,9 @@ fe.model = function model(config) {
         engine.sendMessage({ senderId: id, path: path, signal: 'error', data: messages });
     }
 
-    function notifyChange(path) {
+    function notifyChange(path, status) {
         engine.sendMessage({ senderId: id, path: path, signal: 'change',
-                             data: changeTracker.getStatus(path) });
+                             data: status || changeTracker.getStatus(path) });
     }
 
     that.receiveMessage = receiveMessage;
@@ -598,6 +632,7 @@ fe.model = function model(config) {
     that.redo = redo;
     that.getUndoCount = getUndoCount;
     that.getRedoCount = getRedoCount;
+    that.markSave = markSave;
 
     initialize();
     engine.addReceiver(id, that);
@@ -696,7 +731,8 @@ fe.changeTracker = function(config) {
 
     var that = {},
         changes = [],
-        currentChange = -1;
+        currentChange = -1,
+        savedChange = -1;
 
     function push(change) {
 
@@ -742,10 +778,22 @@ fe.changeTracker = function(config) {
 
         for ( i = currentChange; i >= 0; i -= 1 ) {
             if (changes[i].path === path) {
-                return 'changed';
+                return (i <= savedChange) ? 'saved' : 'changed';
             }
         }
         return 'default';
+    }
+
+    function markSave() {
+
+        var i, saved = [];
+
+        for (i = savedChange + 1; i <= currentChange; i += 1) {
+            saved.push(changes[i].path);
+        }
+
+        savedChange = currentChange;
+        return saved;
     }
 
     that.push = push;
@@ -754,6 +802,7 @@ fe.changeTracker = function(config) {
     that.getBackCount = getBackCount;
     that.getForwardCount = getForwardCount;
     that.getStatus = getStatus;
+    that.markSave = markSave;
 
     return that;
 };

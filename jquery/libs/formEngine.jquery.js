@@ -6,15 +6,16 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Thu Feb 3 18:46:43 2011 +0200
+ * Fri Feb 4 14:23:15 2011 +0200
  * 
  */
 
 (function( global, undefined ) {
 
-fe.jquery = {};
-fe.jquery.elements = {};
-fe.jquery.dsl = {};
+fe.jquery = {
+    elements: {},
+    dsl: {}
+};
 
 function template(str, data) { // Stolen from Underscore.js ;)
 
@@ -37,13 +38,17 @@ function template(str, data) { // Stolen from Underscore.js ;)
     return data ? fn(data) : fn;
 }
 
-function runSimpleApp(metadata, data) {
+function runSimpleApp(config) {
 
     var app = {};
 
-    app.provider = fe.metadataProvider({ metadata: metadata });
+    app.provider = fe.metadataProvider({ metadata: config.metadata });
     app.engine = fe.engine();
-    app.model = fe.model({ metadata: app.provider.getModelMetadata(), engine: app.engine });
+    app.model = fe.model({
+                             metadata: app.provider.getModelMetadata(),
+                             engine: app.engine,
+                             trackChanges: config.trackChanges || false
+                         });
     app.view = fe.view({
                            metadata: app.provider.getViewMetadata(),
                            elementTypes: fe.jquery.elements,
@@ -56,7 +61,7 @@ function runSimpleApp(metadata, data) {
 
     app.view.initialize();
 
-    app.model.set(data);
+    app.model.set(config.data);
 
     return app;
 }
@@ -162,7 +167,8 @@ fe.jquery.element = function jqueryElement(config) {
     function setStatus(status) {
         var container = that.getContainer();
         if (container) {
-            container.toggleClass('fe-changed', status === 'changed');
+            container.toggleClass('fe-changed', status === 'changed')
+                     .toggleClass('fe-saved', status === 'saved');
         }
     }
 

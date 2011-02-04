@@ -50,17 +50,37 @@ $(function() {
             ]
         },
 
-        app = fe.jquery.runSimpleApp(metadata, data);
+        app = fe.jquery.runSimpleApp({ metadata: metadata, data: data, trackChanges: true });
 
     app.engine.subscribe({ senderId: 'saveButton', signal: 'click' }, function (msg) {
+
         if (app.model.validate()) {
+
             showData($('#dialog'), app.model.get('customer'));
+
+            app.model.markSave();
         }
     });
 
     app.engine.subscribe({ senderId: ['undo', 'redo'], signal: 'click' }, function(msg) {
         app.model[msg.senderId]();
     });
+
+    app.engine.subscribe({ signal: 'change' }, function(msg) {
+        setupButtons();
+    });
+
+    function setupButtons() {
+
+        function set(id, method) {
+            app.view.getElementById(id).setReadonly(app.model[method]() === 0);
+        }
+
+        set('undo', 'getUndoCount');
+        set('redo', 'getRedoCount');
+    }
+
+    setupButtons();
 
     window.model = app.model; // to play with data binding from console ;)
 });
