@@ -16,6 +16,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<select id="<%=editorId%>" class="fe-editor-wide"></select>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
@@ -31,7 +32,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
         receiveMessageBase(message);
     };
 
-    that.initialize = function() {
+    that.doInitialize = function() {
         that.getEditor().change(function() {
             var item = getItemById(that.getEditor().val());
             that.notifyValueChange(item);

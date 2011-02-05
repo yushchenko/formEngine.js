@@ -6,7 +6,7 @@ fe.jquery.elements.button = function button(config) {
 
     that.template = template('<span id="<%=editorId%>"><%=properties.label%></span>');
 
-    that.initialize = function() {
+    that.doInitialize = function() {
         that.getEditor()
             .button({ icons: { primary: that.properties.icon } })
             .click(function() {

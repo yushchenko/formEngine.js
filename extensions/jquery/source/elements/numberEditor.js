@@ -7,12 +7,13 @@ fe.jquery.elements.numberEditor = function numberEditor(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<input type="text" id="<%=editorId%>" class="fe-editor-narrow"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
-    that.initialize = function() {
+    that.doInitialize = function() {
 
         var e = that.getEditor();
 

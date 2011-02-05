@@ -6,7 +6,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Feb 4 18:09:21 2011 +0200
+ * Sat Feb 5 10:35:36 2011 +0200
  * 
  */
 
@@ -88,6 +88,8 @@ fe.jquery.element = function jqueryElement(config) {
         if (that.doInitialize) {
             that.doInitialize();
         }
+
+        that.notifyRequiredStatusChange();
 
         that.eachChild(function(child) {
             child.initialize();
@@ -172,6 +174,14 @@ fe.jquery.element = function jqueryElement(config) {
         }
     }
 
+    function markRequired(required) {
+        var container = that.getContainer();
+        if (container) {
+            container.toggleClass('fe-required', required);
+        }
+        
+    }
+
     that.initialize = initialize;
     that.getMarkup = getMarkup;
 
@@ -183,6 +193,7 @@ fe.jquery.element = function jqueryElement(config) {
     that.setReadonly = setReadonly;
     that.showErrors = showErrors;
     that.setStatus = setStatus;
+    that.markRequired = markRequired;
 
     return that;
 };
@@ -221,12 +232,13 @@ fe.jquery.elements.textBox = function textBox(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<input type="text" id="<%=editorId%>" class="fe-editor-wide"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
-    that.initialize = function() {
+    that.doInitialize = function() {
         that.getEditor().change(function() {
             that.notifyValueChange(that.getEditor().val());
         });
@@ -258,6 +270,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<select id="<%=editorId%>" class="fe-editor-wide"></select>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
@@ -273,7 +286,7 @@ fe.jquery.elements.comboBox = function comboBox(config) {
         receiveMessageBase(message);
     };
 
-    that.initialize = function() {
+    that.doInitialize = function() {
         that.getEditor().change(function() {
             var item = getItemById(that.getEditor().val());
             that.notifyValueChange(item);
@@ -359,12 +372,13 @@ fe.jquery.elements.checkBox = function checkBox(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<input type="checkbox" id="<%=editorId%>"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
-    that.initialize = function() {
+    that.doInitialize = function() {
         that.getEditor().change(function() {
             that.notifyValueChange(that.getEditor().attr('checked'));
         });
@@ -397,7 +411,7 @@ fe.jquery.elements.button = function button(config) {
 
     that.template = template('<span id="<%=editorId%>"><%=properties.label%></span>');
 
-    that.initialize = function() {
+    that.doInitialize = function() {
         that.getEditor()
             .button({ icons: { primary: that.properties.icon } })
             .click(function() {
@@ -430,6 +444,7 @@ fe.jquery.elements.label = function label(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark"></span>' +
             '<span id="<%=editorId%>" class="fe-editor-wide"></span>' +
         '</div>'
     );
@@ -480,12 +495,13 @@ fe.jquery.elements.datePicker = function datePicker(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<input type="text" id="<%=editorId%>" class="fe-editor-narrow"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
-    that.initialize = function() {
+    that.doInitialize = function() {
 
         var e = that.getEditor().datepicker();
 
@@ -511,12 +527,13 @@ fe.jquery.elements.numberEditor = function numberEditor(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label for="<%=editorId%>" class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark">*</span>' +
             '<input type="text" id="<%=editorId%>" class="fe-editor-narrow"></input>' +
             '<div id="<%=errorId%>" class="fe-element-error"></div>' +
         '</div>'
     );
 
-    that.initialize = function() {
+    that.doInitialize = function() {
 
         var e = that.getEditor();
 

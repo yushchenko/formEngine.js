@@ -6,6 +6,7 @@ fe.jquery.elements.label = function label(config) {
     that.template = template(
         '<div id="<%=containerId%>" class="fe-element">' +
             '<label class="fe-element-label"><%=properties.label%></label>' +
+            '<span class="fe-element-required-mark"></span>' +
             '<span id="<%=editorId%>" class="fe-editor-wide"></span>' +
         '</div>'
     );

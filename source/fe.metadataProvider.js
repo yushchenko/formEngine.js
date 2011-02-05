@@ -96,6 +96,8 @@ fe.metadataProvider = function metadataProvider (config) {
             path = metadata.binding,
             validationRules = metadata.validationRules || {};
 
+        element.validationRules = {};
+
         for (name in validationRules) {
 
             if (validationRules.hasOwnProperty(name)) {
@@ -119,6 +121,8 @@ fe.metadataProvider = function metadataProvider (config) {
                 modelMetadata.validationRules.push({
                     id: id, path: path, validatorName: name, validatorProperties: properties
                 });
+
+                element.validationRules[name] = properties || {};
 
                 rules.push({ receiverId: id, senderId: element.id, signal: 'validation-inactive' });
             }

@@ -16,6 +16,8 @@ fe.jquery.element = function jqueryElement(config) {
             that.doInitialize();
         }
 
+        that.notifyRequiredStatusChange();
+
         that.eachChild(function(child) {
             child.initialize();
         });
@@ -99,6 +101,14 @@ fe.jquery.element = function jqueryElement(config) {
         }
     }
 
+    function markRequired(required) {
+        var container = that.getContainer();
+        if (container) {
+            container.toggleClass('fe-required', required);
+        }
+        
+    }
+
     that.initialize = initialize;
     that.getMarkup = getMarkup;
 
@@ -110,6 +120,7 @@ fe.jquery.element = function jqueryElement(config) {
     that.setReadonly = setReadonly;
     that.showErrors = showErrors;
     that.setStatus = setStatus;
+    that.markRequired = markRequired;
 
     return that;
 };

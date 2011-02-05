@@ -27,17 +27,20 @@ describe('fe.metadataProvider', function() {
                 {
                     id: 'firstName',
                     typeName: 'textBox',
-                    properties: { binding: 'customer.firstName' }
+                    properties: { binding: 'customer.firstName' },
+                    validationRules: {}
                 },
                 {
                     id: 'lastName',
                     typeName: 'textBox',
-                    properties: { binding: 'customer.lastName' }
+                    properties: { binding: 'customer.lastName' },
+                    validationRules: { required: {}, minLength: { length: 2 }, maxLength: { length: 30 }}
                 },
                 {
                     id: 'discount',
                     typeName: 'textBox',
-                    properties: { binding: 'customer.discount' }
+                    properties: { binding: 'customer.discount' },
+                    validationRules: { required: {} }
                 }
             ]
         });

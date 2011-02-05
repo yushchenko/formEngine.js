@@ -13,8 +13,11 @@ fe.element = function element (config) {
 
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
+    that.validationRules = metadata.validationRules || {};
     that.elements = [];
     that.parent = undefined;
+
+    console.log('ctor: ' + JSON.stringify(that.validationRules));
 
     function initialize() {
     }
@@ -71,14 +74,23 @@ fe.element = function element (config) {
         engine.sendMessage({ senderId: that.id, signal: 'validation-inactive',
                              data: that.isHidden() || that.isReadonly() });
 
+        that.notifyRequiredStatusChange();
 
         eachChild(function(child) {
             child.notifyValidationStatusChange();
         });
-
     }
 
     function showErrors(errors) {
+        
+    }
+
+    function notifyRequiredStatusChange() {
+        that.markRequired('required' in that.validationRules
+                          && !that.isHidden() && !that.isReadonly());
+    }
+
+    function markRequired(required) {
         
     }
 
@@ -100,6 +112,8 @@ fe.element = function element (config) {
     that.isReadonly = isReadonly;
     that.notifyValidationStatusChange = notifyValidationStatusChange;
     that.showErrors = showErrors;
+    that.notifyRequiredStatusChange = notifyRequiredStatusChange;
+    that.markRequired = markRequired;
     that.eachChild = eachChild;
 
     engine.addReceiver(that.id, that);
