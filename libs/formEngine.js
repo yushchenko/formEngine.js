@@ -6,7 +6,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Feb 4 18:09:21 2011 +0200
+ * Sat Feb 5 10:35:36 2011 +0200
  * 
  */
 
@@ -897,8 +897,11 @@ fe.element = function element (config) {
 
     that.id =  metadata.id || getUniqueId();
     that.properties = metadata.properties || {};
+    that.validationRules = metadata.validationRules || {};
     that.elements = [];
     that.parent = undefined;
+
+    console.log('ctor: ' + JSON.stringify(that.validationRules));
 
     function initialize() {
     }
@@ -955,14 +958,25 @@ fe.element = function element (config) {
         engine.sendMessage({ senderId: that.id, signal: 'validation-inactive',
                              data: that.isHidden() || that.isReadonly() });
 
+        that.notifyRequiredStatusChange();
 
         eachChild(function(child) {
             child.notifyValidationStatusChange();
         });
-
     }
 
     function showErrors(errors) {
+        
+    }
+
+    function notifyRequiredStatusChange() {
+
+        that.markRequired('required' in that.validationRules
+                          && !that.isHidden() && !that.isReadonly());
+
+    }
+
+    function markRequired(required) {
         
     }
 
@@ -984,6 +998,8 @@ fe.element = function element (config) {
     that.isReadonly = isReadonly;
     that.notifyValidationStatusChange = notifyValidationStatusChange;
     that.showErrors = showErrors;
+    that.notifyRequiredStatusChange = notifyRequiredStatusChange;
+    that.markRequired = markRequired;
     that.eachChild = eachChild;
 
     engine.addReceiver(that.id, that);
@@ -1109,6 +1125,8 @@ fe.metadataProvider = function metadataProvider (config) {
             path = metadata.binding,
             validationRules = metadata.validationRules || {};
 
+        element.validationRules = {};
+
         for (name in validationRules) {
 
             if (validationRules.hasOwnProperty(name)) {
@@ -1132,6 +1150,8 @@ fe.metadataProvider = function metadataProvider (config) {
                 modelMetadata.validationRules.push({
                     id: id, path: path, validatorName: name, validatorProperties: properties
                 });
+
+                element.validationRules[name] = properties || {};
 
                 rules.push({ receiverId: id, senderId: element.id, signal: 'validation-inactive' });
             }

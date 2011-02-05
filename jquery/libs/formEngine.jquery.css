@@ -11,7 +11,7 @@
 }
 
 .fe-element .fe-editor-wide {
-    width: 296px;
+    width: 286px;
 }
 
 .fe-element .fe-editor-narrow {
@@ -32,7 +32,7 @@
 
 .fe-element-error {
     color: red;
-    margin-left: 200px;
+    margin-left: 210px;
     font-size: x-small;
     margin-top: 3px;
 }
@@ -44,6 +44,20 @@
 .fe-element.fe-saved {
     border-left: 2px solid green;
 }
+
+.fe-element-required-mark {
+    display: inline-block;
+    width: 10px;
+    font-weight: bold;
+    color: red;
+    visibility: hidden;
+}
+
+.fe-required .fe-element-required-mark {
+    visibility: visible;
+}
+
+
 
 .fe-toolbar {
     padding: 5px 0 5px 0;
