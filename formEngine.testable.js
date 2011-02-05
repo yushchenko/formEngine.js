@@ -256,7 +256,9 @@ fe.rule = function rule(config) {
     return that;
 };
 
-fe.trigger = function trigger(config) {
+fe.triggers = {};
+
+fe.triggers.expression = function expressionTrigger(config) {
 
     var that = {},
         id = config.id,
@@ -265,7 +267,7 @@ fe.trigger = function trigger(config) {
         processorArgs = config.processorArgs,
         signal = config.signal;
 
-    function receiveMessage(messsage) {
+    function receiveMessage(msg) {
 
         var args = [],
             i, len = processorArgs.length,
@@ -278,6 +280,40 @@ fe.trigger = function trigger(config) {
         result = processor.apply(undefined, args);
 
         engine.sendMessage({ senderId: id, signal: signal, data: result });
+    }
+
+    that.receiveMessage = receiveMessage;
+
+    engine.addReceiver(id, that);
+
+    return that;
+};
+
+fe.triggers.change = function changeTrigger(config) {
+
+    var that = {},
+        id = config.id,
+        engine = config.engine,
+        statusByPath = {};
+
+    function receiveMessage(msg) {
+
+        var result, path,
+            count = { 'default': 0, changed: 0, saved: 0 }, total = 0;
+
+        statusByPath[msg.path] = msg.data;
+
+        for (path in statusByPath) {
+            if (statusByPath.hasOwnProperty(path)) {
+                count[statusByPath[path]] += 1;
+                total += 1;
+            }
+        }
+
+        result = (total === count['default']) ? 'default' :
+                 (count.changed === 0) ? 'saved' : 'changed';
+
+        engine.sendMessage({ senderId: id, signal: 'change', data: result });
     }
 
     that.receiveMessage = receiveMessage;
@@ -324,7 +360,7 @@ fe.engine = function engine(config) {
 
     function addTrigger(triggerConfig) {
         triggerConfig.engine = that;
-        triggers.push(fe.trigger(triggerConfig));
+        triggers.push(fe.triggers[triggerConfig.type](triggerConfig));
     }
 
     function addTriggers(/* triggers in array or argumenst */) {
@@ -1022,6 +1058,7 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 trigger = {
                     id: id,
+                    type: 'expression',
                     processorArgs: parsed.args,
                     processor: parsed.processor,
                     signal: property
@@ -1031,6 +1068,24 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
                 rules.push({ receiverId: element.id, senderId: id, signal: property });
+
+                // notify element with calculated value about value changes
+                if (property === 'value') {
+
+                    id = getUniqueId();
+
+                    trigger = {
+                        id: id,
+                        type: 'change',
+                        processorArgs: parsed.args,
+                        signal: 'change'
+                    };
+
+                    triggers.push(trigger);
+
+                    rules.push({ receiverId: id, path: parsed.args, signal: 'change' });
+                    rules.push({ receiverId: element.id, senderId: id, signal: 'change' });
+                }
             }
         }
     }

@@ -36,7 +36,7 @@ fe.engine = function engine(config) {
 
     function addTrigger(triggerConfig) {
         triggerConfig.engine = that;
-        triggers.push(fe.trigger(triggerConfig));
+        triggers.push(fe.triggers[triggerConfig.type](triggerConfig));
     }
 
     function addTriggers(/* triggers in array or argumenst */) {

@@ -1,7 +1,5 @@
 ## TODO
 
-* changeTracker: change for element with calculated values
-
 * binding, hidden, readonly -> properties
 
 * blog post: "formEngine.js Project"
@@ -18,7 +16,7 @@
 
 * *DONE* JavaScript DSL
 * *POSTPONED* Markup DSL (jQuery)
-* *PROGRESS* change tracker
+* *DONE* change tracker
 * inactive validation rules, marking required controls (asterisk)
 * perfomance testing (a big form)
 

@@ -6,7 +6,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Fri Feb 4 14:23:15 2011 +0200
+ * Fri Feb 4 18:09:21 2011 +0200
  * 
  */
 

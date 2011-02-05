@@ -58,6 +58,7 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 trigger = {
                     id: id,
+                    type: 'expression',
                     processorArgs: parsed.args,
                     processor: parsed.processor,
                     signal: property
@@ -67,6 +68,24 @@ fe.metadataProvider = function metadataProvider (config) {
 
                 rules.push({ receiverId: id, path: parsed.args, signal: 'value' });
                 rules.push({ receiverId: element.id, senderId: id, signal: property });
+
+                // notify element with calculated value about value changes
+                if (property === 'value') {
+
+                    id = getUniqueId();
+
+                    trigger = {
+                        id: id,
+                        type: 'change',
+                        processorArgs: parsed.args,
+                        signal: 'change'
+                    };
+
+                    triggers.push(trigger);
+
+                    rules.push({ receiverId: id, path: parsed.args, signal: 'change' });
+                    rules.push({ receiverId: element.id, senderId: id, signal: 'change' });
+                }
             }
         }
     }
