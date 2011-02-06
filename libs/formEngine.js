@@ -1,12 +1,12 @@
 /*
- * FormEngine.js 0.2pre
+ * FormEngine.js 0.2
  - MVC on steroids :)
  * http://github.com/yushchenko/formEngine.js
  *
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Feb 5 10:35:36 2011 +0200
+ * Sun Feb 6 11:44:26 2011 +0200
  * 
  */
 
@@ -970,10 +970,8 @@ fe.element = function element (config) {
     }
 
     function notifyRequiredStatusChange() {
-
         that.markRequired('required' in that.validationRules
                           && !that.isHidden() && !that.isReadonly());
-
     }
 
     function markRequired(required) {
