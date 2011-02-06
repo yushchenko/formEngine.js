@@ -957,10 +957,8 @@ fe.element = function element (config) {
     }
 
     function notifyRequiredStatusChange() {
-
         that.markRequired('required' in that.validationRules
                           && !that.isHidden() && !that.isReadonly());
-
     }
 
     function markRequired(required) {

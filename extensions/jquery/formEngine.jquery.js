@@ -6,7 +6,7 @@
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Feb 5 10:35:36 2011 +0200
+ * Sat Feb 5 17:53:18 2011 +0200
  * 
  */
 
@@ -462,7 +462,7 @@ fe.jquery.elements.panel = function panel(config) {
 
     var that = fe.jquery.element(config);
 
-    that.template = template('<div id="<%=containerId%>" class="fe-element"><%=content%></div>');
+    that.template = template('<div id="<%=containerId%>" class="fe-element fe-panel"><%=content%></div>');
 
     return that;
 };

@@ -111,7 +111,7 @@ $(function() {
             { code: '04', name: 'Check Your Application'}
         ],
 
-        app = fe.jquery.runSimpleApp({ metadata: metadata, data: data });
+        app = fe.jquery.runSimpleApp({ metadata: metadata, data: data, trackChanges: true });
 
     app.engine.subscribe({ senderId: ['back','next'], signal: 'click' }, function (msg) {
 

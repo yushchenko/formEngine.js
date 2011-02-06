@@ -6,7 +6,7 @@
  * Copyright 2010-2011, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * 
- * Sat Feb 5 10:35:36 2011 +0200
+ * Sat Feb 5 17:53:18 2011 +0200
  * 
  */
 
@@ -970,10 +970,8 @@ fe.element = function element (config) {
     }
 
     function notifyRequiredStatusChange() {
-
         that.markRequired('required' in that.validationRules
                           && !that.isHidden() && !that.isReadonly());
-
     }
 
     function markRequired(required) {

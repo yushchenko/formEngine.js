@@ -2,6 +2,8 @@
     display: none !important;
 }
 
+/* General Element Classes */
+
 .fe-element {
     width: 500px;
     font-family: Verdana, Arial, sans-serif;
@@ -57,19 +59,25 @@
     visibility: visible;
 }
 
+/* Individual Elements */
 
-
-.fe-toolbar {
+.fe-element.fe-toolbar {
     padding: 5px 0 5px 0;
     text-align: right;
     border-top: 1px dotted #D1D1D1;
 }
 
-.fe-header {
+.fe-element.fe-header {
     margin-bottom: 10px;
     font-size: medium;
     font-weight: bold;
     text-decoration: underline;
+}
+
+.fe-element.fe-panel {
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
 .fe-element .ui-button .ui-button-text { /* fix for very big paddings of jquery ui button */
