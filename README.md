@@ -29,7 +29,7 @@ Complete project documentation is located in [project's wiki][wiki].
 Samples to play and take a look at the source code using 'View Page Source' of your favorite browser
 are [here][samples].
 
-Current version is 0.1, see more details on [version history page][history].
+Current version is 0.2, see more details on [version history page][history].
 If you are interested in project's plans for near future, visit [roadmap page][rmap].
 
 To build the project by yourself see instructions given [here][build].
